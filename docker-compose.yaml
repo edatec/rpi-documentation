@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  rpi-documentation:
+    build: ./
+    image: rpi-documentation
+    container_name: rpi-documentation
+    hostname: rpi-documentation
+    ports:
+      - 4000:4000
+    restart: always
+
+    volumes:
+      - .:/opt/rpi-documentation
+    entrypoint: [ "bash", "-c", "/opt/rpi-documentation/start.sh"]
