@@ -6,8 +6,8 @@ bundle install
 
 # pip3 install --user -r requirements.txt
 
-# make
+make
 
-# make serve_html
+make serve_html
 
 tail -f /dev/null
