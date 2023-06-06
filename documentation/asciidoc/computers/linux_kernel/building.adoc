@@ -1,27 +1,27 @@
 [[building]]
-== Building the Kernel
+== 构建内核
 
-The default compilers and linkers that come with an OS are configured to build executables to run on that OS - they are native tools - but that doesn't have to be the case. A cross-compiler is configured to build code for a target other than the one running the build process, and using it is called cross-compilation.
+操作系统附带的默认编译器和链接器被配置为构建在该操作系统上运行的可执行文件——它们是本地工具——但事实并非如此。交叉编译器被配置为为运行构建过程的目标之外的目标构建代码，使用它被称为交叉编译。
 
-Cross-compilation of the Raspberry Pi kernel is useful for two reasons:
+the Raspberry Pi内核的交叉编译很有用，原因有两个：
 
-* it allows a 64-bit kernel to be built using a 32-bit OS, and vice versa, and
-* even a modest laptop can cross-compile a Raspberry Pi kernel significantly faster than the Raspberry Pi itself.
+* 它允许使用 64 位操作系统构建 32 位内核，反之亦然，并且
+* 即使是一台普通的笔记本电脑也可以比the Raspberry Pi本身更快地交叉编译the Raspberry Pi内核.
 
-The instructions below are divided into native builds and cross-compilation; choose the section appropriate for your situation - although there are many common steps between the two, there are also some important differences.
+以下说明分为本机构建和交叉编译;选择适合您情况的部分 - 尽管两者之间有许多常见的步骤，但也存在一些重要差异。
 
-=== Building the Kernel Locally
+=== 在本地构建内核
 
-On a Raspberry Pi, first install the latest version of https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit[Raspberry Pi OS]. Then boot your Raspberry Pi, log in, and ensure you're connected to the internet to give you access to the sources.
+在Raspberry Pi上，首先安装最新版本的 https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit[Raspberry Pi OS]。然后启动您的the Raspberry Pi，登录并确保您已连接到互联网以允许您访问源代码。
 
-First install Git and the build dependencies:
+首先安装 Git 和构建依赖项
 
 [,bash]
 ----
 sudo apt install git bc bison flex libssl-dev make
 ----
 
-Next get the sources, which will take some time:
+接下来获取源，这将需要一些时间：
 
 [,bash]
 ----
@@ -29,31 +29,32 @@ git clone --depth=1 https://github.com/raspberrypi/linux
 ----
 
 [[choosing_sources]]
-==== Choosing Sources
+==== 选择来源
 
-The `git clone` command above will download the current active branch (the one we are building Raspberry Pi OS images from) without any history. Omitting the `--depth=1` will download the entire repository, including the full history of all branches, but this takes much longer and occupies much more storage.
+上面的git clone命令将下载当前活动分支（我们正在构建 Raspberry Pi OS 映像的分支），没有任何历史记录。省略 `--depth=1` 将下载整个存储库，包括所有分支的完整历史记录，但这需要更长的时间并占用更多的存储空间。
 
-To download a different branch (again with no history), use the `--branch` option:
+要下载其他分支（同样没有历史记录），请使用以下 `--branch` 选项：
 
 [,bash]
 ----
 git clone --depth=1 --branch <branch> https://github.com/raspberrypi/linux
 ----
 
-where `<branch>` is the name of the branch that you wish to download.
+其中 `<branch>` 是您要下载的分支的名称。
 
-Refer to the https://github.com/raspberrypi/linux[original GitHub repository] for information about the available branches.
+有关可用分支的信息，请参阅原始 https://github.com/raspberrypi/linux[GitHub 存储库]。
 
-==== Kernel Configuration
+[[kernel-configuration]]
+==== 内核配置
 
-Configure the kernel; as well as the default configuration, you may wish to xref:linux_kernel.adoc#configuring-the-kernel[configure your kernel in more detail] or xref:linux_kernel.adoc#patching-the-kernel[apply patches from another source], to add or remove required functionality.
+配置内核;除了默认配置外，您可能还希望 xref:linux_kernel.adoc#configuring-the-kernel[更详细地配置内核] 或 xref:linux_kernel.adoc#patching-the-kernel[应用来自其他来源的补丁]，以添加或删除所需的功能。
 
 [[default_configuration]]
-===== Apply the Default Configuration
+===== 应用默认配置
 
-First, prepare the default configuration by running the following commands, depending on your Raspberry Pi model:
+首先，通过运行以下命令来准备默认配置，具体取决于您的the Raspberry Pi型号：
 
-For Raspberry Pi 1, Zero and Zero W, and Raspberry Pi Compute Module 1 default (32-bit only) build configuration
+对于the Raspberry Pi 1、零和零W 以及the Raspberry Pi计算模块 1 默认（仅限 32 位）构建配置
 
 [,bash]
 ----
@@ -62,7 +63,7 @@ KERNEL=kernel
 make bcmrpi_defconfig
 ----
 
-For Raspberry Pi 2, 3, 3+ and Zero 2 W, and Raspberry Pi Compute Modules 3 and 3+ default 32-bit build configuration
+适用于the Raspberry Pi 2、3、3+ 和零2W，以及the Raspberry Pi计算模块 3 和 3+ 默认 32 位构建配置
 
 [,bash]
 ----
@@ -71,7 +72,7 @@ KERNEL=kernel7
 make bcm2709_defconfig
 ----
 
-For Raspberry Pi 4 and 400, and Raspberry Pi Compute Module 4 default 32-bit build configuration
+对于the Raspberry Pi 4 和 400，以及the Raspberry Pi计算模块 4 默认的 32 位构建配置
 
 [,bash]
 ----
@@ -80,7 +81,7 @@ KERNEL=kernel7l
 make bcm2711_defconfig
 ----
 
-For Raspberry Pi 3, 3+, 4, 400 and Zero 2 W, and Raspberry Pi Compute Modules 3, 3+ and 4 default 64-bit build configuration
+适用于the Raspberry Pi 3、3+、4、400 和零2W 以及the Raspberry Pi计算模块 3、3+ 和 4 默认 64 位构建配置
 [,bash]
 ----
 cd linux
@@ -88,21 +89,23 @@ KERNEL=kernel8
 make bcm2711_defconfig
 ----
 
-===== Customising the Kernel Version Using `LOCALVERSION`
+[[customising-the-kernel-version-using-localversion]]
+===== 自定义内核版本 `LOCALVERSION`
 
-In addition to your kernel configuration changes, you may wish to adjust the `LOCALVERSION` to ensure your new kernel does not receive the same version string as the upstream kernel. This both clarifies you are running your own kernel in the output of `uname` and ensures existing modules in `/lib/modules` are not overwritten.
+除了内核配置更改之外，您可能还希望调整 `LOCALVERSION` 以确保新内核不会收到与上游内核相同的版本字符串。这既澄清了您在 `uname` 的输出中运行自己的内核，又确保 `/lib/modules` 中的现有模块不会被覆盖。
 
-To do so, change the following line in `.config`:
+为此，请更改 `.config` 中的以下行：
 
 ----
 CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
 ----
 
-You can also change that setting graphically as shown in xref:linux_kernel.adoc#configuring-the-kernel[the kernel configuration instructions]. It is located in "General setup" \=> "Local version - append to kernel release".
+您还可以以图形方式更改该设置，如 xref:linux_kernel.adoc#configuring-the-kernel[内核配置说明]中所示。它位于 "常规设置"\=>"本地版本 - 附加到内核版本"中。
 
-==== Building the Kernel
+[[building-the-kernel]]
+==== 构建内核
 
-Build and install the kernel, modules, and Device Tree blobs; this step can take a *long* time depending on the Raspberry Pi model in use.  For the 32-bit kernel:
+构建并安装内核、模块和DTB文件;此步骤可能需要 *很长* 时间，具体取决于所使用的the Raspberry Pi模型。 对于 32 位内核:
 
 [,bash]
 ----
@@ -114,7 +117,7 @@ sudo cp arch/arm/boot/dts/overlays/README /boot/overlays/
 sudo cp arch/arm/boot/zImage /boot/$KERNEL.img
 ----
 
-For the 64-bit kernel:
+对于 64 位内核:
 
 [,bash]
 ----
@@ -126,59 +129,66 @@ sudo cp arch/arm64/boot/dts/overlays/README /boot/overlays/
 sudo cp arch/arm64/boot/Image.gz /boot/$KERNEL.img
 ----
 
-NOTE: On a Raspberry Pi 2/3/4, the `-j4` flag splits the work between all four cores, speeding up compilation significantly.
+NOTE: 在Raspberry Pi 2/3/4上，该 `-j4` 标志将工作分配给所有四个内核，大大加快了编译速度。
 
-If you now reboot, your Raspberry Pi should be running your freshly-compiled kernel!
+如果你现在重启，你的Raspberry Pi应该运行你新编译的内核！
 
-=== Cross-Compiling the Kernel
+[[cross-compiling-the-kernel]]
+=== 交叉编译内核
 
-First, you will need a suitable Linux cross-compilation host. We tend to use Ubuntu; since Raspberry Pi OS is also a Debian distribution, it means many aspects are similar, such as the command lines.
+首先，您需要一个合适的Linux交叉编译主机。我们倾向于使用Ubuntu由于Raspberry Pi OS也是Debian发行版，这意味着许多方面都是相似的，比如命令行。
 
-You can either do this using VirtualBox (or VMWare) on Windows, or install it directly onto your computer. For reference, you can follow instructions online http://www.wikihow.com/Install-Ubuntu-on-VirtualBox[at Wikihow].
+您可以在Windows上使用VirtualBox(或VMWare)来完成此操作，也可以将其直接安装到您的计算机上。作为参考，你可以遵循 http://www.wikihow.com/Install-Ubuntu-on-VirtualBox[Wikihow] 上的在线说明。
 
-==== Install Required Dependencies and Toolchain
+[[install-required-dependencies-and-toolchain]]
+==== 安装所需的依赖项和工具链
 
-To build the sources for cross-compilation, make sure you have the dependencies needed on your machine by executing:
+要构建用于交叉编译的源代码，请执行以下命令，确保您的计算机上有所需的依赖项:
 
 [,bash]
 ----
 sudo apt install git bc bison flex libssl-dev make libc6-dev libncurses5-dev
 ----
 
-If you find you need other things, please submit a pull request to change the documentation.
+如果您发现您需要其他东西，请提交一个拉请求来更改文档。
 
-===== Install the 32-bit Toolchain for a 32-bit Kernel
+[[install-the-32-bit-toolchain-for-a-32-bit-kernel]]
+===== 为32位内核安装32位工具链
 
 [,bash]
 ----
 sudo apt install crossbuild-essential-armhf
 ----
 
-===== Install the 64-bit Toolchain for a 64-bit Kernel
+[[install-the-64-bit-toolchain-for-a-64-bit-kernel]]
+===== 为64位内核安装64位工具链
 
 [,bash]
 ----
 sudo apt install crossbuild-essential-arm64
 ----
 
-==== Get the Kernel Sources
+[[get-the-kernel-sources]]
+==== 获取内核源代码
 
-To download the minimal source tree for the current branch, run:
+要下载当前分支的最小源代码树，请运行:
 
 [,bash]
 ----
 git clone --depth=1 https://github.com/raspberrypi/linux
 ----
 
-See <<choosing_sources,*Choosing sources*>> above for instructions on how to choose a different branch.
+有关如何选择不同分支的说明，请参见上面的 <<choosing_sources,*选择源*>>。
 
-==== Build sources
+[[build-sources]]
+==== 编译源代码
 
-Enter the following commands to build the sources and Device Tree files:
+输入以下命令来构建源和设备树文件:
 
-===== 32-bit Configs
+[[32-bit-configs]]
+===== 32-位 配置
 
-For Raspberry Pi 1, Zero and Zero W, and Raspberry Pi Compute Module 1:
+对于Raspberry Pi 1、零和零W以及Raspberry Pi计算模块1:
 
 [,bash]
 ----
@@ -187,7 +197,7 @@ KERNEL=kernel
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcmrpi_defconfig
 ----
 
-For Raspberry Pi 2, 3, 3+ and Zero 2 W, and Raspberry Pi Compute Modules 3 and 3+:
+对于Raspberry Pi 2、3、3+和Zero 2 W，以及Raspberry Pi计算模块3和3+:
 
 [,bash]
 ----
@@ -196,7 +206,7 @@ KERNEL=kernel7
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
 ----
 
-For Raspberry Pi 4 and 400, and Raspberry Pi Compute Module 4:
+对于Raspberry Pi 4和400以及Raspberry Pi计算模块4:
 
 [,bash]
 ----
@@ -205,9 +215,10 @@ KERNEL=kernel7l
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2711_defconfig
 ----
 
-===== 64-bit Configs
+[[64-bit-configs]]
+===== 64-位 配置
 
-For Raspberry Pi 3, 3+, 4, 400 and Zero 2 W, and Raspberry Pi Compute Modules 3, 3+ and 4:
+对于Raspberry Pi 3、3+、4、400和Zero 2 W，以及Raspberry Pi计算模块3、3+和4:
 
 [,bash]
 ----
@@ -216,31 +227,35 @@ KERNEL=kernel8
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig
 ----
 
-===== Build with Configs
+[[build-with-configs]]
+===== 配置构建
 
-NOTE: To speed up compilation on multiprocessor systems, and get some improvement on single processor ones, use `-j n`, where n is the number of processors * 1.5. You can use the `nproc` command to see how many processors you have. Alternatively, feel free to experiment and see what works!
+NOTE: 为了在多处理器系统上加速编译，并在单处理器系统上获得一些改进，可以使用 `-j n` ，其中n是处理器的数量* 1.5。您可以使用 `nproc` 命令来查看您有多少个处理器。或者，请随意试验，看看什么有效！
 
-====== For all 32-bit Builds
+[[for-all-32-bit-builds]]
+====== 对于所有32位版本
 
 [,bash]
 ----
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs
 ----
 
-====== For all 64-bit Builds
+[[for-all-64-bit-builds]]
+====== 对于所有64位版本
 
-NOTE: Note the difference between Image target between 32 and 64-bit.
+NOTE: 请注意32位和64位图像目标之间的差异。
 
 [,bash]
 ----
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
 ----
 
-==== Install Directly onto the SD Card
+[[install-directly-onto-the-sd-card]]
+==== 直接安装到SD卡上
 
-Having built the kernel, you need to copy it onto your Raspberry Pi and install the modules; this is best done directly using an SD card reader.
+构建好内核后，您需要将它复制到您的Raspberry Pi上并安装模块；最好直接使用SD读卡器。
 
-First, use `lsblk` before and after plugging in your SD card to identify it. You should end up with something a lot like this:
+首先，在插入SD卡前后使用 `lsblk` 进行识别。您应该会得到类似这样的结果:
 
 ----
 sdb
@@ -248,9 +263,9 @@ sdb
    sdb2
 ----
 
-with `sdb1` being the `FAT` filesystem (boot) partition, and `sdb2` being the `ext4` filesystem (root) partition.
+其中 `sdb1` 是 `FAT` 文件系统(引导)分区， `sdb2` 是 `ext4` 文件系统(根)分区。
 
-Mount these first, adjusting the partition letter as necessary:
+首先安装它们，根据需要调整分区号:
 
 [,bash]
 ----
@@ -261,27 +276,30 @@ sudo mount /dev/sdb1 mnt/fat32
 sudo mount /dev/sdb2 mnt/ext4
 ----
 
-NOTE: You should adjust the drive letter appropriately for your setup, e.g. if your SD card appears as `/dev/sdc` instead of `/dev/sdb`.
+NOTE: 您应该根据您的设置适当调整驱动器号，例如，如果您的SD卡显示为 `/dev/sdc` ，而不是 `/dev/sdb` 。
 
-Next, install the kernel modules onto the SD card:
+接下来，将内核模块安装到 SD 卡上：
 
-===== For 32-bit
+[[for-32-bit]]
+===== 对于 32-位
 
 [,bash]
 ----
 sudo env PATH=$PATH make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=mnt/ext4 modules_install
 ----
 
-===== For 64-bit
+[[for-64-bit]]
+===== 对于 64-位
 
 [,bash]
 ----
 sudo env PATH=$PATH make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=mnt/ext4 modules_install
 ----
 
-Finally, copy the kernel and Device Tree blobs onto the SD card, making sure to back up your old kernel:
+最后，将内核和设备树 blob 复制到 SD 卡上，确保备份旧内核：
 
-===== For 32-bit
+[[for-32-bit-2]]
+===== 对于 32-位
 
 [,bash]
 ----
@@ -294,7 +312,8 @@ sudo umount mnt/fat32
 sudo umount mnt/ext4
 ----
 
-===== For 64-bit
+[[for-64-bit-2]]
+===== 对于 64-位
 
 [,bash]
 ----
@@ -307,12 +326,12 @@ sudo umount mnt/fat32
 sudo umount mnt/ext4
 ----
 
-Another option is to copy the kernel into the same place, but with a different filename - for instance, `kernel-myconfig.img` - rather than overwriting the `kernel.img` file. You can then edit the `config.txt` file to select the kernel that the Raspberry Pi will boot:
+另一种选择是将内核复制到同一位置，但使用不同的文件名 - 例如 `kernel-myconfig.img` - 而不是覆盖 `kernel.img` 文件。然后，您可以编辑该 `config.txt` 文件以选择the Raspberry Pi将启动的内核：
 
 ----
 kernel=kernel-myconfig.img
 ----
 
-This has the advantage of keeping your custom kernel separate from the stock kernel image managed by the system and any automatic update tools, and allowing you to easily revert to a stock kernel in the event that your kernel cannot boot.
+这样做的好处是，将自定义内核与系统管理的库存内核映像和任何自动更新工具分开，并允许您在内核无法引导时轻松恢复到库存内核。.
 
-Finally, plug the card into the Raspberry Pi and boot it!
+最后，将卡插入the Raspberry Pi并启动它！

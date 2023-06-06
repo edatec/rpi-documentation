@@ -1,50 +1,54 @@
-== Configuring Networking
+[[configuring-networking]]
+== 配置网络
 
-A GUI is provided for setting up wireless connections in Raspberry Pi OS with desktop. However if you are using Raspberry Pi OS Lite, you can set up wireless networking from the command line.
+提供了一个GUI，用于在Raspberry Pi操作系统中设置带有桌面的无线连接。但是，如果您使用的是Raspberry Pi OS Lite，则可以从命令行设置无线网络。
 
-=== Using the Desktop
+[[using-the-desktop]]
+=== 使用桌面
 
-Wireless connections can be made via the network icon at the right-hand end of the menu bar. If you are using a Raspberry Pi with built-in wireless connectivity, or if a wireless dongle is plugged in, left-clicking this icon will bring up a list of available wireless networks, as shown below. If no networks are found, it will show the message 'No APs found - scanning...'. Wait a few seconds without closing the menu, and it should find your network.
-
-Note that on Raspberry Pi devices that support the 5GHz band (Pi3B+, Pi4, CM4, Pi400), wireless networking is disabled for regulatory reasons, until the country code has been set. To set the country code, open the `Raspberry Pi Configuration` application from the Preferences Menu, select *Localisation* and set the appropriate code.
+可以通过菜单栏右侧的网络图标进行无线连接。如果您使用的是具有内置无线连接的Raspberry Pi，或者插入了无线加密狗，则左键单击此图标将显示可用无线网络的列表，如下所示。如果未找到网络，它将显示消息“未找到 AP - 正在扫描...'.等待几秒钟而不关闭菜单，它应该会找到您的网络。
+请注意，在支持 5GHz 频段（Pi3B+、Pi4、CM4、Pi400）的 Raspberry Pi 设备上，由于监管原因，无线网络将被禁用，直到设置国家/地区代码。要设置国家/地区代码，请从首选项菜单中打开应用程序Raspberry Pi Configuration，选择 *Localisation* 并设置相应的代码。
 
 image::images/wifi2.png[wifi2]
 
-The icons on the right show whether a network is secured or not, and give an indication of its signal strength. Click the network that you want to connect to. If it is secured, a dialogue box will prompt you to enter the network key:
+右侧的图标显示网络是否安全，并指示其信号强度。单击要连接到的网络。如果它是安全的，一个对话框将提示您输入网络密钥：
 
 image::images/key.png[key]
 
-Enter the key and click *OK*, then wait a couple of seconds. The network icon will flash briefly to show that a connection is being made. When it is ready, the icon will stop flashing and show the signal strength.
+输入密钥并单击 *OK*，然后等待几秒钟。网络图标将短暂闪烁，表示正在建立连接。准备就绪后，图标将停止闪烁并显示信号强度。
 
 [[wireless-networking-command-line]]
-=== Using the Command Line
+=== 使用命令行
 
-This method is suitable if you don't have access to the graphical user interface normally used to set up a wireless LAN on the Raspberry Pi. It is particularly suitable for use with a serial console cable if you don't have access to a screen or wired Ethernet network. Note also that no additional software is required; everything you need is already included on the Raspberry Pi.
+如果您无法访问通常用于在Raspberry Pi上设置无线 LAN 的图形用户界面，则此方法适用。如果您无法访问屏幕或有线以太网网络，它特别适合与串行控制台电缆一起使用。另请注意，不需要其他软件;您需要的一切都已经包含在Raspberry Pi中。
 
-==== Using raspi-config
+[[wireless-networking-command-line]]
+==== 使用 raspi-config
 
-The quickest way to enable wireless networking is to use the command line `raspi-config` tool.
+启用无线网络的最快方法是使用命令行工具 `raspi-config`。
 
 `sudo raspi-config`
 
-Select the *Localisation Options* item from the menu, then the *Change wireless country* option. On a fresh install, for regulatory purposes, you will need to specify the country in which the device is being used. Then set the SSID of the network, and the passphrase for the network. If you do not know the SSID of the network you want to connect to, see the next section on how to list available networks prior to running `raspi-config`.
+从菜单中选择  *Localisation Options*，然后选择 *Change wireless country* 选项。在全新安装中，出于监管目的，您需要指定使用设备的国家/地区。然后设置网络的 SSID 和网络的密码。如果您不知道要连接的网络的 SSID，请参阅下一节，了解如何在raspi-config运行之前列出可用网络。
 
-Note that `raspi-config` does not provide a complete set of options for setting up wireless networking; you may need to refer to the extra sections below for more details if `raspi-config` fails to connect the Raspberry Pi to your requested network.
+请注意， `raspi-config` 它不提供用于设置无线网络的完整选项集;如果raspi-config无法将Raspberry Pi连接到您请求的网络，您可能需要参考下面的额外部分以获取更多详细信息。
 
-==== Getting Wireless LAN Network Details
+[[getting-wireless-lan-network-details]]
+==== 获取无线局域网网络详细信息
 
-To scan for wireless networks, use the command `sudo iwlist wlan0 scan`. This will list all available wireless networks, along with other useful information. Look out for:
+要扫描无线网络，请使用命令 `sudo iwlist wlan0 scan` 。这将列出所有可用的无线网络以及其他有用信息。注意：
 
-. 'ESSID:"testing"' is the name of the wireless network.
-. 'IE: IEEE 802.11i/WPA2 Version 1' is the authentication used. In this case it's WPA2, the newer and more secure wireless standard which replaces WPA. This guide should work for WPA or WPA2, but may not work for WPA2 enterprise. You'll also need the password for the wireless network. For most home routers, this is found on a sticker on the back of the router. The ESSID (ssid) for the examples below is `testing` and the password (psk) is `testingPassword`.
+. 'ESSID:"testing"' 是无线网络的名称
+. 'IE: IEEE 802.11i/WPA2 Version 1' 是使用的身份验证。在这种情况下，它是WPA2，这是取代WPA的更新，更安全的无线标准。本指南应适用于 WPA 或 WPA2，但可能不适用于 WPA2 企业版。您还需要无线网络的密码。对于大多数家用路由器，这可以在路由器背面的贴纸上找到。以下示例的 ESSID （ssid） 为 `testing`，密码 （psk） 为 `testingPassword`
 
-==== Adding the Network Details to your Raspberry Pi
+[[adding-the-network-details-to-your-raspberry-pi]]
+==== 将网络详细信息添加到Raspberry Pi
 
-Open the `wpa-supplicant` configuration file in nano:
+在 nano 中打开配置文件 `wpa-supplicant`：
 
 `sudo nano /etc/wpa_supplicant/wpa_supplicant.conf`
 
-Go to the bottom of the file and add the following:
+转到文件底部并添加以下内容：
 
 ----
 network={
@@ -53,7 +57,7 @@ network={
 }
 ----
 
-The password can be configured either as the ASCII representation, in quotes as per the example above, or as a pre-encrypted 32 byte hexadecimal number. You can use the `wpa_passphrase` utility to generate an encrypted PSK. This takes the SSID and the password, and generates the encrypted PSK. With the example from above, you can generate the PSK with `wpa_passphrase "testing"`. Then you will be asked for the password of the wireless network (in this case `testingPassword`). The output is as follows:
+密码可以配置为 ASCII 表示形式、根据上述示例用引号表示形式或预加密的 32 字节十六进制数。您可以使用该 `wpa_passphrase` 实用程序生成加密的 PSK。这将获取 SSID 和密码，并生成加密的 PSK。通过上面的示例，您可以使用 `wpa_passphrase "testing"` .然后，系统将要求您输入无线网络的密码（在这种情况下testingPassword）。输出如下：
 
 ----
   network={
@@ -63,41 +67,43 @@ The password can be configured either as the ASCII representation, in quotes as 
   }
 ----
 
-Note that the plain text version of the code is present, but commented out. You should delete this line from the final `wpa_supplicant` file for extra security.
+请注意，代码的纯文本版本存在，但已注释掉。您应该从 `wpa_supplicant` 最终文件中删除此行以提高安全性。
 
-The `wpa_passphrase` tool requires a password with between 8 and 63 characters. To use a more complex password, you can extract the content of a text file and use it as input for `wpa_passphrase`. Store the password in a text file and input it to `wpa_passphrase` by calling `wpa_passphrase "testing" < file_where_password_is_stored`. For extra security, you should delete the `file_where_password_is_stored` afterwards, so there is no plain text copy of the original password on the system.
+该 `wpa_passphrase` 工具需要 8 到 63 个字符的密码。要使用更复杂的密码，可以提取文本文件的内容并将其用作 `wpa_passphrase` 的输入。将密码存储在文本文件中，并通过调用 `wpa_passphrase "testing"<file_where_password_is_stored` 将其输入到 `wpa_passphrase` 。为了提高安全性，您应该删除 `file_where_password_is_stored` 之后的，因此系统上没有原始密码的纯文本副本。
+要使用 `wpa_passphrase --encrypted` 的 PSK，您可以将加密的 PSK 复制并粘贴到文件 `wpa_supplicant.conf` 中，或者通过以下两种方式之一将工具的输出重定向到配置文件：
 
-To use the `wpa_passphrase`--encrypted PSK, you can either copy and paste the encrypted PSK into the `wpa_supplicant.conf` file, or redirect the tool's output to the configuration file in one of two ways:
+* 更改为 `root` 通过执行 `sudo su`，然后在询问时调用 `wpa_passphrase "testing" >> /etc/wpa_supplicant/wpa_supplicant.conf` 并输入测试密码
 
-* Either change to `root` by executing `sudo su`, then call `wpa_passphrase "testing" >> /etc/wpa_supplicant/wpa_supplicant.conf` and enter the testing password when asked
-* Or use `wpa_passphrase "testing" | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf > /dev/null` and enter the testing password when asked; the redirection to `/dev/null` prevents `tee` from *also* outputting to the screen (standard output).
+* 或者使用 `wpa_passphrase "testing" | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf > /dev/null` 并输入测试密码; 用tee重定向到/dev/null防止也输出到屏幕（标准输出）。
 
-If you want to use one of these two options, *make sure you use `>>`, or use `-a` with `tee`* -- either will *append* text to an existing file. Using a single chevron `>`, or omitting `-a` when using `tee`, will erase all contents and *then* append the output to the specified file.
+如果要使用这两个选项之一，*请确保使用 `>>`，或者使用  `tee -a`* — 两者都会将文本附加到现有文件。使用单个 `>` ，或者在使用 `tee` 时省略 `-a` ，将擦除所有内容，然后将输出附加到指定的文件。
 
-Now save the file by pressing `Ctrl+X`, then `Y`, then finally press `Enter`.
+现在通过按 `Ctrl+X` 保存文件 ，然后按 `Y` ，最后按 `Enter`。
 
-Reconfigure the interface with `wpa_cli -i wlan0 reconfigure`.
+使用 `wpa_cli -i wlan0 reconfigure`重新配置接口.
 
-You can verify whether it has successfully connected using `ifconfig wlan0`. If the `inet addr` field has an address beside it, the Raspberry Pi has connected to the network. If not, check that your password and ESSID are correct.
+您可以使用ifconfig wlan0 验证它是否已成功连接。如果字段。inet addr旁边有地址，则Raspberry Pi已连接到网络。如果没有，请检查您的密码和 ESSID 是否正确
 
-On the Raspberry Pi 3B+ and Raspberry Pi 4B, you will also need to set the country code, so that the 5GHz networking can choose the correct frequency bands. You can do this using the `raspi-config` application: select the 'Localisation Options' menu, then 'Change Wi-Fi Country'. Alternatively, you can edit the `wpa_supplicant.conf` file and add the following. (Note: you need to replace 'GB' with the 2 letter ISO code of your country. See https://en.wikipedia.org/wiki/ISO_3166-1[Wikipedia] for a list of 2 letter ISO 3166-1 country codes.)
+您可以使用 `ifconfig wlan0` 验证它是否已成功连接。如果字段。 `inet addr` 旁边有地址，则Raspberry Pi已连接到网络。如果没有，请检查您的密码和 ESSID 是否正确
+
+
+在Raspberry Pi3B+和Raspberry Pi4B上，您还需要设置国家/地区代码，以便5GHz网络可以选择正确的频段。您可以使用该 `raspi-config` 应用程序执行此操作：选择“本地化选项”菜单，然后选择 'Change Wi-Fi Country' 。或者，您可以编辑 `wpa_supplicant.conf` 文件并添加以下内容。（注意：您需要将“GB”替换为您所在国家/地区的 2 个字母的 ISO 代码。请参阅 https://en.wikipedia.org/wiki/ISO_3166-1[维基百科] 以获取 2 个字母的 ISO 3166-1 国家/地区代码列表。
 
 ----
 country=GB
 ----
 
-Note that with the latest Buster Raspberry Pi OS release, you must ensure that the `wpa_supplicant.conf` file contains the following information at the top:
-
+请注意，对于最新的Buster Raspberry Pi OS版本，您必须确保该 `wpa_supplicant.conf` 文件在顶部包含以下信息：
 ----
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=<Insert 2 letter ISO 3166-1 country code here>
 ----
 
-==== Using Unsecured Networks
+[[using-unsecured-networks]]
+==== 使用不安全的网络
 
-If the network you are connecting to does not use a password, the `wpa_supplicant` entry for the network will need to include the correct `key_mgmt` entry.
-e.g.
+如果要连接到的网络不使用密码，则 `wpa_supplican` 网络的条目需要包含正确的 `tkey_mgmt` 条目。 例如
 
 ----
 network={
@@ -106,11 +112,12 @@ network={
 }
 ----
 
-WARNING: You should be careful when using unsecured wireless networks.
+WARNING: 使用不安全的无线网络时应小心。
 
-==== Hidden Networks
+[[hidden-networks]]
+==== 隐藏的网络
 
-If you are using a hidden network, an extra option in the `wpa_supplicant file`, `scan_ssid`, may help connection.
+如果您使用的是隐藏网络，则 `wpa_supplicant file`, `scan_ssid` 中的额外选项可能有助于连接。
 
 ----
 network={
@@ -120,13 +127,14 @@ network={
 }
 ----
 
-You can verify whether it has successfully connected using `ifconfig wlan0`. If the `inet addr` field has an address beside it, the Raspberry Pi has connected to the network. If not, check your password and ESSID are correct.
+您可以使用 `ifconfig wlan0` 验证它是否已成功连接。如果字段 `inet addr` 旁边有地址，则Raspberry Pi已连接到网络。如果没有，请检查您的密码和ESSID是否正确。
 
-==== Adding Multiple Wireless Network Configurations
+[[adding-multiple-wireless-network-configurations]]
+==== 添加多个无线网络配置
 
-On recent versions of Raspberry Pi OS, it is possible to set up multiple configurations for wireless networking. For example, you could set up one for home and one for school.
+在最新版本的Raspberry Pi操作系统上，可以为无线网络设置多个配置。例如，您可以为家庭设置一个，为学校设置一个。
 
-For example
+例如
 
 ----
 network={
@@ -142,7 +150,7 @@ network={
 }
 ----
 
-If you have two networks in range, you can add the priority option to choose between them. The network in range, with the highest priority, will be the one that is connected.
+如果范围内有两个网络，则可以添加优先级选项以在它们之间进行选择。范围内具有最高优先级的网络将是连接的网络。
 
 ----
 network={
@@ -160,20 +168,20 @@ network={
 }
 ----
 
+[[the-dhcp-daemon]]
+=== DHCP 守护程序
 
-=== The DHCP Daemon
+Raspberry Pi 用 `dhcpcd` 在其所有网络接口上配置 TCP/IP。该dhcpcd守护程序旨在成为类 UNIX 系统的一体化 ZeroConf 客户端。这包括为每个接口分配一个 IP 地址、设置网络掩码以及通过名称服务交换机 （NSS） 设施配置 DNS 解析。
 
-The Raspberry Pi uses `dhcpcd` to configure TCP/IP across all of its network interfaces. The `dhcpcd` daemon is intended to be an all-in-one ZeroConf client for UNIX-like systems. This includes assigning each interface an IP address, setting netmasks, and configuring DNS resolution via the Name Service Switch (NSS) facility.
+默认情况下，Raspberry Pi OS 尝试通过 DHCP 自动配置所有网络接口，如果 DHCP 失败，则回退到 169.254.0.0/16 范围内的自动专用地址。这与其他Linux变体和Microsoft Windows的行为一致。
 
-By default, Raspberry Pi OS attempts to automatically configure all network interfaces by DHCP, falling back to automatic private addresses in the range 169.254.0.0/16 if DHCP fails. This is consistent with the behaviour of other Linux variants and of Microsoft Windows.
+[[static-ip-addresses]]
+=== 静态 IP 地址
 
-=== Static IP Addresses
+WARNING: 如果 IP 地址的分配通常由网络上的 DHCP 服务器处理，则为 Raspberry Pi 分配静态 IP 地址可能会导致地址冲突，从而导致网络问题。
 
-WARNING: If allocation of IP addresses is normally handled by a DHCP server on your network, allocating your Raspberry Pi a static IP address may cause an address conflict which may lead to networking problems.
-
-If you want to allocate a static IP address to your Raspberry Pi, the best way to do so is to reserve an address for it on your router. That way your Raspberry Pi will continue to have its address allocated via DHCP but will receive the same address each time. A "fixed" address can be allocated by your DHCP server associating it with the MAC address of your Raspberry Pi. Management of IP addresses will remain with the DHCP server and this will avoid address conflicts and potential network problems.
-
-However, if you wish to disable automatic configuration for an interface, and instead configure it statically, you can do so in `/etc/dhcpcd.conf`. For example:
+如果要为Raspberry Pi分配静态IP地址，最好的方法是在路由器上为其保留一个地址。这样，您的Raspberry Pi将继续通过DHCP分配其地址，但每次都会收到相同的地址。DHCP服务器可以分配一个 `固定` 地址，将其与Raspberry Pi的MAC地址相关联。IP 地址的管理将保留在 DHCP 服务器上，这将避免地址冲突和潜在的网络问题。
+但是，如果您希望禁用接口的自动配置，而是对其进行静态配置，则可以在 `/etc/dhcpcd.conf` 中执行此操作。例如：
 
 ----
 interface eth0

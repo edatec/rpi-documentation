@@ -1,8 +1,8 @@
-== Setting up a Routed Wireless Access Point
+[[setting-up-a-routed-wireless-access-point]]
+== 设置路由无线接入点
 
-A Raspberry Pi within an Ethernet network can be used as a wireless access point, creating a secondary network. The resulting new wireless network is entirely managed by the Raspberry Pi.
-
-If you wish to extend an existing Ethernet network to wireless clients, consider instead setting up a xref:configuration.adoc#setting-up-a-bridged-wireless-access-point[bridged access point].
+以太网网络中的Raspberry Pi可以用作无线接入点，创建辅助网络。由此产生的新无线网络完全由Raspberry Pi管理。
+如果您希望将现有以太网网络扩展到无线客户端，请考虑改为 xref:configuration.adoc#setting-up-a-bridged-wireless-access-point[桥接接入点].。
 
 ----
                                          +- RPi -------+
@@ -20,69 +20,69 @@ If you wish to extend an existing Ethernet network to wireless clients, consider
                                          +-------------+
 ----
 
-A routed wireless access point can be created using the inbuilt wireless features of the Raspberry Pi 4, Raspberry Pi 3 or Raspberry Pi Zero W, or by using a suitable USB wireless dongle that supports access point mode.
-It is possible that some USB dongles may need slight changes to their settings. If you are having trouble with a USB wireless dongle, please check the https://forums.raspberrypi.com/[forums].
+可以使用Raspberry Pi 4，Raspberry Pi 3或Raspberry Pi Zero W的内置无线功能，或使用支持接入点模式的合适USB无线加密狗来创建路由无线接入点。 某些 USB 加密狗可能需要对其设置稍作更改。如果您在使用 USB 无线加密狗时遇到问题，请查看 https://forums.raspberrypi.com/[论坛]。
 
-This documentation was tested on a Raspberry Pi 3B running a fresh installation of Raspberry Pi OS Buster.
+本文档在运行全新安装的Raspberry Pi OS Buster的Raspberry Pi 3B上进行了测试。
+
 
 [[intro]]
 === Before you Begin
 
-* Ensure you have administrative access to your Raspberry Pi. The network setup will be modified as part of the installation: local access, with screen and keyboard connected to your Raspberry Pi, is recommended.
-* Connect your Raspberry Pi to the Ethernet network and boot the Raspberry Pi OS.
-* Ensure the Raspberry Pi OS on your Raspberry Pi is xref:os.adoc#updating-and-upgrading-raspberry-pi-os[up-to-date] and reboot if packages were installed in the process.
-* Take note of the IP configuration of the Ethernet network the Raspberry Pi is connected to:
- ** In this document, we assume IP network `10.10.0.0/24` is configured on the Ethernet LAN, and the Raspberry Pi is going to manage IP network `192.168.4.0/24` for wireless clients.
- ** Please select another IP network for wireless, e.g. `192.168.10.0/24`, if IP network `192.168.4.0/24` is already in use by your Ethernet LAN.
-* Have a wireless client (laptop, smartphone, ...) ready to test your new access point.
+* 确保您对Raspberry Pi具有管理访问权限。网络设置将作为安装的一部分进行修改：建议使用本地访问，将屏幕和键盘连接到Raspberry Pi。
+* 将Raspberry Pi连接到以太网并启动Raspberry Pi操作系统。
+* 确保Raspberry Pi上的Raspberry Pi操作系统是 xref:os.adoc#updating-and-upgrading-raspberry-pi-os[最新] 的，如果在此过程中安装了软件包，请重新启动。
+* 记下Raspberry Pi所连接的以太网网络的IP配置：
+ ** 在本文档中，我们假设IP网络 `10.10.0.0/24` 是在以太网LAN上配置的，并且Raspberry Pi将管理无线客户端的IP网络 `192.168.4.0/24`。
+ ** 请选择另一个用于无线的 IP 网络，例如 `192.168.10.0/24`，如果您的以太网 LAN 已经在使用 IP 网络 `192.168.4.0/24`。
+* 准备好无线客户端（笔记本电脑、智能手机等）来测试您的新接入点。
 
 [[software-install]]
-=== Install AP and Management Software
+=== 安装 AP 和管理软件
 
-In order to work as an access point, the Raspberry Pi needs to have the `hostapd` access point software package installed:
+为了用作接入点，Raspberry Pi需要安装接入点软件包hostapd：
 
 ----
 sudo apt install hostapd
 ----
 
-Enable the wireless access point service and set it to start when your Raspberry Pi boots:
+启用无线接入点服务并将其设置为在Raspberry Pi启动时启动：
 
 ----
 sudo systemctl unmask hostapd
 sudo systemctl enable hostapd
 ----
 
-In order to provide network management services (DNS, DHCP) to wireless clients, the Raspberry Pi needs to have the `dnsmasq` software package installed:
+为了向无线客户端提供网络管理服务（DNS，DHCP），Raspberry Pi需要安装软件包 `dnsmasq` ：
 
 ----
 sudo apt install dnsmasq
 ----
 
-Finally, install `netfilter-persistent` and its plugin `iptables-persistent`. This utility helps by saving firewall rules and restoring them when the Raspberry Pi boots:
+最后，安装 `netfilter-persistent` 及其插件 `iptables-persistent`。此实用程序通过保存防火墙规则并在Raspberry Pi启动时恢复它们来帮助：
 
 ----
 sudo DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent
 ----
 
-Software installation is complete. We will configure the software packages later on.
+软件安装完成。稍后我们将配置软件包。
 
 [[routing]]
-=== Set up the Network Router
+=== 设置网络路由器
 
-The Raspberry Pi will run and manage a standalone wireless network. It will also route between the wireless and Ethernet networks, providing internet access to wireless clients. If you prefer, you can choose to skip the routing by skipping the section "Enable routing and IP masquerading" below, and run the wireless network in complete isolation.
+Raspberry Pi将运行和管理独立的无线网络。它还将在无线和以太网之间路由，为无线客户端提供互联网访问。如果您愿意，可以通过跳过下面的“启用路由和 IP 伪装”部分来选择跳过路由，并在完全隔离的情况下运行无线网络。
 
-==== Define the Wireless Interface IP Configuration
+[[define-the-wireless-interface-ip-configuration]]
+==== 定义无线接口 IP 配置
 
-The Raspberry Pi runs a DHCP server for the wireless network; this requires static IP configuration for the wireless interface (`wlan0`) in the Raspberry Pi.
-The Raspberry Pi also acts as the router on the wireless network, and as is customary, we will give it the first IP address in the network: `192.168.4.1`.
+Raspberry Pi为无线网络运行DHCP服务器;这需要Raspberry Pi中无线接口 （`wlan0`） 的静态 IP 配置。 Raspberry Pi还充当无线网络上的路由器，按照惯例，我们将为其提供网络中的第一个 IP 地址: `192.168.4.1`.
 
-To configure the static IP address, edit the configuration file for `dhcpcd` with:
+要配置静态 IP 地址，请使用以下命令编辑dhcpcd配置文件：
 
 ----
 sudo nano /etc/dhcpcd.conf
 ----
 
-Go to the end of the file and add the following:
+转到文件末尾并添加以下内容：
 
 ----
 interface wlan0
@@ -90,56 +90,57 @@ interface wlan0
     nohook wpa_supplicant
 ----
 
-==== Enable Routing and IP Masquerading
+[[enable-routing-and-ip-masquerading]]
+==== 启用路由和 IP 伪装
 
-This section configures the Raspberry Pi to let wireless clients access computers on the main (Ethernet) network, and from there the internet.
+本节将 Raspberry Pi 配置为允许无线客户端访问主（以太网）网络上的计算机，并从那里访问互联网。
 
-NOTE: If you wish to block wireless clients from accessing the Ethernet network and the internet, skip this section.
+NOTE: 如果您希望阻止无线客户端访问以太网网络和互联网，请跳过此部分。
 
-To enable routing, i.e. to allow traffic to flow from one network to the other in the Raspberry Pi, create a file using the following command, with the contents below:
-
+要启用路由，即允许流量在Raspberry Pi中从一个网络流向另一个网络，请使用以下命令创建一个文件，内容如下：
 ----
 sudo nano /etc/sysctl.d/routed-ap.conf
 ----
 
-File contents:
+文件内容：
 
 ----
 # Enable IPv4 routing
 net.ipv4.ip_forward=1
 ----
 
-Enabling routing will allow hosts from network `192.168.4.0/24` to reach the LAN and the main router towards the internet. In order to allow traffic between clients on this foreign wireless network and the internet without changing the configuration of the main router, the Raspberry Pi can substitute the IP address of wireless clients with its own IP address on the LAN using a "masquerade" firewall rule.
+启用路由将允许来自网络 `192.168.4.0/24` 的主机到达 LAN 和主路由器，连接互联网。为了允许此外部无线网络上的客户端与互联网之间的流量而不更改主路由器的配置，Raspberry Pi可以使用“伪装”防火墙规则将无线客户端的IP地址替换为LAN上自己的IP地址。
 
-* The main router will see all outgoing traffic from wireless clients as coming from the Raspberry Pi, allowing communication with the internet.
-* The Raspberry Pi will receive all incoming traffic, substitute the IP addresses back, and forward traffic to the original wireless client.
+* 主路由器将看到来自无线客户端的所有传出流量来自Raspberry Pi，从而允许与互联网通信。
+* Raspberry Pi将接收所有传入流量，替换 IP 地址，并将流量转发到原始无线客户端。
 
-This process is configured by adding a single firewall rule in the Raspberry Pi:
+Raspberry Pi将接收所有传入流量，替换 IP 地址，并将流量转发到原始无线客户端。
 
 ----
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 ----
 
-Now save the current firewall rules for IPv4 (including the rule above) and IPv6 to be loaded at boot by the `netfilter-persistent` service:
+现在保存 IPv4（包括上述规则）和 IPv6 的当前防火墙规则，以便在 `netfilter-persistent` 服务启动时加载：
 
 ----
 sudo netfilter-persistent save
 ----
 
-Filtering rules are saved to the directory `/etc/iptables/`. If in the future you change the configuration of your firewall, make sure to save the configuration before rebooting.
+过滤规则将保存到目录 `/etc/iptables/` 中。如果将来更改防火墙的配置，请确保在重新启动之前保存配置。
 
-==== Configure the DHCP and DNS services for the wireless network
+[[configure-the-dhcp-and-dns-services-for-the-wireless-network]]
+==== 为无线网络配置 DHCP 和 DNS 服务
 
-The DHCP and DNS services are provided by `dnsmasq`. The default configuration file serves as a template for all possible configuration options, whereas we only need a few. It is easier to start from an empty file.
+DHCP 和 DNS 服务由 `dnsmasq` 提供。默认配置文件用作所有可能的配置选项的模板，而我们只需要几个。从空文件开始更容易。
 
-Rename the default configuration file and edit a new one:
+重命名默认配置文件并编辑一个新配置文件：
 
 ----
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig
 sudo nano /etc/dnsmasq.conf
 ----
 
-Add the following to the file and save it:
+将以下内容添加到文件并保存：
 
 ----
 interface=wlan0 # Listening interface
@@ -150,38 +151,39 @@ address=/gw.wlan/192.168.4.1
                 # Alias for this router
 ----
 
-The Raspberry Pi will deliver IP addresses between `192.168.4.2` and `192.168.4.20`, with a lease time of 24 hours, to wireless DHCP clients. You should be able to reach the Raspberry Pi under the name `gw.wlan` from wireless clients.
+Raspberry Pi将在 `192.168.4.2` 和 `192.168.4.20` 之间提供 IP 地址，租用时间为 24 小时，到无线 DHCP 客户端。您应该能够从无线客户端以该gw.wlan名称访问Raspberry Pi。
 
-NOTE: There are three IP address blocks set aside for private networks. There is a Class A block from `10.0.0.0` to `10.255.255.255`, a Class B block from `172.16.0.0` to `172.31.255.255`, and probably the most frequently used, a Class C block from `192.168.0.0` to `192.168.255.255`.
+NOTE: 为专用网络预留了三个 IP 地址块。有一个 A 类块从 `10.0.0.0` 到 `10.255.255.255` ，一个 B 类块从 `172.16.0.0` 到 `172.31.255.255` ，可能最常用的是 C 类块从 `192.168.0.0` 到 `192.168.255.255` 。
 
-There are many more options for `dnsmasq`; see the default configuration file (`/etc/dnsmasq.conf`) or the http://www.thekelleys.org.uk/dnsmasq/doc.html[online documentation] for details.
+还有 `dnsmasq` 更多选项 ;有关详细信息，请参阅默认配置文件 （`/etc/dnsmasq.conf`） 或http://www.thekelleys.org.uk/dnsmasq/doc.html[联机文档]。
+
 
 [[wifi-cc-rfkill]]
-=== Ensure Wireless Operation
+=== 确保无线操作
 
-Countries around the world regulate the use of telecommunication radio frequency bands to ensure interference-free operation.
-The Linux OS helps users https://wireless.wiki.kernel.org/en/developers/regulatory/statement[comply] with these rules by allowing applications to be configured with a two-letter "WiFi country code", e.g. `US` for a computer used in the United States.
+世界各国对电信无线电频段的使用进行监管，以确保无干扰运行。
 
-In the Raspberry Pi OS, 5 GHz wireless networking is disabled until a WiFi country code has been configured by the user, usually as part of the initial installation process (see wireless configuration pages in this xref:configuration.adoc#configuring-networking[section] for details.)
+Linux 操作系统通过允许应用程序配置两个字母的“WiFi 国家/地区代码”来帮助用户遵守这些 https://wireless.wiki.kernel.org/en/developers/regulatory/statement[规则]，例如 `US` 用于在美国使用的计算机。
 
-To ensure WiFi radio is not blocked on your Raspberry Pi, execute the following command:
+在Raspberry Pi OS中，在用户配置WiFi国家/地区代码之前，5 GHz无线网络将被禁用，通常作为初始安装过程的一部分（有关详细信息，请参阅本节中的xref:configuration.adoc#configuring-networking[无线配置]页面。
+要确保 WiFi 无线电不会在Raspberry Pi上被阻止，请执行以下命令：
 
 ----
 sudo rfkill unblock wlan
 ----
 
-This setting will be automatically restored at boot time. We will define an appropriate country code in the access point software configuration, next.
+此设置将在启动时自动恢复。接下来，我们将在接入点软件配置中定义适当的国家/地区代码。
 
 [[ap-config]]
-=== Configure the AP Software
+=== 配置 AP 软件
 
-Create the `hostapd` configuration file, located at `/etc/hostapd/hostapd.conf`, to add the various parameters for your new wireless network.
+创建位于 `/etc/hostapd/hostapd.conf` 的配置文件 `hostapd` ，为新无线网络添加各种参数。
 
 ----
 sudo nano /etc/hostapd/hostapd.conf
 ----
 
-Add the information below to the configuration file. This configuration assumes we are using channel 7, with a network name of `NameOfNetwork`, and a password `AardvarkBadgerHedgehog`. Note that the name and password should *not* have quotes around them. The passphrase should be between 8 and 64 characters in length.
+将以下信息添加到配置文件中。此配置假设我们使用通道 7，网络名称为 `NameOfNetwork` ，密码 `AardvarkBadgerHedgehog`。请注意，名称和密码 *不* 应有引号。密码的长度应介于 8 到 64 个字符之间。
 
 ----
 country_code=GB
@@ -199,29 +201,27 @@ wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 ----
 
-Note the line `country_code=GB`: it configures the computer to use the correct wireless frequencies in the United Kingdom. *Adapt this line* and specify the two-letter ISO code of your country. See https://en.wikipedia.org/wiki/ISO_3166-1[Wikipedia] for a list of two-letter ISO 3166-1 country codes.
-
-To use the 5 GHz band, you can change the operations mode from `hw_mode=g` to `hw_mode=a`. Possible values for `hw_mode` are:
+请注意这一行 `country_code=GB`：它将计算机配置为在英国使用正确的无线频率。调整此行并指定您所在国家/地区的两个字母的 ISO 代码。请参阅 https://en.wikipedia.org/wiki/ISO_3166-1[维基百科] 以获取两个字母的ISO 3166-1国家/地区代码列表。
+要使用 5 GHz 频段，可以将操作模式从 `hw_mode=g` 更改为 `hw_mode=a`。`hw_mode` 
+的可能值为：
 
 * a = IEEE 802.11a (5 GHz) (Raspberry Pi 3B+ onwards)
 * b = IEEE 802.11b (2.4 GHz)
 * g = IEEE 802.11g (2.4 GHz)
 
-Note that when changing the `hw_mode`, you may need to also change the `channel` - see https://en.wikipedia.org/wiki/List_of_WLAN_channels[Wikipedia] for a list of allowed combinations.
+请注意，在更改 `hw_mode` 时，您可能还需要更改channel - 有关允许的组合列表，请参阅https://en.wikipedia.org/wiki/List_of_WLAN_channels[维基百科]。
 
 [[conclusion]]
-=== Running the new Wireless AP
+=== 运行新的无线 AP
 
-Now restart your Raspberry Pi and verify that the wireless access point becomes automatically available.
+现在重新启动Raspberry Pi并验证无线接入点是否自动可用。
 
 ----
 sudo systemctl reboot
 ----
 
-Once your Raspberry Pi has restarted, search for wireless networks with your wireless client. The network SSID you specified in file `/etc/hostapd/hostapd.conf` should now be present, and it should be accessible with the specified password.
+Raspberry Pi重新启动后，使用无线客户端搜索无线网络。您在 `/etc/hostapd/hostapd.conf` 文件中指定的网络 SSID 现在应该存在，并且应该可以使用指定的密码访问它。
 
-If SSH is enabled on the Raspberry Pi, it should be possible to connect to it from your wireless client as follows, assuming the `pi` account is present: `ssh pi@192.168.4.1` or `ssh pi@gw.wlan`
-
-If your wireless client has access to your Raspberry Pi (and the internet, if you set up routing), congratulations on setting up your new access point!
-
-If you encounter difficulties, contact the https://forums.raspberrypi.com/[forums] for assistance. Please refer to this page in your message.
+如果在Raspberry Pi上启用了SSH，则假设该 `pi` 帐户存在，则应该可以从无线客户端连接到它，如下所示： `ssh pi@192.168.4.1` 或 `ssh pi@gw.wlan`
+如果您的无线客户端可以访问您的Raspberry Pi（以及互联网，如果您设置了路由），那么恭喜您设置了新的接入点！
+如果您遇到困难，请联系 https://forums.raspberrypi.com/[论坛] 寻求帮助。请在您的消息中参考此页面。

@@ -1,69 +1,77 @@
-== GPIO and the 40-pin Header
+[[gpio-and-the-40-pin-header]]
+== GPIO 和 40-pin
 
-A powerful feature of the Raspberry Pi is the row of GPIO (general-purpose input/output) pins along the top edge of the board. A 40-pin GPIO header is found on all current Raspberry Pi boards (unpopulated on Raspberry Pi Zero, Raspberry Pi Zero W and Raspberry Pi Zero 2 W). Prior to the Raspberry Pi 1 Model B+ (2014), boards comprised a shorter 26-pin header. The GPIO header on all boards (including the Raspberry Pi 400) have a 0.1" (2.54mm) pin pitch.
+Raspberry Pi 的一个强大功能是沿电路板顶部边缘的一排 GPIO（通用输入/输出）引脚。在所有当前的Raspberry Pi板上都可以找到一个40针GPIO接头（在Raspberry Pi Zero，Raspberry Pi Zero W和Raspberry Pi Zero 2 W上未填充）。在Raspberry Pi 1 Model B+（2014）之前，电路板由一个较短的26引脚接头组成。所有电路板（包括Raspberry Pi 400）上的GPIO接头具有0.1英寸（2.54毫米）的引脚间距。
 
 image::images/GPIO-Pinout-Diagram-2.png[GPIO pins]
 
-Any of the GPIO pins can be designated (in software) as an input or output pin and used for a wide range of purposes.
+任何GPIO引脚都可以指定（在软件中）为输入或输出引脚，并用于广泛的用途。
 
 image::images/GPIO.png[GPIO layout]
 
-NOTE: The numbering of the GPIO pins is not in numerical order; GPIO pins 0 and 1 are present on the board (physical pins 27 and 28) but are reserved for advanced use (see below).
+NOTE: GPIO 引脚的编号不按数字顺序排列;板上存在 GPIO 引脚 0 和 1（物理引脚 27 和 28），但保留用于高级用途（见下文）。
 
-=== Voltages
+[[voltages]]
+=== 电压
 
-Two 5V pins and two 3.3V pins are present on the board, as well as a number of ground pins (0V), which are unconfigurable. The remaining pins are all general purpose 3.3V pins, meaning outputs are set to 3.3V and inputs are 3.3V-tolerant.
+电路板上有两个5V引脚和两个3.3V引脚，以及许多接地引脚（0V），这些引脚是不可配置的。其余引脚均为通用3.3V引脚，这意味着输出设置为3.3V，输入可承受3.3V。
 
-=== Outputs
+[[outputs]]
+=== 输出
 
-A GPIO pin designated as an output pin can be set to high (3.3V) or low (0V).
+指定为输出引脚的 GPIO 引脚可以设置为高 （3.3V） 或低 （0V）。
 
-=== Inputs
+[[inputs]]
+=== 输入
 
-A GPIO pin designated as an input pin can be read as high (3.3V) or low (0V). This is made easier with the use of internal pull-up or pull-down resistors. Pins GPIO2 and GPIO3 have fixed pull-up resistors, but for other pins this can be configured in software.
+指定为输入引脚的GPIO引脚可以读取为高电平（3.3V）或低电平（0V）。使用内部上拉或下拉电阻器可以更轻松地做到这一点。引脚 GPIO2 和 GPIO3 具有固定的上拉电阻，但对于其他引脚，可以在软件中进行配置。
 
-=== More
+[[more]]
+=== 更多
 
-As well as simple input and output devices, the GPIO pins can be used with a variety of alternative functions, some are available on all pins, others on specific pins.
+除了简单的输入和输出设备外，GPIO 引脚还可以与各种替代功能一起使用，有些可用于所有引脚，有些可用于特定引脚。
 
-* PWM (pulse-width modulation)
- ** Software PWM available on all pins
- ** Hardware PWM available on GPIO12, GPIO13, GPIO18, GPIO19
+* PWM (脉宽调制)
+ ** 所有引脚均提供软件 PWM
+ ** 硬件 PWM 在 GPIO12、GPIO13、GPIO18、GPIO19 上可用
 * SPI
- ** SPI0: MOSI (GPIO10); MISO (GPIO9); SCLK (GPIO11); CE0 (GPIO8), CE1 (GPIO7)
- ** SPI1: MOSI (GPIO20); MISO (GPIO19); SCLK (GPIO21); CE0 (GPIO18); CE1 (GPIO17); CE2 (GPIO16)
+ ** SPI0： MOSI （GPIO10）;MISO（GPIO9）;SCLK （GPIO11）;CE0 （GPIO8）， CE1 （GPIO7）
+ ** SPI1： MOSI （GPIO20）;MISO GPIO19）;SCLK （GPIO21）;CE0 （GPIO18）;CE1 （GPIO17）;CE2 （GPIO16）
 * I2C
  ** Data: (GPIO2); Clock (GPIO3)
  ** EEPROM Data: (GPIO0); EEPROM Clock (GPIO1)
 * Serial
  ** TX (GPIO14); RX (GPIO15)
 
-=== GPIO pinout
+[[gpio-pinout]]
+=== GPIO 引脚排列
 
-A handy reference can be accessed on the Raspberry Pi by opening a terminal window and running the command `pinout`. This tool is provided by the https://gpiozero.readthedocs.io/[GPIO Zero] Python library, which is installed by default in Raspberry Pi OS.
+可以通过打开终端窗口并运行pinout命令来访问Raspberry Pi上的便捷参考。此工具由https://gpiozero.readthedocs.io/[GPIO Zero]  Python库提供，该库默认安装在Raspberry Pi OS中。 
 
 image::images/gpiozero-pinout.png[]
 
-For more details on the advanced capabilities of the GPIO pins see gadgetoid's http://pinout.xyz/[interactive pinout diagram].
+有关 GPIO 引脚的高级功能的更多详细信息，请参阅 gadgetoid 的 http://pinout.xyz/[交互式引脚排列图]。
 
-WARNING: While connecting up simple components to the GPIO pins is perfectly safe, it's important to be careful how you wire things up. LEDs should have resistors to limit the current passing through them. Do not use 5V for 3.3V components. Do not connect motors directly to the GPIO pins, instead use an https://projects.raspberrypi.org/en/projects/physical-computing/14[H-bridge circuit or a motor controller board].
+WARNING: 虽然将简单组件连接到 GPIO 引脚是完全安全的，但请务必小心连接方式。LED应具有电阻器以限制通过它们的电流。不要将 5V 用于 3.3V 组件。不要将电机直接连接到 GPIO 引脚，而应使用 https://projects.raspberrypi.org/en/projects/physical-computing/14[H 桥电路或电机控制器板]。
 
-=== Permissions
+[[permissions]]
+=== 权限
 
-In order to use the GPIO ports your user must be a member of the `gpio` group. The `pi` user is a member by default, other users need to be added manually.
+要使用 GPIO 端口，您的 `gpio` 用户必须是该组的成员。 `pi` 用户默认为成员，其他用户需要手动添加
 
 [,bash]
 ----
 sudo usermod -a -G gpio <username>
 ----
 
-=== GPIO in Python
+[[gpio-in-python]]
+=== Python 中的 GPIO
 
-Using the https://gpiozero.readthedocs.io/[GPIO Zero] library makes it easy to get started with controlling GPIO devices with Python. The library is comprehensively documented at https://gpiozero.readthedocs.io/[gpiozero.readthedocs.io].
+Python 中的 GPIO https://gpiozero.readthedocs.io/[GPIO Zero] 库可以轻松开始使用 Python 控制 GPIO 设备. 该库在 https://gpiozero.readthedocs.io/[gpiozero.readthedocs.io] 有全面的记录。
 
 ==== LED
 
-To control an LED connected to GPIO17, you can use this code:
+要控制连接到 GPIO17 的 LED，可以使用以下代码：
 
 [,python]
 ----
@@ -79,13 +87,13 @@ while True:
     sleep(1)
 ----
 
-Run this in an IDE like Thonny, and the LED will blink on and off repeatedly.
+在像Thonny这样的IDE中运行它，LED将反复闪烁。
+LED 方法包括  `on()`, `off()`, `toggle()`, 和 `blink()`。
 
-LED methods include `on()`, `off()`, `toggle()`, and `blink()`.
+[[button]]
+==== 按钮
 
-==== Button
-
-To read the state of a button connected to GPIO2, you can use this code:
+若要读取连接到 GPIO2 的按钮的状态，可以使用以下代码：
 
 [,python]
 ----
@@ -104,9 +112,13 @@ while True:
 
 Button functionality includes the properties `is_pressed` and `is_held`; callbacks `when_pressed`, `when_released`, and `when_held`; and methods `wait_for_press()` and `wait_for_release`.
 
-==== Button + LED
+按钮功能包括属性 `is_pressed` 和 `is_held` ;回调`when_pressed` 、`when_released` 和 `when_held` ;和方法 `wait_for_press()` 和 `wait_for_release`。
 
-To connect the LED and button together, you can use this code:
+
+[[button-led]]
+==== 按钮 + 指示灯
+
+要将 LED 和按钮连接在一起，您可以使用以下代码：
 
 [,python]
 ----
@@ -122,7 +134,7 @@ while True:
         led.off()
 ----
 
-Alternatively:
+或者：
 
 [,python]
 ----
@@ -138,7 +150,7 @@ while True:
     led.off()
 ----
 
-or:
+或者：
 
 [,python]
 ----
@@ -151,12 +163,3 @@ button.when_pressed = led.on
 button.when_released = led.off
 ----
 
-==== Going further
-
-[.float-group]
---
-image::images/simple-electronics-with-gpio-zero.jpg[role="related thumb right",link=https://github.com/raspberrypipress/released-pdfs/raw/main/simple-electronics-with-gpio-zero.pdf]
-You can find more information on how to program electronics connected to your Raspberry Pi with the GPIO Zero Python library in the Raspberry Pi Press book https://github.com/raspberrypipress/released-pdfs/raw/main/simple-electronics-with-gpio-zero.pdf[Simple Electronics with GPIO Zero]. Written by Phil King, it is part of the MagPi Essentials series published by Raspberry Pi Press. The book gets you started with the GPIO Zero library, and walks you through how to use it by building a series of projects. 
-
-You can download this book as a PDF file for free, it has been released under a Creative Commons https://creativecommons.org/licenses/by-nc-sa/3.0/[Attribution-NonCommercial-ShareAlike] 3.0 Unported (CC BY NC-SA) licence.
---

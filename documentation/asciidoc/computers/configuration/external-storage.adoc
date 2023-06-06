@@ -1,125 +1,128 @@
-== External Storage Configuration
+[[external-storage-configuration]]
+== 外部存储配置
 
-You can connect your external hard disk, SSD, or USB stick to any of the USB ports on the Raspberry Pi, and mount the file system to access the data stored on it.
+您可以将外部硬盘、SSD 或 U 盘连接到 Raspberry Pi 上的任何 USB 端口，并挂载文件系统以访问存储在其上的数据。
 
-By default, your Raspberry Pi automatically mounts some of the popular file systems such as FAT, NTFS, and HFS+ at the `/media/pi/<HARD-DRIVE-LABEL>` location.
+默认情况下，您的Raspberry Pi会自动在该 `/media/pi/<HARD-DRIVE-LABEL>` 位置挂载一些流行的文件系统，例如 FAT、NTFS 和 HFS+。
 
-NOTE: Raspberry Pi OS Lite does not implement automounting.
+NOTE: Raspberry Pi OS Lite 不实现自动挂载。
 
-To set up your storage device so that it always mounts to a specific location of your choice, you must mount it manually.
+若要设置存储设备以使其始终装载到您选择的特定位置，必须手动装载它。
 
-=== Mounting a Storage Device
+=== 挂载存储设备
 
-You can mount your storage device at a specific folder location. It is conventional to do this within the `/mnt` folder, for example `/mnt/mydisk`. Note that the folder must be empty.
+您可以将存储设备装载到特定的文件夹位置。例如 `/mnt/mydisk`，通常在 `/mnt` 文件夹中执行此操作。请注意，该文件夹必须为空。
 
-. Plug the storage device into a USB port on the Raspberry Pi.
-. List all the disk partitions on the Raspberry Pi using the following command:
+. 将存储设备插入Raspberry Pi上的 USB 端口。
+. 使用以下命令列出Raspberry Pi上的所有磁盘分区:
 +
 ----
  sudo lsblk -o UUID,NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL,MODEL
 ----
 +
-The Raspberry Pi uses mount points `/` and `/boot`. Your storage device will show up in this list, along with any other connected storage.
+Raspberry Pi使用挂载点 `/` 和 `/boot`.您的存储设备将与任何其他连接的存储一起显示在此列表中。
 
-. Use the SIZE, LABEL, and MODEL columns to identify the name of the disk partition that points to your storage device. For example, `sda1`.
-. The FSTYPE column contains the filesystem type. If your storage device uses an exFAT file system, install the exFAT driver:
+. 使用“大小”、“标签”和“型号”列标识指向存储设备的磁盘分区的名称。例如 `sda1`。
+. FSTYPE 列包含文件系统类型。如果您的存储设备使用 exFAT 文件系统，请安装 exFAT 驱动程序：
 +
 ----
  sudo apt update
  sudo apt install exfat-fuse
 ----
 
-. If your storage device uses an NTFS file system, you will have read-only access to it. If you want to write to the device, you can install the ntfs-3g driver:
+. 如果您的存储设备使用 NTFS 文件系统，您将对其具有只读访问权限。如果要写入设备，可以安装 `ntfs-3g` 驱动程序：
 +
 ----
  sudo apt update
  sudo apt install ntfs-3g
 ----
 
-. Run the following command to get the location of the disk partition:
+. 运行以下命令以获取磁盘分区的位置：
 +
 ----
  sudo blkid
 ----
 +
-For example, `/dev/sda1`.
+例如 `/dev/sda1`。
 
-. Create a target folder to be the mount point of the storage device.
-The mount point name used in this case is `mydisk`. You can specify a name of your choice:
+. 创建一个目标文件夹作为存储设备的装入点。
+本例中使用的装入点名称为 `mydisk` 。您可以指定您选择的名称：
 +
 ----
  sudo mkdir /mnt/mydisk
 ----
 
-. Mount the storage device at the mount point you created:
+. 将存储设备挂载到您创建的挂载点
 +
 ----
  sudo mount /dev/sda1 /mnt/mydisk
 ----
 
-. Verify that the storage device is mounted successfully by listing the contents:
+. 通过列出以下内容来验证存储设备是否已成功装载：
 +
 ----
  ls /mnt/mydisk
 ----
 
-=== Setting up Automatic Mounting
+[[setting-up-automatic-mounting]]
+=== 设置自动挂载
 
-You can modify the `fstab` file to define the location where the storage device will be automatically mounted when the Raspberry Pi starts up. In the `fstab` file, the disk partition is identified by the universally unique identifier (UUID).
+您可以修改 `fstab` 文件以定义在Raspberry Pi启动时存储设备自动挂载的位置。在 `fstab` 文件中，磁盘分区由通用唯一标识符 （UUID） 标识。
 
-. Get the UUID of the disk partition:
+. 获取磁盘分区的 UUID:
 +
 ----
  sudo blkid
 ----
 
-. Find the disk partition from the list and note the UUID. For example, `5C24-1453`.
-. Open the fstab file using a command line editor such as nano:
+. 从列表中找到磁盘分区并记下 UUID。例如 `5C24-1453`。
+. 使用命令行编辑器（如 nano）打开 `fstab` 文件:
 +
 ----
  sudo nano /etc/fstab
 ----
 
-. Add the following line in the `fstab` file:
+. 在 `fstab` 文件中添加以下行：
 +
 ----
  UUID=5C24-1453 /mnt/mydisk fstype defaults,auto,users,rw,nofail 0 0
 ----
 +
-Replace `fstype` with the type of your file system, which you found in step 2 of 'Mounting a storage device' above, for example: `ntfs`.
+替换 `fstype` 为您在上述“挂载存储设备”的步骤 2 中找到的文件系统类型，例如： `ntfs`。
 
-. If the filesystem type is FAT or NTFS, add `,umask=000` immediately after `nofail` - this will allow all users full read/write access to every file on the storage device.
+. 5. 如果文件系统类型为 FAT 或 NTFS，请紧随 `nofail` 其后添加 `umask=000` - 这将允许所有用户对存储设备上的每个文件进行完全读/写访问。
 
-Now that you have set an entry in `fstab`, you can start up your Raspberry Pi with or without the storage device attached. Before you unplug the device you must either shut down the Raspberry Pi, or manually unmount it using the steps in 'Unmounting a storage device' below.
+现在您已经在中设置了一个 `fstab` 条目，您可以在连接或不连接存储设备的情况下启动Raspberry Pi。在拔下设备之前，您必须关闭Raspberry Pi，或使用下面“卸载存储设备”中的步骤手动卸载它。
 
-NOTE: If you do not have the storage device attached when the Raspberry Pi starts, the Raspberry Pi will take an extra 90 seconds to start up. You can shorten this by adding `,x-systemd.device-timeout=30` immediately after `nofail` in step 4. This will change the timeout to 30 seconds, meaning the system will only wait 30 seconds before giving up trying to mount the disk.
+NOTE: 如果您在Raspberry Pi启动时没有连接存储设备，Raspberry Pi将需要额外的 90 秒才能启动。您可以通过在 `nofail` 后步骤 4 中立即添加 `,x-systemd.device-timeout=30` 来缩短此时间。这会将超时更改为 30 秒，这意味着系统将只等待 30 秒，然后放弃尝试装载磁盘。
 
-For more information on each Linux command, refer to the specific manual page using the `man` command. For example, `man fstab`.
+有关每个 Linux 命令的详细信息，请参阅使用该 `man` 命令的特定手册页。例如 `man fstab`。
 
-=== Unmounting a Storage Device
+[[unmounting-a-storage-device]]
+=== 卸载存储设备
 
-When the Raspberry Pi shuts down, the system takes care of unmounting the storage device so that it is safe to unplug it. If you want to manually unmount a device, you can use the following command:
+当Raspberry Pi关闭时，系统会负责卸载存储设备，以便可以安全地拔下它。如果要手动卸载设备，可以使用以下命令：
 
 ----
 sudo umount /mnt/mydisk
 ----
 
-If you receive an error that the 'target is busy', this means that the storage device was not unmounted. If no error was displayed, you can now safely unplug the device.
+如果收到 'target is busy'的错误，则表示存储设备未卸载。如果未显示错误，您现在可以安全地拔下设备。
 
-==== Dealing with 'target is busy'
+[[dealing-with-target-is-busy]]
+==== 处理'target is busy'
 
-The 'target is busy' message means there are files on the storage device that are in use by a program. To close the files, use the following procedure.
+'target is busy' 消息表示存储设备上有程序正在使用的文件。若要关闭文件，请使用以下过程。
 
-. Close any program which has open files on the storage device.
-. If you have a terminal open, make sure that you are not in the folder where the storage device is mounted, or in a sub-folder of it.
-. If you are still unable to unmount the storage device, you can use the `lsof` tool to check which program has files open on the device. You need to first install `lsof` using `apt`:
-+
+. 关闭存储设备上打开文件的任何程序。
+. 如果打开了终端，请确保您不在装载存储设备的文件夹中，也不在存储设备的子文件夹中。
+. 如果仍然无法卸载存储设备，则可以使用该 `lsof` 工具检查哪个程序在设备上打开了文件。您需要首先使用 `apt` 安装 `lsof` ：
 ----
  sudo apt update
  sudo apt install lsof
 ----
 +
-To use lsof:
+要使用 lsof：
 +
 ----
  lsof /mnt/mydisk

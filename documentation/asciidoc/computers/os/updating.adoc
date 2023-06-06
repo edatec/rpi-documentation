@@ -1,18 +1,22 @@
-== 更新和升级树莓派操作系统
+[[updating-and-upgrading-raspberry-pi-os]]
+== 更新和升级Raspberry Pi操作系统
 
-保持你的树莓派版本最新是很重要的。第一个也可能是最重要的原因是安全性。运行Raspberry Pi OS的设备包含数百万行您所依赖的代码。随着时间的推移，这数百万行代码将暴露众所周知的漏洞，这些漏洞记录在https://cve.mitre.org/index.html[公开可用的数据库]中，这意味着它们很容易被利用。作为Raspberry Pi操作系统的用户，减轻这些攻击的唯一方法是保持您的软件最新，因为上游存储库会密切跟踪CVE并尝试快速减轻它们。
+保持你的Raspberry Pi版本最新是很重要的。第一个也可能是最重要的原因是安全性。运行Raspberry Pi OS的设备包含数百万行您所依赖的代码。随着时间的推移，这数百万行代码将暴露众所周知的漏洞，这些漏洞记录在 https://cve.mitre.org/index.html[公开可用的数据库] 中，这意味着它们很容易被利用。作为Raspberry Pi操作系统的用户，减轻这些攻击的唯一方法是保持您的软件最新，因为上游存储库会密切跟踪CVE并尝试快速减轻它们。
 
 与第一个原因相关的第二个原因是，你在设备上运行的软件肯定有缺陷。有些bug是CVE，但是这些bug也可能会影响预期的功能，而与安全性无关。通过让你的软件保持最新，就降低了遇到这些错误的几率。
 
+[[using-apt]]
 === 使用APT
 
-管理软件安装、升级和删除的最简单方法是使用 Debian 的 `apt`（高级打包工具）。要在树莓派操作系统中更新软件，您可以在终端窗口使用该工具
+管理软件安装、升级和删除的最简单方法是使用 Debian 的 `apt`（高级打包工具）。要在Raspberry Pi操作系统中更新软件，您可以在终端窗口使用该工具
 
+[[keeping-your-operating-system-up-to-date]]
 ==== 定期升级系统
 
 video::2AhCWJ6YQHk[youtube]
 
-APT 将树莓派上的软件源列表保存在一个文件中。在安装软件之前，应使用`apt update`更新软件包列表。继续打开终端窗口并键入`/etc/apt/sources.list`：
+
+APT 将Raspberry Pi上的软件源列表保存在一个文件中。在安装软件之前，应使用 `apt update` 更新软件包列表。继续打开终端窗口并键入 `/etc/apt/sources.list` ：
 
 [,bash]
 ----
@@ -26,21 +30,24 @@ sudo apt update
 sudo apt full-upgrade
 ----
 
-请注意，full-upgrade优先于upgrade，因为它还会选择任何可能已进行的依赖关系更改。
+请注意， `full-upgrade` 优先于 `upgrade` ，因为它还会选择任何可能已进行的依赖关系更改。
 一般来说，定期执行此操作将使您的安装与您正在使用的特定主要 Raspberry Pi OS 版本（例如 Buster）保持最新状态。它不会从一个主要版本更新到另一个主要版本，例如，Stretch to Buster 或 Buster 到Bullseye。
 但是，Raspberry Pi OS 映像中偶尔会进行需要手动干预的更改，例如新引入的软件包。这些不会随升级一起安装，因为此命令仅更新已安装的软件包。
 注意	内核和固件是作为 Debian 软件包安装，所以在使用上面的过程时也会得到更新。这些软件包很少更新，并且是在大量测试后更新的。
-如果将现有 SD 卡移动到新的树莓派型号（例如树莓派Zero 2 W），您可能还需要先使用上述说明更新内核和固件。
+如果将现有 SD 卡移动到新的Raspberry Pi型号（例如Raspberry PiZero 2 W），您可能还需要先使用上述说明更新内核和固件。
 
+[[running-out-of-space]]
 ==== 空间不足
 
-运行`sudo apt full-upgrade`时，会显示将下载多少数据占用SD卡上多少空间。用`df -h`检查您是否有足够的可用磁盘空间，`apt`不会主动执行此操作。另请注意，下载的软件包文件（`.deb`文件）保存在`/var/cache/apt/archives` 中。您可以使用`sudo apt clean`删除这些内容以释放空间（在较旧版本中使用`sudo apt-get clean`）。
+运行 `sudo apt full-upgrade` 时，会显示将下载多少数据占用SD卡上多少空间。用 `df -h` 检查您是否有足够的可用磁盘空间，`apt` 不会主动执行此操作。另请注意，下载的软件包文件（ `.deb` 文件）保存在 `/var/cache/apt/archives` 中。您可以使用 `sudo apt clean` 删除这些内容以释放空间（在较旧版本中使用`sudo apt-get clean`）。
 
+[[upgrading-from-previous-operating-system-versions]]
 ==== 从以前的操作系统版本升级
 
 WARNING: 升级现有映像是可能的，但不能保证在任何情况下都能正常工作，我们不建议这样做。如果您确实希望尝试升级操作系统版本，我们强烈建议您先进行备份 -- 对于更新失败造成的数据丢失，我们不承担任何责任。
-最新版本的Raspberry Pi OS基于https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/[Debian Bullseye]。以前的版本是基于https://www.raspberrypi.com/news/buster-the-new-version-of-raspbian/[Buster]的。如果要执行从 Buster 到 Bullseye 的就地升级（并且您知道其中的风险），请参阅 https://forums.raspberrypi.com/viewtopic.php?t=323279[论坛中的说明]。
+最新版本的Raspberry Pi OS基于 https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/[Debian Bullseye] 。以前的版本是基于 https://www.raspberrypi.com/news/buster-the-new-version-of-raspbian/[Buster] 的。如果要执行从 Buster 到 Bullseye 的就地升级（并且您知道其中的风险），请参阅 https://forums.raspberrypi.com/viewtopic.php?t=323279[论坛中的说明]。
 
+[[searching-for-software]]
 ==== 搜索软件
 
 您可以使用以下命令在存档中搜索具有给定关键字的包：`apt-cache search`:
@@ -51,7 +58,7 @@ apt-cache search locomotive
 sl - Correct you if you type `sl' by mistake
 ----
 
-在安装软件包之前，您可以使用`apt-cache show`命令查看有关软件包的详细信息
+在安装软件包之前，您可以使用 `apt-cache show` 命令查看有关软件包的详细信息
 
 [,bash]
 ----
@@ -76,6 +83,8 @@ Description: Correct you if you type `sl' by mistake
  SL stands for Steam Locomotive.
 ----
 
+
+[[installing-a-package-with-apt]]
 ==== 使用 APT 安装软件包
 
 [,bash]
@@ -83,7 +92,8 @@ Description: Correct you if you type `sl' by mistake
 sudo apt install tree
 ----
 
-键入此命令应通知用户软件包将占用多少磁盘空间，并要求确认软件包安装。输入`Y`（或仅按`Enter` ，因为 `yes` 是默认操作）将允许安装。这可以通过添加`-y`命令来绕过：
+
+键入此命令应通知用户软件包将占用多少磁盘空间，并要求确认软件包安装。输入 `Y`（或仅按 `Enter` ，因为 `yes` 是默认操作）将允许安装。这可以通过添加 `-y` 命令来绕过：
 
 [,bash]
 ----
@@ -92,18 +102,19 @@ sudo apt install tree -y
 
 安装此软件包使 `tree` 对客户可用.
 
+[[uninstalling-a-package-with-apt]]
 ==== 使用 APT 卸载软件包
 
-您可以使用 `apt remove`命令卸载软件包:
+您可以使用 `apt remove` 命令卸载软件包:
 
 [,bash]
 ----
 sudo apt remove tree
 ----
 
-系统会提示用户确认删除。同样，`-y`将自动确认。
+系统会提示用户确认删除。同样，`-y` 将自动确认。
 
-您还可以选择使用`apt purge`命令完全删除软件包及其关联的配置文件:
+您还可以选择使用 `apt purge` 命令完全删除软件包及其关联的配置文件:
 
 [,bash]
 ----
@@ -111,41 +122,44 @@ sudo apt purge tree
 ----
 
 [[rpi-update]]
-=== 使用`rpi-update`
+=== 使用 `rpi-update`
 
-`rpi-update` 是一个命令行应用程序，可将树莓派操作系统内核和 VideoCore 固件更新到最新的预发布版本。
+`rpi-update` 是一个命令行应用程序，可将Raspberry Pi操作系统内核和 VideoCore 固件更新到最新的预发布版本。
 
-WARNING: Pre-release versions of software are not guaranteed to work. You should not use `rpi-update` on any system unless recommended to do so by a Raspberry Pi engineer. It may leave your system unreliable or even completely broken. It should not be used as part of any regular update process.
+WARNING: 软件的预发布版本不保证正常工作。除非Raspberry Pi工程师建议，否则您不应在任何系统上使用 `rpi-update` 。它可能会使您的系统不可靠甚至完全损坏。它不应用作任何常规更新过程的一部分。
 
-The `rpi-update` script was originally written by https://github.com/Hexxeh[Hexxeh], but is now supported by Raspberry Pi engineers. The script source is in the https://github.com/raspberrypi/rpi-update[rpi-update repository].
+该 `rpi-update` 脚本最初由Hexxeh编写，但现在由Raspberry Pi工程师支持。脚本源位于 https://github.com/raspberrypi/rpi-update[rpi-update存储库中]。
 
-==== What it does
+[[what-it-does]]
+==== 它的作用
 
-`rpi-update` will download the latest pre-release version of the linux kernel, its matching modules, device tree files, along with the latest versions of the VideoCore firmware. It will then install these files to relevant locations on the SD card, overwriting any previous versions.
+`rpi-update` 将下载Linux内核的最新预发布版本，其匹配的模块，设备树文件以及最新版本的VideoCore固件。然后，它会将这些文件安装到 SD 卡上的相关位置，覆盖任何以前的版本。
+ 
+rpi-update使用的所有源数据都来自 https://github.com/raspberrypi/rpi-firmware[rpi-firmware存储库]。此存储库仅包含来自 https://github.com/raspberrypi/firmware[官方固件存储库]的数据子集，因为并不需要该存储库中的所有数据。
 
-All the source data used by `rpi-update` comes from the https://github.com/raspberrypi/rpi-firmware[rpi-firmware repository]. This repository simply  contains a subset of the data from the https://github.com/raspberrypi/firmware[official firmware repository], as not all the data from that repo is required.
+[[running-rpi-update]]
+==== 运行 `rpi-update`
 
-==== Running `rpi-update`
+如果您确定需要使用 `rpi-update` ，建议先备份当前系统，因为运行 `rpi-update` 可能会导致系统无法启动。
 
-If you are sure that you need to use `rpi-update`, it is advisable to take a backup of your current system first as running `rpi-update` could result in a non-booting system.
-
-`rpi-update` needs to be run as root. Once the update is complete you will need to reboot.
+`rpi-update` 需要以根用户身份运行。更新完成后，您将需要重新启动。
 
 ----
 sudo rpi-update
 sudo reboot
 ----
 
-It has a number of options documented in the https://github.com/raspberrypi/rpi-update[rpi-update repository].
+它在 https://github.com/raspberrypi/rpi-update[rpi 更新存储库] 中记录了许多选项。 
 
-==== How to get back to safety
+[[how-to-get-back-to-safety]]
+==== 如何回到稳定版本
 
-If you have done an `rpi-update` and things are not working as you wish, if your Raspberry Pi is still bootable you can return to the stable release using:
+如果您已经完成了 `rpi-update` 但是没有按您希望的方式工作，如果您的 Raspberry Pi 仍然可以启动，您可以使用以下命令返回到稳定版本：
 
 ----
 sudo apt-get update
 sudo apt install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader raspberrypi-kernel
 ----
 
-You will need to reboot your Raspberry Pi for these changes to take effect.
+您需要重启您的Raspberry Pi使这些改变生效。
 

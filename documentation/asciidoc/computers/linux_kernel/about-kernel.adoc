@@ -1,23 +1,25 @@
-== Kernel
+[[kernel]]
+== 内核
 
-The Raspberry Pi kernel is stored in GitHub and can be viewed at https://github.com/raspberrypi/linux[github.com/raspberrypi/linux]; it follows behind the main https://github.com/torvalds/linux[Linux kernel]. The main Linux kernel is continuously updating; we take long-term releases of the kernel, which are mentioned on the front page, and integrate the changes into the Raspberry Pi kernel. We then create a 'next' branch which contains an unstable port of the kernel; after extensive testing and discussion, we push this to the main branch.
+The Raspberry Pi 内核存储在 GitHub 中，可以在 https://github.com/raspberrypi/linux[github.com/raspberrypi/linux] 查看;它遵循主分支 https://github.com/torvalds/linux[Linux内核]。主分支 Linux 内核在不断更新;我们获取首页提到的内核的长期版本，并将更改集成到 Raspberry Pi 内核中。然后我们创建一个“next”分支，其中包含内核的不稳定端口;经过广泛的测试和讨论，我们将其推送到主分支。
 
-=== Updating your Kernel
+[[updating-your-kernel]]
+=== 更新您的内核
 
-If you use the standard Raspberry Pi OS xref:os.adoc#updating-and-upgrading-raspberry-pi-os[update and upgrade process], this will automatically update the kernel to the latest stable version. This is the recommended procedure. However, in certain circumstances, you may wish to update to the latest 'bleeding edge' or test kernel. You should only do this if recommended to do so by a Raspberry Pi engineer, or if there is a specific feature only available in this latest software.
+如果您使用标准的the Raspberry Pi操作系统 xref:os.adoc#updating-and-upgrading-raspberry-pi-os[更新和升级过程]，这将自动更新内核到最新的稳定版本。这是推荐的过程。但是，在某些情况下，您可能希望更新到最新的“前沿”或测试内核。只有当Raspberry Pi工程师建议您这样做时，或者只有在这个最新的软件中才有特定的功能时，您才应该这样做。
 
-=== Getting your Code into the Kernel
+[[getting-your-code-into-the-kernel]]
+=== 将代码合并到内核
 
-There are many reasons you may want to put something into the kernel:
+可能有很多原因致使您想放一些东西到内核里面：
 
-* You've written some Raspberry Pi-specific code that you want everyone to benefit from
-* You've written a generic Linux kernel driver for a device and want everyone to use it
-* You've fixed a generic kernel bug
-* You've fixed a Raspberry Pi-specific kernel bug
+* 你已经编写了一些特定于 Raspberry Pi 的代码，希望每个人都能从中受益
+* 您已经为设备编写了通用 Linux 内核驱动程序，并希望每个人都使用它
+* 您已经修复了一个通用内核错误
+* 您已经修复了特定于the Raspberry Pi的内核错误
 
-Initially, you should fork the https://github.com/raspberrypi/linux[Linux repository] and clone that on your build system; this can be either on the Raspberry Pi or on a Linux machine you're using for cross-compiling. You can then make your changes, test them, and commit them into your fork.
+最初，您应该派生 https://github.com/raspberrypi/linux[Linux存储库]，并在您的构建系统上克隆它；这可以在Raspberry Pi上，也可以在用于交叉编译的Linux机器上。然后，您可以做出更改，测试它们，并将它们提交到您的分支中。
+接下来，确定代码是否是特定于the Raspberry Pi：
 
-Next, depending upon whether the code is Raspberry Pi-specific or not:
-
-* For Raspberry Pi-specific changes or bug fixes, submit a pull request to the kernel.
-* For general Linux kernel changes (i.e. a new driver), these need to be submitted upstream first. Once they've been submitted upstream and accepted, submit the pull request and we'll receive it.
+* 对于特定于 Raspberry Pi 的更改或错误修复，请向内核提交拉取请求。
+* 对于一般的 Linux 内核更改（即新驱动程序），需要先在上游提交这些更改。在上游提交并接受后，提交拉取请求，我们将收到它。

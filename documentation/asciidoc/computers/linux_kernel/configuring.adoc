@@ -1,49 +1,53 @@
-== Configuring the Kernel
+[[configuring-the-kernel]]
+== 配置内核
 
-The Linux kernel is highly configurable; advanced users may wish to modify the default configuration to customise it to their needs, such as enabling a new or experimental network protocol, or enabling support for new hardware.
+Linux 内核是高度可配置的;高级用户可能希望修改默认配置以根据需要对其进行自定义，例如启用新的或实验性的网络协议，或启用对新硬件的支持。
 
-Configuration is most commonly done through the `make menuconfig` interface. Alternatively, you can modify your `.config` file manually, but this can be more difficult for new users.
+配置通常通过 `make menuconfig` 界面完成。或者，您可以手动修改.  `.config` 文件，但对于新用户来说，这可能会更加困难。
 
-=== Preparing to Configure
+[[preparing-to-configure]]
+=== 准备配置
 
-The `menuconfig` tool requires the `ncurses` development headers to compile properly. These can be installed with the following command:
+`menuconfig` 工具需要 `ncurses` 开发头文件才能正确编译。这些可以用以下命令安装:
 
 [,bash]
 ----
  sudo apt install libncurses5-dev
 ----
 
-You'll also need to download and prepare your kernel sources, as described in the xref:linux_kernel.adoc#choosing_sources[build guide]. In particular, ensure you have installed the xref:linux_kernel.adoc#default_configuration[default configuration].
+您还需要下载并准备内核源代码，如 xref:linux_kernel.adoc#choosing_sources[构建指南]中所述。特别是，请确保您已安装 xref:linux_kernel.adoc#default_configuration[默认配置]。
 
-=== Using `menuconfig`
+[[using-menuconfig]]
+=== 使用 `menuconfig`
 
-Once you've got everything set up and ready to go, you can compile and run the `menuconfig` utility as follows:
+设置好一切并准备就绪后，您可以按如下方式编译并运行该 `menuconfig` 实用程序：
 
 [,bash]
 ----
  make menuconfig
 ----
 
-If you're cross-compiling a 32-bit kernel:
+如果要交叉编译 32 位内核：
 
 [,bash]
 ----
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
 ----
 
-Or, if you are cross-compiling a 64-bit kernel:
+或者，如果要交叉编译 64 位内核：
 
 [,bash]
 ----
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig
 ----
 
-The `menuconfig` utility has simple keyboard navigation. After a brief compilation, you'll be presented with a list of submenus containing all the options you can configure; there's a lot, so take your time to read through them and get acquainted.
+该 `menuconfig` 实用程序具有简单的键盘导航。经过简短的编译后，您将看到一个子菜单列表，其中包含您可以配置的所有选项;有很多，所以花点时间通读它们并熟悉它们。
 
-Use the arrow keys to navigate, the Enter key to enter a submenu (indicated by `+--->+`), Escape twice to go up a level or exit, and the space bar to cycle the state of an option. Some options have multiple choices, in which case they'll appear as a submenu and the Enter key will select an option. You can press `h` on most entries to get help about that specific option or menu.
+使用箭头键进行导航，使用 Enter 键进入子菜单（由 `+--->+` 指示），使用两次 Esc 键向上关卡或退出，使用空格键循环显示选项的状态。某些选项有多个选项，在这种情况下，它们将显示为子菜单，而 Enter 键将选择一个选项。您可以按 `h` 大多数条目以获取有关该特定选项或菜单的帮助。
 
-Resist the temptation to enable or disable a lot of things on your first attempt; it's relatively easy to break your configuration, so start small and get comfortable with the configuration and build process.
+抵制诱惑，第一次尝试就启用或禁用很多东西；破坏配置相对容易，所以从小处着手，熟悉配置和构建过程
 
-=== Saving your Changes
+[[saving-your-changes]]
+=== 保存更改
 
-Once you're done making the changes you want, press Escape until you're prompted to save your new configuration. By default, this will save to the `.config` file. You can save and load configurations by copying this file around.
+完成所需的更改后，按 Esc 键，直到系统提示您保存新配置。默认情况下，这将保存到 `.config` 文件中。您可以通过复制此文件来保存和加载配置。

@@ -1,35 +1,39 @@
-== Audio Configuration
+[[audio-configuration]]
+== 音频配置
 
-The Raspberry Pi has up to three audio output modes: HDMI 1 and 2, if present, and a headphone jack. You can switch between these modes at any time.
+Raspberry Pi最多有三种音频输出模式：HDMI 1和2（如果有）以及耳机插孔。您可以随时在这些模式之间切换。
+如果您的 HDMI 显示器或电视具有内建扬声器，则可以通过 HDMI 电缆播放音频，但您可以将其切换到插入耳机插孔的一组耳机或其他扬声器。如果您的显示器声称有扬声器，则默认情况下通过HDMI输出声音;如果没有，则通过耳机插孔输出。这可能不是所需的输出设置，或者自动检测不准确，在这种情况下，您可以手动切换输出。
 
-If your HDMI monitor or TV has built-in speakers, the audio can be played over the HDMI cable, but you can switch it to a set of headphones or other speakers plugged into the headphone jack. If your display claims to have speakers, sound is output via HDMI by default; if not, it is output via the headphone jack. This may not be the desired output setup, or the auto-detection is inaccurate, in which case you can manually switch the output.
+[[changing-the-audio-output]]
+=== 更改音频输出
 
-=== Changing the Audio Output
+有两种方法可以设置音频输出;使用桌面音量控制，或使用 `raspi-config` 命令行工具。
 
-There are two ways of setting the audio output; using the desktop volume control, or using the `raspi-config` command line tool.
-
-==== Using the Desktop
+[[using-the-desktop-2]]
+==== 使用桌面
 
 Right-clicking the volume icon on the desktop taskbar brings up the audio output selector; this allows you to select between the internal audio outputs. It also allows you to select any external audio devices, such as USB sound cards and Bluetooth audio devices. A green tick is shown against the currently selected audio output device -- simply left-click the desired output in the pop-up menu to change this. The volume control and mute operate on the currently selected device.
 
-==== Using raspi-config
+[[using-raspi-config-2]]
+==== 使用 raspi-config
 
-Open up xref:configuration.adoc#raspi-config[raspi-config] by entering the following into the command line:
+通过在命令行中输入以下内容来打开  xref:configuration.adoc#raspi-config[raspi-config]：
 
 ----
 sudo raspi-config
 ----
 
-This will open the configuration screen:
+这将打开配置屏幕：
 
-Select `System Options` (Currently option 1, but yours may be different) and press `Enter`.
+选择 `System Options` （当前选项 1，但您的选项可能不同）并按 `Enter` 。
 
-Now select the Option named, `Audio` (Currently option S2, but yours may be different) and press `Enter`:
+现在选择名为的选项 `Audio` （当前选项S2，但您的选项可能不同），然后按 `Enter`：
 
-Select your required mode, press `Enter` and press the right arrow key to exit the options list, then select `Finish` to exit the configuration tool.
+选择所需的模式，然后按 `Enter` 向右箭头键退出选项列表，然后选择 `Finish` 退出配置工具。
 
-After you have finished modifying your audio settings, you need to restart your Raspberry Pi in order for your changes to take effect.
+修改完音频设置后，您需要重新启动Raspberry Pi才能使更改生效。
 
-=== Troubleshooting your HDMI
+[[troubleshooting-your-hdmi-2]]
+=== 对 HDMI 进行故障排除
 
-In some rare cases, it is necessary to edit `config.txt` to force HDMI mode (as opposed to DVI mode, which does not send sound). You can do this by editing `/boot/config.txt` and setting `hdmi_drive=2`, then rebooting for the change to take effect.
+在极少数情况下，有必要进行编辑 `config.txt` 以强制HDMI模式（与不发送声音的DVI模式相反）。您可以通过编辑 `/boot/config.txt` 和设置 `hdmi_drive=2` ，然后重新启动以使更改生效来执行此操作。
