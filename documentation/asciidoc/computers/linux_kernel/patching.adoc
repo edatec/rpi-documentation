@@ -1,12 +1,14 @@
-== Patching the Kernel
+[[patching-the-kernel]]
+== 修补内核
 
-When xref:linux_kernel.adoc#building[building] your custom kernel you may wish to apply patches, or collections of patches ('patchsets'), to the Linux kernel.
+在 xref:linux_kernel.adoc#building[构建]自定义内核时，您可能希望将补丁或补丁集合（"补丁集"）应用于 Linux 内核。
 
-Patchsets are often provided with newer hardware as a temporary measure, before the patches are applied to the upstream Linux kernel ('mainline') and then propagated down to the Raspberry Pi kernel sources. However, patchsets for other purposes exist, for instance to enable a fully pre-emptible kernel for real-time usage.
+补丁集通常作为临时措施提供较新的硬件，在补丁应用于上游 Linux 内核（"主线"）之前，然后向下传播到 Raspberry Pi 内核源。但是，存在用于其他目的的补丁集，例如启用完全抢占式内核以供实时使用。
 
-=== Version Identification
+[[version-identification]]
+=== 版本标识
 
-It's important to check what version of the kernel you have when downloading and applying patches. In a kernel source directory, running `head Makefile -n 3` will show you the version the sources relate to:
+在下载和应用补丁时检查您拥有的内核版本非常重要。在内核源目录中，运行 `head Makefile -n 3` 将显示源与以下版本相关的版本：
 
 [source]
 ----
@@ -15,11 +17,12 @@ PATCHLEVEL = 10
 SUBLEVEL = 25
 ----
 
-In this instance, the sources are for a 3.10.25 kernel. You can see what version you're running on your system with the `uname -r` command.
+在本例中，源码适用于 3.10.25 内核。您可以使用该 `uname -r` 命令查看您在系统上运行的版本。In this instance, the sources are for a 3.10.25 kernel. You can see what version you're running on your system with the `uname -r` command.
 
-=== Applying Patches
+[[applying-patches]]
+=== 应用补丁
 
-How you apply patches depends on the format in which the patches are made available. Most patches are a single file, and applied with the `patch` utility. For example, let's download and patch our example kernel version with the real-time kernel patches:
+应用修补程序的方式取决于修补程序可用的格式。大多数修补程序都是单个文件，并与 `patch` 实用程序一起应用。例如，让我们下载并使用实时内核补丁来修补我们的示例内核版本：
 
 [,bash]
 ----
@@ -28,9 +31,9 @@ How you apply patches depends on the format in which the patches are made availa
  cat patch-3.10.25-rt23.patch | patch -p1
 ----
 
-In our example we simply download the file, uncompress it, and then pass it to the `patch` utility using the `cat` tool and a Unix pipe.
+在我们的例子中，我们简单地下载文件，解压缩它，然后使用 `cat` 工具和Unix管道将它传递给 `patch` 。
 
-Some patchsets come as mailbox-format patchsets, arranged as a folder of patch files. We can use Git to apply these patches to our kernel, but first we must configure Git to let it know who we are when we make these changes:
+某些修补程序集以邮箱格式修补程序集的形式提供，排列为修补程序文件的文件夹。我们可以使用 Git 将这些补丁应用于我们的内核，但首先我们必须配置 Git 以在进行这些更改时让它知道我们是谁：
 
 [,bash]
 ----
@@ -38,11 +41,11 @@ Some patchsets come as mailbox-format patchsets, arranged as a folder of patch f
  git config --global user.email "your email in here"
 ----
 
-Once we've done this we can apply the patches:
+完成此操作后，我们可以应用补丁:
 
 [,bash]
 ----
  git am -3 /path/to/patches/*
 ----
 
-If in doubt, consult with the distributor of the patches, who should tell you how to apply them. Some patchsets will require a specific commit to patch against; follow the details provided by the patch distributor.
+如有疑问，请咨询补丁的分销商，他们应该告诉您如何应用它们。某些补丁集需要特定的提交才能进行修补;按照修补程序分发服务器提供的详细信息进行操作。

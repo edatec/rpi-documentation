@@ -1,14 +1,15 @@
-== Kernel Headers
+[[kernel-headers]]
+== 内核头文件
 
-If you are compiling a kernel module or similar, you will need the Linux Kernel headers. These provide the various function and structure definitions required when compiling code that interfaces with the kernel.
+如果你正在编译内核模块或类似模块，你将需要 Linux 内核头文件。它们提供了编译与内核接口的代码时所需的各种函数和结构定义。
 
-If you have cloned the entire kernel from github, the headers are already included in the source tree. If you don't need all the extra files, it is possible to install only the kernel headers from the Raspberry Pi OS repo.
+如果您已经从github克隆了整个内核，那么头文件已经包含在源代码树中了。如果你不需要所有额外的文件，可以从Raspberry Pi OS repo只安装内核头文件。
 
 [,bash]
 ----
  sudo apt install raspberrypi-kernel-headers
 ----
 
-NOTE: It can take quite a while for this command to complete, as it installs a lot of small files. There is no progress indicator.
+NOTE: 此命令可能需要相当长的时间才能完成，因为它会安装许多小文件。没有进度指示器。
 
-When a new kernel release is made, you will need the headers that match that kernel version. It can take several weeks for the repo to be updated to reflect the latest kernel version. If this happens, the best approach is to clone the kernel as described in the xref:linux_kernel.adoc#building[Build Section].
+发布新的内核版本时，您将需要与该内核版本匹配的标头。更新存储库以反映最新的内核版本可能需要几周时间。如果发生这种情况，最好的方法是按照 xref:linux_kernel.adoc#building[构建部分] 中所述克隆内核。
