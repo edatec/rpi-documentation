@@ -1,282 +1,279 @@
-== Useful Utilities
+== 有用的实用程序
 
-There are several useful command line
+有几个有用的命令行
 
 === tvservice
 
-`tvservice` is a command line application used to get and set information about the display, targeted mainly at HDMI video and audio.
+`tvservice` 是一个命令行应用程序，用于获取和设置有关显示器的信息，主要针对HDMI视频和音频。
 
-Typing `tvservice` by itself will display a list of available command line options.
+键入 `tvservice` 本身将显示可用命令行选项的列表。
 
 ==== -p, --preferred
 
-Power on the HDMI output with preferred settings.
+使用首选设置打开 HDMI 输出。
 
 ==== -o, --off
 
-Powers off the display output.
+关闭显示器输出。
 
-NOTE: Powering off the output using this command will also destroy any framebuffers/dispmanx layers associated with the display. These are NOT re-established with a subsequent power on, so will result in a blank screen.
+NOTE: 使用此命令关闭输出电源也会破坏与显示器关联的任何帧缓冲器/dispmanx 层。这些不会在随后开机时重新建立，因此会导致空白屏幕。
 
-A better option is to use the xref:os.adoc#vcgencmd[vcgencmd display_power] option, as this will retain any framebuffers, so when the power is turned back on the display will be the returned to the previous power on state.
+更好的选择是使用 xref:os.adoc#vcgencmd[vcgencmd display_power] 选项，因为这将保留任何帧缓冲，因此当显示器重新打开电源时，将返回到之前的开机状态。
 
 ==== -e, --explicit="Group Mode Drive"
 
-Power on the HDMI with the specified settings
+使用指定的设置打开HDMI
 
-Group can be one of `CEA`, `DMT`, `CEA_3D_SBS`, `CEA_3D_TB`, `CEA_3D_FP`, `CEA_3D_FS`. +
-Mode is one of the modes returned from the `-m, --modes` option. +
-Drive can be one of `HDMI`, `DVI`.
+组可以是 `CEA`, `DMT`, `CEA_3D_SBS`, `CEA_3D_TB`, `CEA_3D_FP`, `CEA_3D_FS` 之一。
+模式是从 `-m, --modes` 选项返回的模式之一。
+驱动器可以是 `HDMI`, `DVI` 之一。
+
 
 ==== -t, --ntsc
 
-Use 59.94Hz (NTSC frequency) rather than 60Hz for HDMI mode.
+在HDMI模式下使用59.94Hz（NTSC频率）而不是60Hz。
 
 ==== -c, --sdtvon="Mode Aspect [P]"
 
-Power on the SDTV (composite output) with the specified mode, `PAL` or `NTSC`, and the specified aspect, `4:3`, `14:9`, `16:9`. The optional `P` parameter can be used to specify progressive mode.
+以指定 `PAL` 或 `NTSC` 模式打开标清电视（复合输出）的电源,以及指定的宽高比 `4:3`, `14:9`, `16:9`。可选 `P` 参数可用于指定渐进式模式。
 
 ==== -m, --modes=Group
 
-where Group is `CEA` or `DMT`.
+其中组是 `CEA` 或 `DMT`.
 
-Shows a list of display modes available in the specified group.
+显示指定组中可用的显示模式列表。
 
 ==== -M, --monitor
 
-Monitors for any HDMI events, for example unplugging or attaching.
+监控任何 HDMI 事件，例如拔出或连接。
 
 ==== -s, --status
 
-Shows the current settings for the display mode, including mode, resolution, and frequency.
+显示显示模式的当前设置，包括模式、分辨率和频率。
 
 ==== -a, --audio
 
-Shows the current settings for the audio mode, including channels, sample rate and sample size.
+显示音频模式的当前设置，包括通道、采样率和样本大小。
 
 ==== -d, --dumpid=filename
 
-Save the current EDID to the specified filename. You can then use `edidparser <filename>` to display the data in a human readable form.
+将当前 EDID 保存到指定的文件名。然后，您可以使用 `edidparser <filename>` 显示成可读的形式。
 
 ==== -j, --json
 
-When used in combination with the `--modes` options, displays the mode information in JSON format.
+与 `--modes` 选项结合使用时，以 JSON 格式显示模式信息。
 
 ==== -n, --name
 
-Extracts the display name from the EDID data and shows it.
+从 EDID 数据中提取显示名称并显示它。
 
 ==== -l, --list
 
-Lists all attached displays and their display ID.
+列出所有连接的显示器及其显示 ID。
 
 ==== -v, --device=display
 
-Specifies the ID of the device to use; see the output of `--list` for available IDs.
+指定要使用的设备的 ID;有关可用 ID，请参阅 `--list` 的输出。
 
 === vcgencmd
 
-The `vcgencmd` tool is used to output information from the VideoCore GPU on the Raspberry Pi. You can find source code for the `vcgencmd` utility https://github.com/raspberrypi/userland/tree/master/host_applications/linux/apps/gencmd[on Github].
-
-To get a list of all commands which `vcgencmd` supports, use `vcgencmd commands`. Some useful commands and their required parameters are listed below.
+ `vcgencmd` 工具用于从Raspberry Pi上的VideoCore GPU输出信息。您可以在 https://github.com/raspberrypi/userland/tree/master/host_applications/linux/apps/gencmd[Github].上找到 `vcgencmd` 实用程序的源代码。
+要获取支持的所有 `vcgencmd` 命令的列表，请使用 `vcgencmd commands`下面列出了一些有用的命令及其必需的参数。
 
 ==== vcos
 
-The `vcos` command has two useful sub-commands:
+`vcos` 命令有两个有用的子命令：
 
-* `version` displays the build date and version of the firmware on the VideoCore
-* `log status` displays the error log status of the various VideoCore firmware areas
+* `version` 在VideoCore上显示固件的构建日期和版本
+* `log status` 显示各种VideoCore固件区域的错误日志状态
 
 ==== version
 
-Displays the build date and version of the VideoCore firmware.
+显示 VideoCore 固件的构建日期和版本。
 
 ==== get_camera
 
-Displays the enabled and detected state of the Raspberry Pi camera: `1` means yes, `0` means no. Whilst all firmware except cutdown versions support the camera, this support needs to be enabled by using xref:configuration.adoc#raspi-config[raspi-config].
+显示Raspberry Pi相机的启用和检测状态： `1` 表示是， `0` 表示否。虽然除缩减版本外的所有固件都支持相机，但需要使用 xref:configuration.adoc#raspi-config[raspi-config]. 启用此支持。
 
 ==== get_throttled
 
-Returns the throttled state of the system. This is a bit-pattern - a bit being set indicates the following meanings:
+返回系统的受限制状态。这是一个位模式 - a正在设置的位表示以下含义：
 
 [cols="^,,"]
 |===
-| Bit | Hex value | Meaning
+| 位 | 十六进制值 | 意义
 
 | 0
 | 0x1
-| Under-voltage detected
+| 检测到欠压
 
 | 1
 | 0x2
-| Arm frequency capped
+| Arm频率上限
 
 | 2
 | 0x4
-| Currently throttled
+| 当前已限制
 
 | 3
 | 0x8
-| Soft temperature limit active
+| 软件温度限制激活
 
 | 16
 | 0x10000
-| Under-voltage has occurred
+| 检测到低电压
 
 | 17
 | 0x20000
-| Arm frequency capping has occurred
+| 检测到arm频率达到上限
 
 | 18
 | 0x40000
-| Throttling has occurred
+| 限制
 
 | 19
 | 0x80000
-| Soft temperature limit has occurred
+| 软件温度限制中
 |===
 
 ==== measure_temp
 
-Returns the temperature of the SoC as measured by its internal temperature sensor;
-on Raspberry Pi 4, `measure_temp pmic` returns the temperature of the PMIC.
+返回由其内部温度传感器测量的 SoC 温度; 在Raspberry Pi 4 上， `measure_temp pmic` 返回 PMIC 的温度。
 
 ==== measure_clock [clock]
 
-This returns the current frequency of the specified clock. The options are:
+这将返回指定时钟的当前频率。选项包括：
 
 [cols="^,"]
 |===
-| clock | Description
+| clock | 描述
 
 | arm
-| ARM core(s)
+| ARM 核心
 
 | core
-| GPU core
+| GPU 核心
 
 | h264
 | H.264 block
 
 | isp
-| Image Sensor Pipeline
+| 图像传感器管道
 
 | v3d
-| 3D block
+| 3D 块
 
 | uart
 | UART
 
 | pwm
-| PWM block (analogue audio output)
+| PWM 模块（模拟音频输出）
 
 | emmc
-| SD card interface
+| SD卡接口
 
 | pixel
-| Pixel valves
+| 像素
 
 | vec
-| Analogue video encoder
+| 模拟视频编码器
 
 | hdmi
 | HDMI
 
 | dpi
-| Display Parallel Interface
+| 显示并行接口
 |===
 
-e.g. `vcgencmd measure_clock arm`
+如 `vcgencmd measure_clock arm`
 
 ==== measure_volts [block]
 
-Displays the current voltages used by the specific block.
+显示特定模块使用的当前电压。
 
 [cols="^,"]
 |===
-| block | Description
+| block | 描述
 
 | core
-| VC4 core voltage
+| VC4 内核电压
 
 | sdram_c
-| SDRAM Core Voltage
+| SDRAM 核心电压
 
 | sdram_i
-| SDRAM I/O voltage
+| SDRAM I/O 电压
 
 | sdram_p
-| SDRAM Phy Voltage
+| SDRAM物理电压
 |===
 
 ==== otp_dump
 
-Displays the content of the OTP (one-time programmable) memory inside the SoC. These are 32-bit values, indexed from 8 to 64. See the xref:raspberry-pi.adoc#otp-register-and-bit-definitions[OTP bits page] for more details.
+显示 SoC 内 OTP（一次性可编程）存储器的内容。这些是 32 位值，索引范围为 8 到 64。有关更多详细信息，请参阅 xref:raspberry-pi.adoc#otp-register-and-bit-definitions[OTP 页面]。
 
 [[getconfig]]
 ==== get_config [configuration item|int|str]
 
-Display value of the configuration setting specified: alternatively, specify either `int` (integer) or `str` (string) to see all configuration items of the given type. For example:
+显示指定配置设置的值：或者，指定 `int`（整数）或 `str`（字符串）以查看给定类型的所有配置项。例如：
 
 ----
 vcgencmd get_config total_mem
 ----
 
-returns the total memory on the device in megabytes.
+返回设备上的总内存（以 MB 为单位）。
 
 ==== get_mem type
 
-Reports on the amount of memory addressable by the ARM  and the GPU. To show the amount of ARM-addressable memory use `vcgencmd get_mem arm`; to show the amount of GPU-addressable memory use `vcgencmd get_mem gpu`. Note that on devices with more than 1GB of memory the `arm` parameter will always return 1GB minus the `gpu` memory value, since the GPU firmware is only aware of the first 1GB of memory. To get an accurate report of the total memory on the device, see the `total_mem` configuration item - see <<getconfig,`get_config`>> section above.
+报告 ARM 和 GPU 可寻址的内存量。`vcgencmd get_mem arm` 显示 ARM 可寻址内存的使用量; `vcgencmd get_mem gpu` 以显示 GPU 可寻址内存的使用量。请注意，在内存超过 1GB 的设备上，`arm` 参数将始终返回 1GB 减去 `gpu` 内存值，因为 GPU 固件仅知道前 1GB 内存。要获取设备上总内存的准确报告，请参阅配置项 `total_mem` 的 <<getconfig,`get_config`>> 部分。
 
 ===== codec_enabled [type]
 
-Reports whether the specified CODEC type is enabled. Possible options for type are AGIF, FLAC, H263, H264, MJPA, MJPB, MJPG, *MPG2*, MPG4, MVC0, PCM, THRA, VORB, VP6, VP8, *WMV9*, *WVC1*. Those highlighted currently require a paid for licence (see the xref:config_txt.adoc#licence-key-and-codec-options[this config.txt section] for more info), except on the Raspberry Pi 4 and 400, where these hardware codecs are disabled in preference to software decoding, which requires no licence. Note that because the H.265 HW block on the Raspberry Pi 4 and 400 is not part of the VideoCore GPU, its status is not accessed via this command.
+报告是否启用了指定的编解码器类型。可能的类型选项是AGIF，FLAC，H263，H264，MJPA，MJPB，MJPG，*MPG2*，MPG4，MVC0，PCM，THRA，VORB，VP6，VP8，WMV9，WVC1。突出显示的那些目前需要付费许可证（有关更多信息，请参阅 xref:config_txt.adoc#licence-key-and-codec-options[config.txt部分] ），但在 Raspberry Pi 4 和 400 上除外，在这些硬件编解码器中，这些硬件编解码器优先于软件解码被禁用，软件解码不需要许可证。请注意，由于Raspberry Pi 4和400上的H.265硬件块不是VideoCore GPU的一部分，因此无法通过此命令访问其状态。
 
 ===== get_lcd_info
 
-Displays the resolution and colour depth of any attached display.
+显示任何附加显示器的分辨率和颜色深度。
 
 ===== mem_oom
 
-Displays statistics on any OOM (out of memory) events occurring in the VideoCore memory space.
+显示有关 VideoCore 内存空间中发生的任何 OOM（内存不足）事件的统计信息。
 
 ===== mem_reloc_stats
 
-Displays statistics from the relocatable memory allocator on the VideoCore.
+显示来自视频核心上可重定位内存分配器的统计信息。
 
 ===== read_ring_osc
 
-Returns the current speed voltage and temperature of the ring oscillator.
+返回环形振荡器的当前速度电压和温度。
 
 ===== hdmi_timings
 
-Displays the current HDMI settings timings. See xref:config_txt.adoc#video-options[Video Config] for details of the values returned.
+显示当前的 HDMI 设置计时。有关返回值的详细信息，请参阅 xref:config_txt.adoc#video-options[视频配置]。
 
 ===== dispmanx_list
 
-Dump a list of all dispmanx items currently being displayed.
+转储当前正在显示的所有 dispmanx 项目的列表。
 
 ===== display_power [0 | 1 | -1] [display]
 
-Show current display power state, or set the display power state. `vcgencmd display_power 0` will turn off power to the current display. `vcgencmd display_power 1` will turn on power to the display. If no parameter is set, this will display the current power state. The final parameter is an optional display ID, as returned by `tvservice -l` or from the table below, which allows a specific display to be turned on or off.
+显示当前显示器电源状态，或设置显示电源状态。 `vcgencmd display_power 0` 将关闭当前显示器的电源。`vcgencmd display_power 1` 将打开显示器的电源。如果未设置任何参数，则将显示当前电源状态。最后一个参数是可选的显示 ID，由tvservice -l返回或从下表返回，它允许打开或关闭特定显示器。请注意，对于 7 英寸 Raspberry Pi 触摸显示屏，这只是打开和关闭背光。触摸功能继续正常运行。
 
-Note that for the 7" Raspberry Pi Touch Display this simply turns the backlight on and off. The touch functionality continues to operate as normal.
-
-`vcgencmd display_power 0 7` will turn off power to display ID 7, which is HDMI 1 on a Raspberry Pi 4.
+`vcgencmd display_power 0 7` 将关闭电源以显示 ID 7，即Raspberry Pi 4上的 HDMI 1。
 
 |===
 | Display | ID
 
-| Main LCD
+| 主LCD
 | 0
 
-| Secondary LCD
+| 辅助LCD
 | 1
 
 | HDMI 0
 | 2
 
-| Composite
+| 复合
 | 3
 
 | HDMI 1
@@ -285,66 +282,66 @@ Note that for the 7" Raspberry Pi Touch Display this simply turns the backlight 
 
 To determine if a specific display ID is on or off, use -1 as the first parameter.
 
-`vcgencmd display_power -1 7` will return 0 if display ID 7 is off, 1 if display ID 7 is on, or -1 if display ID 7 is in an unknown state, for example undetected.
+`vcgencmd display_power -1 7` 将会返回0 如果显示ID7 处于关闭状态;如果显示 ID 7 打开，则返回 1;如果显示 ID 7 处于未知状态（例如未检测到），则返回 -1。
 
 === vcdbg
 
-`vcdbg` is an application to help with debugging the VideoCore GPU from Linux running on the ARM. It needs to be run as root. This application is mostly of use to Raspberry Pi engineers, although there are some commands that general users may find useful.
+`vcdbg` 是一个应用程序，用于帮助从在ARM上运行的Linux调试VideoCore GPU。它需要以根用户身份运行。此应用程序主要用于树莓派工程师，尽管有一些命令一般用户可能会发现有用。
 
-`sudo vcdbg help` will give a list of available commands.
+`sudo vcdbg help` 将给出可用命令的列表。
 
-NOTE: Only options of use to end users have been listed.
+NOTE: 仅列出了最终用户使用的选项。
 
 ==== version
 
-Shows various items of version information from the VideoCore.
+显示来自视频核心的各种版本信息项。
 
 ==== log
 
-Dumps logs from the specified subsystem. Possible options are:
+从指定的子系统转储日志。可能的选项包括：
 
 |===
-| log | Description
+| log | 描述
 
 | msg
-| Prints out the message log
+| 打印出消息日志
 
 | assert
-| Prints out the assertion log
+| 打印出断言日志
 
 | ex
-| Prints out the exception log
+| 打印出异常日志
 
 | info
-| Prints out information from the logging headers
+| 从日志记录标头中打印出信息
 
 | level
-| Sets the VCOS logging level for the specified category, n\|e\|w\|i\|t
+| 设置指定类别的 VCOS 日志记录级别： n\|e\|w\|i\|t
 
 | list
-| List the VCOS logging levels
+| 列出 VCOS 日志记录级别
 |===
 
-e.g. To print out the current contents of the message log:
+例如，要打印出消息日志的当前内容：
 
 `vcdbg log msg`
 
 ==== malloc
 
-List all memory allocations current in the VideoCore heap.
+列出 VideoCore 堆中当前的所有内存分配。
 
 ==== pools
 
-List the current status of the pool allocator
+列出池分配器的当前状态
 
 ==== reloc
 
-Without any further parameters, lists the current status of the relocatable allocator. Use `sudo vcdbg reloc small` to list small allocations as well.
-
-Use the subcommand `sudo vcdbg reloc stats` to list statistics for the relocatable allocator.
+不带任何其他参数，列出可重定位分配器的当前状态。 `sudo vcdbg reloc small` 
+用于列出小分配。
+使用 `sudo vcdbg reloc stats` 命令列出可重定位分配器的统计信息。
 
 ==== hist
 
-Commands related to task history.
+与任务历史记录相关的命令。
 
-Use `sudo vcdbg hist gnuplot` to dump task history in gnuplot format to task.gpt and task.dat
+用 `sudo vcdbg hist gnuplot` 将 gnuplot 格式的任务历史记录转储到 task.gpt 和 task.dat

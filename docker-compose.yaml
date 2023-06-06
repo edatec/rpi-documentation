@@ -6,7 +6,7 @@ services:
     container_name: rpi-documentation
     hostname: rpi-documentation
     ports:
-      - 4000:4000
+      - 4000:4001
     restart: always
 
     volumes:

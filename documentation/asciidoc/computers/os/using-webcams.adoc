@@ -1,35 +1,34 @@
-== Using a USB webcam
+== 使用USB网络摄像头
+您可以使用标准 USB 网络摄像头在Raspberry Pi上拍摄照片和视频，而不是使用 xref:../accessories/camera.adoc#about-the-camera-modules[Raspberry Pi 相机模块]。
 
-Rather than using the Raspberry Pi xref:../accessories/camera.adoc#about-the-camera-modules[camera module], you can use a standard USB webcam to take pictures and video on your Raspberry Pi.
+NOTE: 摄像头模块的质量和可配置性远远优于标准 USB 网络摄像头。
 
-NOTE: The quality and configurability of the camera module is highly superior to a standard USB webcam.
-
-First, install the `fswebcam` package:
+首先，安装 `fswebcam` 软件包：
 
 [,bash]
 ----
 sudo apt install fswebcam
 ----
 
-If you are not using the default `pi` user account, you need to add your username to the `video` group, otherwise you will see 'permission denied' errors.
+如果您未使用默认用户帐户 `pi` ，则需要将用户名添加到 `video` 组中，否则您将看到 'permission denied' 错误。
 
 [,bash]
 ----
 sudo usermod -a -G video <username>
 ----
 
-To check that the user has been added to the group correctly, use the `groups` command.
+若要检查是否已将用户正确添加到组中，请使用 `groups` 命令。
 
 === Basic Usage
 
-Enter the command `fswebcam` followed by a filename and a picture will be taken using the webcam, and saved to the filename specified:
+输入 `fswebcam` 命令，后跟文件名，将使用网络摄像头拍摄照片，并保存到指定的文件名：
 
 [,bash]
 ----
 fswebcam image.jpg
 ----
 
-This command will show the following information:
+此命令将显示以下信息：
 
 ----
 --- Opening /dev/video0...
@@ -46,16 +45,16 @@ Writing JPEG image to 'image.jpg'.
 
 image::images/image.jpg[Basic image capture]
 
-NOTE: The small default resolution used, and the presence of a banner showing the timestamp.
+NOTE: 使用小的默认分辨率，会显示时间戳的横幅。
 
-The webcam used in this example has a resolution of `1280 x 720` so to specify the resolution I want the image to be taken at, use the `-r` flag:
+此示例中使用的网络摄像头的分辨率为 `1280 x 720` ，要指定我希望以何种分辨率拍摄图像，请使用以下 `-r` 标志：
 
 [,bash]
 ----
 fswebcam -r 1280x720 image2.jpg
 ----
 
-This command will show the following information:
+此命令将显示以下信息：
 
 ----
 --- Opening /dev/video0...
@@ -71,18 +70,18 @@ Writing JPEG image to 'image2.jpg'.
 
 image::images/image2.jpg[Full resolution image]
 
-Picture now taken at the full resolution of the webcam, with the banner present.
+网络摄像头以全分辨率拍摄的照片，并显示横幅。
 
-==== Removing the Banner
+==== 删除横幅
 
-Now add the `--no-banner` flag:
+现在添加 `--no-banner` 标志：
 
 [,bash]
 ----
 fswebcam -r 1280x720 --no-banner image3.jpg
 ----
 
-which shows the following information:
+其中显示以下信息：
 
 ----
 --- Opening /dev/video0...
@@ -99,18 +98,18 @@ Writing JPEG image to 'image3.jpg'.
 
 image::images/image3.jpg[Full resolution image with no banner]
 
-Now the picture is taken at full resolution with no banner.
+现在，照片以全分辨率拍摄，没有横幅
 
-=== Automating Image Capture
+=== 自动执行图像捕获
 
-You can write a Bash script which takes a picture with the webcam. The script below saves the images in the `/home/pi/webcam` directory, so create the `webcam` subdirectory first with:
+您可以编写一个使用网络摄像头拍照的 Bash 脚本。下面的脚本将图像保存在目 `/home/pi/webcam` 中，因此首先使用以下命令创建 `webcam` 子目录：
 
 [,bash]
 ----
 mkdir webcam
 ----
 
-To create a script, open up your editor of choice and write the following example code:
+若要创建脚本，请打开所选编辑器并编写以下示例代码：
 
 [,bash]
 ----
@@ -121,21 +120,21 @@ DATE=$(date +"%Y-%m-%d_%H%M")
 fswebcam -r 1280x720 --no-banner /home/pi/webcam/$DATE.jpg
 ----
 
-This script will take a picture and name the file with a timestamp. Say we saved it as `webcam.sh`, we would first make the file executable:
+此脚本将拍摄照片并使用时间戳命名文件。假设我们将其保存为 `webcam.sh` ，我们将首先使文件可执行：
 
 [,bash]
 ----
 chmod +x webcam.sh
 ----
 
-Then run with:
+然后运行：
 
 [,bash]
 ----
 ./webcam.sh
 ----
 
-Which would run the commands in the file and give the usual output:
+这将运行文件中的命令并给出通常的输出：
 
 ----
 --- Opening /dev/video0...
@@ -150,29 +149,26 @@ Disabling banner.
 Writing JPEG image to '/home/pi/webcam/2013-06-07_2338.jpg'.
 ----
 
-=== Time-Lapse Captures
+=== 延时拍摄
 
-You can use `cron` to schedule taking a picture at a given interval, such as every minute to capture a time-lapse.
-
-First open the cron table for editing:
+您可以使用 `cron` 来安排以给定的时间间隔（例如每分钟拍摄一次）拍摄照片，以拍摄延时摄影。首先打开 `crontab` 进行编辑：
 
 ----
 crontab -e
 ----
 
-This will either ask which editor you would like to use, or open in your default editor. Once you have the file open in an editor, add the following line to schedule taking a picture every minute (referring to the Bash script from above):
+这将询问您要使用的编辑器，或者在默认编辑器中打开。在编辑器中打开文件后，添加以下行以计划每分钟拍摄一次照片（参考上面的 Bash 脚本）：
 
 [,bash]
 ----
 * * * * * /home/pi/webcam.sh 2>&1
 ----
 
-Save and exit and you should see the message:
+保存并退出，您应该看到以下消息：
 
 [,bash]
 ----
 crontab: installing new crontab
 ----
 
-Ensure your script does not save each picture taken with the same filename. This will overwrite the picture each time.
-
+确保您的脚本不会保存使用相同文件名拍摄的每张图片。这将每次覆盖图片。

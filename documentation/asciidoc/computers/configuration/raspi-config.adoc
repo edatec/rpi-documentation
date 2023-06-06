@@ -1,196 +1,194 @@
 [[raspi-config]]
-== The `raspi-config` Tool
+== `raspi-config` 工具
 
-`raspi-config` is the Raspberry Pi configuration tool originally written by https://github.com/asb[Alex Bradbury]. To open the configuration tool, type the following on the command line:
+`raspi-config` 是Raspberry Pi配置工具，最初由 https://github.com/asb[Alex Bradbury] 编写. 要打开配置工具，请在命令行中键入以下内容：
 
 ----
 sudo raspi-config
 ----
 
-The `sudo` is required because you will be changing files that you do not own as the `pi` user.
+`sudo` 是必需的，因为您将更改不属于pi用户的文件。
 
-NOTE: If you are using the Raspberry Pi desktop then you can use the graphical `Raspberry Pi Configuration` application from the `Preferences` menu to configure your Raspberry Pi.
+NOTE: 如果您使用的是Raspberry Pi桌面，那么您可以使用 `Preferences` 菜单中的 `Raspberry Pi Configuration` 图形应用程序来配置。
 
-You should then see a blue screen with options in a grey box:
+然后，您应该会看到一个蓝屏，灰色框中有选项：
 
 image::images/raspi-config.png[raspi-config main screen]
 
-NOTE: The menu shown may differ slightly.
+NOTE: 显示的菜单可能略有不同。
 
-Use the `up` and `down` arrow keys to move the highlighted selection between the options available. Pressing the `right` arrow key will jump out of the Options menu and take you to the `<Select>` and `<Finish>` buttons. Pressing `left` will take you back to the options. Alternatively, you can use the `Tab` key to switch between these.
+使用上下箭头键在可用选项之间移动突出显示的选项。按右箭头键将跳出“选项”菜单，并将您带到 `<Select>` 和 `<Finish>` 。按下left将带您回到选项。或者，您可以使用Tab键在这些之间切换。
+一般来说，`raspi-config` 旨在提供进行最常见的配置更改的功能。这可能会导致对 `/boot/config.txt` 和各种标准Linux配置文件的自动编辑。有些选项需要重新启动才能生效。如果您更改了其中的任何一项，当您选择 `<Finish>` 按钮时， `raspi-config` 会询问您是否希望现在重新启动。
 
-Generally speaking, `raspi-config` aims to provide the functionality to make the most common configuration changes. This may result in automated edits to `/boot/config.txt` and various standard Linux configuration files. Some options require a reboot to take effect. If you changed any of those, `raspi-config` will ask if you wish to reboot now when you select the `<Finish>` button.
 
-NOTE: In long lists of option values (like the list of timezone cities), you can also type a letter to skip to that section of the list. For example, entering `L` will skip you to Lisbon, just two options away from London, to save you scrolling all the way through the alphabet.
+NOTE: 在选项值的长列表（如时区城市列表）中，您还可以键入一个字母以跳到列表的该部分。例如，输入 `L` 将跳过您到里斯本，距离伦敦只有两个选项，以节省您一直滚动字母表的时间。
 
 [[menu-options]]
-=== List of Options
+=== 选项列表
 
-NOTE: Due to the continual development of the `raspi-config` tool, the list of options below may not be completely up to date. Also please be aware that different models of Raspberry Pi may have different options available.
+NOTE: 由于 `raspi-config` 工具的不断发展，下面的选项列表可能不是完全最新的。另请注意，不同型号的Raspberry Pi可能有不同的选择。
 
-NOTE: All options are available via a non-interactive command line interface. See the section on the <<raspi-config-cli,`raspi-config` command line interface>> for more information.
+NOTE: 所有选项均可通过非交互式命令行界面使用。有关更多信息，请参阅  <<raspi-config-cli,`raspi-config` command line interface>> 上的部分。
 
-==== System Options
+==== 系统选项
 
-The system options submenu allows you to make configuration changes to various parts of the boot, login and networking process, along with some other system level changes.
+系统选项子菜单允许您对引导、登录和网络过程的各个部分进行配置更改，以及其他一些系统级更改。
 
 ===== Wireless LAN
 
-Allows setting of the wireless LAN SSID and passphrase.
+允许设置无线局域网SSID和密码。
 
 ===== Audio
 
-Specify the audio output destination.
+指定音频输出目标。
 
 [[change-user-password]]
-===== Password
+===== 密码
 
-You can change the 'default' user password.
+您可以更改“默认”用户密码。
 
-NOTE: Until recently the default user on Raspberry Pi OS was `pi` with the password `raspberry`. The default user is now set on first boot using a configuration wizard.
+NOTE: 直到最近，Raspberry Pi操作系统上的默认用户都是 `pi` 密码` raspberry` .默认用户现在使用配置向导在首次引导时设置。
 
 [[hostname]]
 ===== Hostname
 
-Set the visible name for this Raspberry Pi on a network.
+在网络上设置此Raspberry Pi的可见名称。
 
 [[boot-options]]
 ===== Boot / Auto login
 
-From this submenu you can select whether to boot to console or desktop and whether you need to log in or not. If you select automatic login, you will be logged in as the `pi` user.
+从此子菜单中，您可以选择是引导到控制台还是桌面，以及是否需要登录。如果选择自动登录，您将以 `pi` 用户身份登录。
 
 ===== Network at Boot
 
-Use this option to wait for a network connection before letting boot proceed.
+使用此选项可等待网络连接，然后再让引导继续。
 
 ===== Splash Screen
 
-Enable or disable the splash screen displayed at boot time
+启用或禁用启动时显示的初始屏幕
 
 ===== Power LED
 
-If the model of Raspberry Pi permits it, you can change the behaviour of the power LED using this option.
+如果Raspberry Pi的型号允许，您可以使用此选项更改电源 LED 的行为。
 
 ==== Display Options
 
 [[resolution]]
 ===== Resolution
 
-Define the default HDMI/DVI video resolution to use when the system boots without a TV or monitor being connected. This can have an effect on RealVNC if the VNC option is enabled.
+定义系统在没有连接电视或显示器的情况下启动时要使用的默认 HDMI/DVI 视频分辨率。如果启用了 VNC 选项，这可能会对 RealVNC 产生影响。
 
 [[underscan]]
 ===== Underscan
 
-Old TV sets had a significant variation in the size of the picture they produced; some had cabinets that overlapped the screen. TV pictures were therefore given a black border so that none of the picture was lost; this is called overscan. Modern TVs and monitors don't need the border, and the signal doesn't allow for it. If the initial text shown on the screen disappears off the edge, you need to enable overscan to bring the border back.
+就不会丢失；这被称为过扫描。现代的电视和显示器不需要边框，信号也不允许。如果屏幕上显示的初始文本从边缘消失，您需要启用过扫描来恢复边界。。
+任何更改都将在重新启动后生效。您可以通过编辑配置 xref:config_txt.adoc[config.txt] 来更好地控制设置。
+在某些显示器上，尤其是监视器，禁用过扫描会使图像充满整个屏幕并修正分辨率。对于其他显示器，可能需要保持过扫描启用并调整其值。
 
-Any changes will take effect after a reboot. You can have greater control over the settings by editing xref:config_txt.adoc[config.txt].
-
-On some displays, particularly monitors, disabling overscan will make the picture fill the whole screen and correct the resolution. For other displays, it may be necessary to leave overscan enabled and adjust its values.
 
 [[pixel-doubling]]
 ===== Pixel Doubling
 
-Enable/disable 2x2 pixel mapping.
+启用/禁用 2x2 像素映射。
 
 ===== Composite Video
 
-On the Raspberry Pi 4, enable composite video. On models prior to the Raspberry Pi 4, composite video is enabled by default so this option is not displayed.
+在Raspberry Pi 4 上，启用复合视频。在Raspberry Pi 4 之前的型号上，默认情况下启用复合视频，因此不显示此选项。
 
 ===== Screen Blanking
 
-Enable or disable screen blanking.
+启用或禁用屏幕消隐。
 
 [[interfacing-options]]
 ==== Interfacing Options
 
-In this submenu there are the following options to enable/disable: Camera, SSH, VNC, SPI, I2C, Serial, 1-wire, and Remote GPIO.
+在此子菜单中，有以下选项可以启用/禁用：相机、SSH、VNC、SPI、I2C、串行、1 线和远程 GPIO。
 
 [[camera]]
 ===== Camera
 
-Enable/disable the CSI camera interface.
+启用/禁用 CSI 摄像机接口。
 
 [[ssh]]
 ===== SSH
 
-Enable/disable remote command line access to your Raspberry Pi using SSH.
-
-SSH allows you to remotely access the command line of the Raspberry Pi from another computer. SSH is disabled by default. Read more about using SSH on the xref:remote-access.adoc#ssh[SSH documentation page]. If connecting your Raspberry Pi directly to a public network, you should not enable SSH unless you have set up secure passwords for all users.
+使用 SSH 启用/禁用对Raspberry Pi的远程命令行访问。
+SSH允许您从另一台计算机远程访问Raspberry Pi的命令行。默认情况下，SSH 处于禁用状态。在  xref:remote-access.adoc#ssh[SSH 文档页面] 上阅读有关使用 SSH 的更多信息。如果将Raspberry Pi直接连接到公共网络，则不应启用SSH，除非您为所有用户设置了安全密码。
 
 [[VNC]]
 ===== VNC
 
-Enable/disable the RealVNC virtual network computing server.
+启用/禁用 RealVNC 虚拟网络计算服务器。
 
 [[spi]]
 ===== SPI
 
-Enable/disable SPI interfaces and automatic loading of the SPI kernel module, needed for products such as PiFace.
+启用/禁用 SPI 接口并自动加载 SPI 内核模块，这是 PiFace 等产品所需的。
 
 [[i2c]]
 ===== I2C
 
-Enable/disable I2C interfaces and automatic loading of the I2C kernel module.
+启用/禁用 I2C 接口并自动加载 I2C 内核模块。
 
 [[serial]]
 ===== Serial
 
-Enable/disable shell and kernel messages on the serial connection.
+在串行连接上启用/禁用 shell 和内核消息。
 
 [[one-wire]]
 ===== 1-wire
 
-Enable/disable the Dallas 1-wire interface. This is usually used for DS18B20 temperature sensors.
+启用/禁用 Dallas 1-wire 接口. 这通常用于DS18B20温度传感器。
 
 ===== Remote GPIO
 
-Enable or disable remote access to the GPIO pins.
+启用或禁用对 GPIO 引脚的远程访问。
 
 ==== Performance Options
 
 [[overclock]]
 ==== Overclock
 
-On some models it is possible to overclock your Raspberry Pi's CPU using this tool. The overclocking you can achieve will vary; overclocking too high may result in instability. Selecting this option shows the following warning:
+在某些型号上，可以使用此工具对Raspberry Pi的 CPU 进行超频。您可以实现的超频会有所不同;超频过高可能会导致不稳定。选择此选项将显示以下警告：
 
-*Be aware that overclocking may reduce the lifetime of your Raspberry Pi.* If overclocking at a certain level causes system instability, try a more modest overclock. Hold down the Shift key during boot to temporarily disable overclocking.
+*请注意，超频可能会缩短Raspberry Pi的使用寿命。*如果达到一定水平的超频导致系统不稳定，请尝试更适度的超频。在启动过程中按住 Shift 键可暂时禁用超频。
 
 [[memory-split]]
 ===== GPU Memory
 
-Change the amount of memory made available to the GPU.
+更改可供 GPU 使用的内存量。
 
 ===== Overlay File System
 
-Enable or disable a read-only filesystem
+启用或禁用只读文件系统
 
 ===== Fan
 
-Set the behaviour of a GPIO connected fan
+设置 GPIO 连接的风扇的行为
 
 [[localisation-options]]
 ==== Localisation Options
 
-The localisation submenu gives you these options to choose from: keyboard layout, time zone, locale, and wireless LAN country code.
+本地化子菜单为您提供了以下选项供您选择：键盘布局、时区、区域设置和无线 LAN 国家/地区代码。
 
 [[change-locale]]
 ===== Locale
 
-Select a locale, for example `en_GB.UTF-8 UTF-8`.
+选择区域设置，例如 `en_GB.UTF-8 UTF-8`。
 
 [[change-timezone]]
 ===== Time Zone
 
-Select your local time zone, starting with the region, e.g. Europe, then selecting a city, e.g. London. Type a letter to skip down the list to that point in the alphabet.
+选择您的本地时区，从区域开始，例如欧洲，然后选择一个城市，例如伦敦。键入一个字母以将列表向下跳到字母表中的该点。
 
 [[change-keyboard-layout]]
 ===== Keyboard
 
-This option opens another menu which allows you to select your keyboard layout. It will take a long time to display while it reads all the keyboard types. Changes usually take effect immediately, but may require a reboot.
+此选项将打开另一个菜单，允许您选择键盘布局。读取所有键盘类型时，需要很长时间才能显示。更改通常会立即生效，但可能需要重新启动。
 
 ===== WLAN Country
 
-This option sets the country code for your wireless network.
+此选项设置无线网络的国家/地区代码。
 
 [[advanced-options]]
 ==== Advanced Options
@@ -198,59 +196,59 @@ This option sets the country code for your wireless network.
 [[expand-filesystem]]
 ===== Expand Filesystem
 
-This option will expand your installation to fill the whole SD card, giving you more space to use for files. You will need to reboot the Raspberry Pi to make this available. 
+此选项将扩展您的安装以填充整个SD卡，从而为您提供更多空间用于文件。您需要重新启动Raspberry Pi才能使其可用。
 
-WARNING: There is no confirmation: selecting the option begins the partition expansion immediately.
+WARNING: 没有确认：选择该选项会立即开始分区扩展。
 
 [[GL-driver]]
 ===== GL Driver
 
-Enable/disable the experimental GL desktop graphics drivers.
+启用/禁用实验性 GL 桌面图形驱动程序。
 
 [[GL-full-KMS]]
 ====== GL (Full KMS)
 
-Enable/disable the experimental OpenGL Full KMS (kernel mode setting) desktop graphics driver.
+启用/禁用实验性 OpenGL 完整 KMS（内核模式设置）桌面图形驱动程序。
 
 [[GL-fake-KMS]]
 ====== GL (Fake KMS)
 
-Enable/disable the experimental OpenGL Fake KMS desktop graphics driver.
+启用/禁用实验性的 OpenGL Fake KMS 桌面图形驱动程序。
 
 [[legacy]]
 ====== Legacy
 
-Enable/disable the original legacy non-GL VideoCore desktop graphics driver.
+启用/禁用原始的旧版非 GL VideoCore 桌面图形驱动程序。
 
 ===== Compositor
 
-Enable/Display the xcompmgr composition manager
+启用/显示 xcompmgr 合成管理器
 
 ===== Network Interface Names
 
-Enable or disable predictable network interface names.
+启用或禁用可预测的网络接口名称。
 
 ===== Network Proxy Settings
 
-Configure the network's proxy settings.
+配置网络的代理设置。
 
 ===== Boot Order
 
-On the Raspberry Pi 4, you can specify whether to boot from USB or network if the SD card isn't inserted. See xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[this page] for more information.
+在Raspberry Pi 4 上，您可以指定如果未插入 SD 卡，是从 USB 还是网络启动。有关详细信息，请参阅 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[此页面] 。
 
 ===== Bootloader Version
 
-On the Raspberry Pi 4, you can tell the system to use the very latest boot ROM software, or revert to the factory default if the latest version causes problems.
+在Raspberry Pi 4 上，您可以告诉系统使用最新的启动 ROM 软件，或者如果最新版本导致问题，则恢复为出厂默认设置。
 
 [[update]]
 ==== Update
 
-Update this tool to the latest version.
+将此工具更新到最新版本。
 
 [[about]]
 ==== About raspi-config
 
-Selecting this option shows the following text:
+选择此选项将显示以下文本：
 
 ----
 This tool provides a straightforward way of doing initial configuration of the Raspberry Pi.
@@ -260,38 +258,37 @@ Although it can be run at any time, some of the options may have difficulties if
 [[finish]]
 ==== Finish
 
-Use this button when you have completed your changes. You will be asked whether you want to reboot or not. When used for the first time, it's best to reboot. There will be a delay in rebooting if you have chosen to resize your SD card.
+完成更改后使用此按钮。系统将询问您是否要重新启动。首次使用时，最好重新启动。如果您选择调整SD卡的大小，则重新启动将有延迟。
 
 [[raspi-config-cli]]
-== The `raspi-config` Command Line Interface
+== `raspi-config` 命令行接口
 
-The `raspi-config` tool can also be run in a non-interactive mode, which is useful for setting up a Raspberry Pi image for distribution.
+`raspi-config` 工具还可以在非交互模式下运行，这对于设置Raspberry Pi映像以进行分发非常有用。
 
 ----
 sudo raspi-config nonint <command> <arguments>
 ----
 
-The `sudo` is required because you will be changing files that you do not own as the `pi` user.
+`sudo` 是必需的，因为您将更改不以 `pi` 用户身份拥有的文件。
 
-NOTE: There is no consistent meaning for `0` and `1` in arguments. Each function will document what `0` and `1` mean for that function.
+NOTE: 在参数中 `0` 和 `1` 没有一致的含义。每个功能都将记录该功能 `0` 和 `1` 的含义。
 
 [[raspi-config-cli-commands]]
 === List of Options
 
-NOTE: Due to the continual development of the `raspi-config` tool, the list of options below may not be completely up to date. Also please be aware that different models of Raspberry Pi may have different options available.
+NOTE: 由于该工具的不断发展，下面的选项列表可能不是完全最新的。另请注意，不同型号的Raspberry Pi可能有不同的选择。
 
 ==== Wireless LAN 
 
-Allows setting of the wireless LAN SSID and passphrase.
+允许设置无线局域网SSID和密码。
 
 ----
 sudo raspi-config nonint do_wifi_ssid_passphrase <ssid> <passphrase> [hidden] [plain]
 ----
 
-Hidden: `0` = visible, `1` = hidden. Defaults to visible.
-Plain: If plain is `1`, the default, passphrase is quoted
-
-Example:
+hidden `0` = 可见，`1` = 隐藏。默认为可见。 
+普通：如果 plain 是 1，则默认，密码短语被引用
+例：
 
 ----
 sudo raspi-config nonint do_wifi_ssid_passphrase myssid mypassphrase
@@ -301,7 +298,7 @@ sudo raspi-config nonint do_wifi_ssid_passphrase myssid '"mypassphrase"' 0 0 # V
 
 ==== Audio
 
-Specify the audio output destination.
+指定音频输出目标。
 
 ----
 sudo raspi-config nonint do_audio <N>
@@ -309,27 +306,27 @@ sudo raspi-config nonint do_audio <N>
 
 ===== Raspberry Pi 4B+
 
-- `0` - bcm2835 Headphones
+- `0` - bcm2835 耳机
 - `1` - vc4-hdmi-0
 - `2` - vc4-hdmi-1
 
 [[change-user-password]]
 ===== Password
 
-You can change the 'default' user password.
+您可以更改“默认”用户密码。
 
-NOTE: Until recently the default user on Raspberry Pi OS was `pi` with the password `raspberry`. The default user is now set on first boot using a configuration wizard.
+NOTE: 直到最近，Raspberry Pi操作系统上的默认用户都是 `pi` 密码 `raspberry` .默认用户现在使用配置向导在首次引导时设置。
 
 ----
 sudo raspi-config nonint do_change_pass
 ----
 
-NOTE: This does not check for the interactive flag and will show full-screen messages.
+NOTE: 这不会检查交互式标志，并且将显示全屏消息。
 
 [[hostname]]
 ===== Hostname
 
-Set the visible name for this Raspberry Pi on a network.
+在网络上设置此Raspberry Pi的可见名称。
 
 ----
 sudo raspi-config nonint do_hostname <hostname>
@@ -338,50 +335,49 @@ sudo raspi-config nonint do_hostname <hostname>
 [[boot-options]]
 ===== Network at Boot
 
-Use this option to wait for a network connection before letting boot proceed.
+使用此选项可等待网络连接，然后再让引导继续。
 
 ----
 sudo raspi-config nonint do_boot_wait <0/1>
 ----
 
-`0` - Boot without waiting for network connection
-`1` - Boot after waiting for network connection
+`0` - 无需等待网络连接即可启动 
+`1` - 等待网络连接后启动
 
 ===== Splash Screen
 
-Enable or disable the splash screen displayed at boot time
+启用或禁用启动时显示的初始屏幕
 
 ----
 sudo raspi-config nonint do_boot_splash <0/1>
 ----
 
-`0` - Enable splash screen
-`1` - Disable splash screen
+`0` - 启用初始屏幕
+`1` - 禁用初始屏幕
 
 ===== Power LED
 
-If the model of Raspberry Pi permits it, you can change the behaviour of the power LED using this option.
-
+如果Raspberry Pi的型号允许，您可以使用此选项更改电源 LED 的行为。
 ----
 sudo raspi-config nonint do_leds <0/1>
 ----
 
-`0` - Flash for disk activity
-`1` - Be on constantly
+`0` - 闪烁指示磁盘活动
+`1` - 持续开启
 
 ==== Display Options
 
 [[resolution]]
 ===== Resolution
 
-Define the default HDMI/DVI video resolution to use when the system boots without a TV or monitor being connected. This can have an effect on RealVNC if the VNC option is enabled.
+定义系统在没有连接电视或显示器的情况下启动时要使用的默认 HDMI/DVI 视频分辨率。如果启用了 VNC 选项，这可能会对 RealVNC 产生影响。
 
 ----
 sudo raspi-config nonint do_resolution <group> <mode>
 ----
 
-Group: `2` = DMT, otherwise = CEA
-Mode: `0` = Default Automatic
+Group: `2` = DMT, 其他 = CEA
+Mode: `0` = 默认自动
 
 [[underscan]]
 ===== Underscan
@@ -396,8 +392,8 @@ On some displays, particularly monitors, disabling overscan will make the pictur
 sudo raspi-config nonint do_overscan <0/1>
 ----
 
-`0` - Enable overscan
-`1` - Disable overscan
+`0` - 启用过扫描 
+`1` - 禁用过扫描
 
 [[pixel-doubling]]
 ===== Pixel Doubling
