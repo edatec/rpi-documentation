@@ -1,15 +1,19 @@
-== Localising your Raspberry Pi
+[[localising-your-raspberry-pi]]
+== 本地化您的Raspberry Pi
 
-You can set your Raspberry Pi up to match your regional settings.
+您可以将Raspberry Pi设置为与您的区域设置相匹配。
 
-=== Changing the Language
+[[changing-the-language]]
+=== 更改语言
 
-If you want to select a different language use xref:configuration.adoc#change-locale[raspi-config].
+如果要选择其他语言，请使用 xref:configuration.adoc#change-locale[raspi-config].
 
-=== Configuring the Keyboard
+[[configuring-the-keyboard]]
+=== 配置键盘
 
-If you want to select a different keyboard use xref:configuration.adoc#change-keyboard-layout[raspi-config].
+如果要选择其他键盘，请使用 xref:configuration.adoc#change-keyboard-layout[raspi-config].
 
-=== Changing the Timezone
+[[changing-the-timezone]]
+=== 更改时区
 
-Once again, this is something you can change using the xref:configuration.adoc#change-timezone[raspi-config] tool.
+使用 xref:configuration.adoc#change-timezone[raspi-config]

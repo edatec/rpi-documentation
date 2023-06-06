@@ -46,7 +46,7 @@ NOTE: GPIO 引脚的编号不按数字顺序排列;板上存在 GPIO 引脚 0 �
 [[gpio-pinout]]
 === GPIO 引脚排列
 
-可以通过打开终端窗口并运行pinout命令来访问树莓派上的便捷参考。此工具由https://gpiozero.readthedocs.io/[GPIO Zero]  Python库提供，该库默认安装在Raspberry Pi OS中。 
+可以通过打开终端窗口并运行pinout命令来访问Raspberry Pi上的便捷参考。此工具由https://gpiozero.readthedocs.io/[GPIO Zero]  Python库提供，该库默认安装在Raspberry Pi OS中。 
 
 image::images/gpiozero-pinout.png[]
 

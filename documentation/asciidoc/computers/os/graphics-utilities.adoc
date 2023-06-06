@@ -287,7 +287,7 @@ To determine if a specific display ID is on or off, use -1 as the first paramete
 
 === vcdbg
 
-`vcdbg` 是一个应用程序，用于帮助从在ARM上运行的Linux调试VideoCore GPU。它需要以根用户身份运行。此应用程序主要用于树莓派工程师，尽管有一些命令一般用户可能会发现有用。
+`vcdbg` 是一个应用程序，用于帮助从在ARM上运行的Linux调试VideoCore GPU。它需要以根用户身份运行。此应用程序主要用于Raspberry Pi工程师，尽管有一些命令一般用户可能会发现有用。
 
 `sudo vcdbg help` 将给出可用命令的列表。
 

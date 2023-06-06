@@ -382,11 +382,9 @@ Mode: `0` = 默认自动
 [[underscan]]
 ===== Underscan
 
-Old TV sets had a significant variation in the size of the picture they produced; some had cabinets that overlapped the screen. TV pictures were therefore given a black border so that none of the picture was lost; this is called overscan. Modern TVs and monitors don't need the border, and the signal doesn't allow for it. If the initial text shown on the screen disappears off the edge, you need to enable overscan to bring the border back.
-
-Any changes will take effect after a reboot. You can have greater control over the settings by editing xref:config_txt.adoc[config.txt].
-
-On some displays, particularly monitors, disabling overscan will make the picture fill the whole screen and correct the resolution. For other displays, it may be necessary to leave overscan enabled and adjust its values.
+旧电视机产生的图像大小差异很大;有些柜子与屏幕重叠。因此，电视画面被赋予了黑色边框，因此不会丢失任何画面;这称为过扫描。现代电视和显示器不需要边框，信号也不允许。如果屏幕上显示的初始文本从边缘消失，则需要启用过扫描以恢复边框。
+任何更改都将在重新启动后生效。您可以通过编辑 xref:config_txt.adoc[config.txt] 来更好地控制设置。
+在某些显示器上，尤其是显示器上，禁用过扫描将使图像填满整个屏幕并校正分辨率。对于其他显示器，可能需要启用过扫描并调整其值。
 
 ----
 sudo raspi-config nonint do_overscan <0/1>
@@ -398,164 +396,161 @@ sudo raspi-config nonint do_overscan <0/1>
 [[pixel-doubling]]
 ===== Pixel Doubling
 
-Enable/disable 2x2 pixel mapping.
+启用/禁用 2x2 像素映射。
 
 ----
 sudo raspi-config nonint do_pixdub <0/1>
 ----
 
-`0` - Enable pixel doubling
-`1` - Disable pixel doubling
+`0` - 启用像素倍增
+`1` - 禁用像素倍增
+
 
 ===== Composite Video
 
-On the Raspberry Pi 4, enable composite video. On models prior to the Raspberry Pi 4, composite video is enabled by default so this option is not displayed.
+在Raspberry Pi 4 上，启用复合视频。在Raspberry Pi 4 之前的型号上，默认情况下启用复合视频，因此不显示此选项。
 
 ----
 sudo raspi-config nonint do_composite <0/1>
 ----
 
-`0` - Enable composite video
-`1` - Disable composite video
+`0` - 启用复合视频
+`1` - 禁用复合视频
 
 ===== Screen Blanking
 
-Enable or disable screen blanking.
+启用或禁用屏幕消隐。
 
 ----
 sudo raspi-config nonint do_blanking <0/1>
 ----
 
-`0` - Enable screen blanking
-`1` - Disable screen blanking
+`0` - 启用屏幕消隐
+`1` - 禁用屏幕消隐
 
-[[interfacing-options]]
 ==== Interfacing Options
 
-In this submenu there are the following options to enable/disable: Camera, SSH, VNC, SPI, I2C, Serial, 1-wire, and Remote GPIO.
+在此子菜单中，有以下选项可以启用/禁用：相机、SSH、VNC、SPI、I2C、串行、1-wire和远程 GPIO。
 
 [[camera]]
 ===== Camera
 
-Enable/disable the CSI camera interface.
+启用/禁用 CSI 摄像机接口。
 
 ----
 sudo raspi-config nonint do_camera <0/1>
 ----
 
-`0` - Enable camera
-`1` - Disable camera
+`0` - 启用相机
+`1` - 禁用相机
 
 [[ssh]]
 ===== SSH
 
-Enable/disable remote command line access to your Raspberry Pi using SSH.
-
-SSH allows you to remotely access the command line of the Raspberry Pi from another computer. SSH is disabled by default. Read more about using SSH on the xref:remote-access.adoc#ssh[SSH documentation page]. If connecting your Raspberry Pi directly to a public network, you should not enable SSH unless you have set up secure passwords for all users.
+使用 SSH 启用/禁用对Raspberry Pi的远程命令行访问。
+SSH允许您从另一台计算机远程访问Raspberry Pi的命令行。默认情况下，SSH 处于禁用状态。在  xref:remote-access.adoc#ssh[SSH 文档] 上阅读有关使用 SSH 的更多信息。如果将Raspberry Pi直接连接到公共网络，则不应启用SSH，除非您为所有用户设置了安全密码。
 
 ----
 sudo raspi-config nonint do_ssh <0/1>
 ----
 
-`0` - Enable SSH
-`1` - Disable SSH
+`0` - 启用 SSH 
+`1` - 禁用 SSH
 
 [[VNC]]
 ===== VNC
 
-Enable/disable the RealVNC virtual network computing server.
-
+启用/禁用 RealVNC服务。
 ----
 sudo raspi-config nonint do_vnc <0/1>
 ----
 
-`0` - Enable VNC
-`1` - Disable VNC
+`0` - 启用 VNC
+`1` - 禁用 VNC
 
 [[spi]]
 ===== SPI
 
-Enable/disable SPI interfaces and automatic loading of the SPI kernel module, needed for products such as PiFace.
-
+启用/禁用 SPI 接口并自动加载 SPI 内核模块，这是 PiFace 等产品所需的。
 ----
 sudo raspi-config nonint do_spi <0/1>
 ----
 
-`0` - Enable SPI
-`1` - Disable SPI
+`0` - 启用 SPI 
+`1` - 禁用 SPI
 
 [[i2c]]
 ===== I2C
 
-Enable/disable I2C interfaces and automatic loading of the I2C kernel module.
+启用/禁用 I2C 接口并自动加载 I2C 内核模块。
 
 ----
 sudo raspi-config nonint do_i2c <0/1>
 ----
 
-`0` - Enable I2C
-`1` - Disable I2C
+`0` - 启用 I2C 
+`1` - 禁用 I2C
 
 [[serial]]
 ===== Serial
 
-Enable/disable shell and kernel messages on the serial connection.
+在串行连接上启用/禁用 shell 和内核消息。
 
 ----
 sudo raspi-config nonint do_serial <0/1/2>
 ----
 
-`0` - Enable console over serial port
-`1` - Disable serial port
-`2` - Enable serial port
+`0` - 通过串行端口启用控制台
+`1` - 禁用串行端口
+`2` - 启用串行端口
 
 [[one-wire]]
 ===== 1-wire
 
-Enable/disable the Dallas 1-wire interface. This is usually used for DS18B20 temperature sensors.
+启用/禁用 Dallas 1-wire 接口。这通常用于DS18B20温度传感器。
 
 ----
 sudo raspi-config nonint do_onewire <0/1>
 ----
 
-`0` - Enable 1-wire
-`1` - Disable 1-wire
+`0` - 启用 1-wire
+`1` - 禁用 1-wire
 
 ===== Remote GPIO
 
-Enable or disable remote access to the GPIO pins.
+启用或禁用对 GPIO 引脚的远程访问。
 
 ----
 sudo raspi-config nonint do_rgpio <0/1>
 ----
 
-`0` - Enable remote GPIO
-`1` - Disable remote GPIO
+`0` - 启用远程 GPIO
+`1` - 禁用远程 GPIO
 
 ==== Performance Options
 
 [[overclock]]
 ==== Overclock
 
-On some models it is possible to overclock your Raspberry Pi's CPU using this tool. The overclocking you can achieve will vary; overclocking too high may result in instability. Selecting this option shows the following warning:
+在某些型号上，可以使用此工具对Raspberry Pi的 CPU 进行超频。您可以实现的超频会有所不同;超频过高可能会导致不稳定。选择此选项将显示以下警告：
 
-*Be aware that overclocking may reduce the lifetime of your Raspberry Pi.* If overclocking at a certain level causes system instability, try a more modest overclock. Hold down the Shift key during boot to temporarily disable overclocking.
+*请注意，超频可能会缩短Raspberry Pi的使用寿命。* 如果达到一定水平的超频导致系统不稳定，请尝试更适度的超频。在启动过程中按住 Shift 键可暂时禁用超频。
 
 ----
 sudo raspi-config nonint do_overclock <setting>
 ----
 
-Setting is one of:
- - `None` - The default
- - `Modest` - Overclock to 50% of the maximum
- - `Medium` - Overclock to 75% of the maximum
- - `High` - Overclock to 100% of the maximum
- - `Turbo` - Overclock to 125% of the maximum
+设置是以下设置之一:
+ - `None` - 默认
+ - `Modest` - 超频至最大值的50%
+ - `Medium` - 超频至最大值的 75% 
+ - `High` - 超频至最大值的100%
+ - `Turbo` - 超频至最大值的 125%
 
 [[memory-split]]
 ===== GPU Memory
 
-Change the amount of memory made available to the GPU.
+更改可供 GPU 使用的内存量
 
 ----
 sudo raspi-config nonint do_memory_split <megabytes>
@@ -563,39 +558,39 @@ sudo raspi-config nonint do_memory_split <megabytes>
 
 ===== Overlay File System
 
-Enable or disable a read-only filesystem
+启用或禁用只读文件系统
 
 ----
 sudo raspi-config nonint do_overlayfs <0/1>
 ----
 
-`0` - Enable overlay filesystem
-`1` - Disable overlay filesystem
+`0` - 启用覆盖文件系统
+`1` - 禁用覆盖文件系统
 
 ===== Fan
 
-Set the behaviour of a GPIO connected fan
+设置 GPIO 连接的风扇的行为
 
 ----
 sudo raspi-config nonint do_fan <0/1> <gpio> <onTemp>
 ----
 
-`0` - Enable fan
-`1` - Disable fan
+`0` - 启用风扇
+`1` - 禁用风扇
 
-GPIO defaults to `14`.
+GPIO 默认为 `14`.
 
-`onTemp` defaults to `80` °C.
+`onTemp` 默认为 `80` °C.
 
 [[localisation-options]]
 ==== Localisation Options
 
-The localisation submenu gives you these options to choose from: keyboard layout, time zone, locale, and wireless LAN country code.
+本地化子菜单为您提供了以下选项供您选择：键盘布局、时区、区域设置和无线 LAN 国家/地区代码。
 
 [[change-locale]]
 ===== Locale
 
-Select a locale, for example `en_GB.UTF-8 UTF-8`.
+选择区域设置，例如 `en_GB.UTF-8 UTF-8`.
 
 ----
 sudo raspi-config nonint do_change_locale <locale>
@@ -604,7 +599,7 @@ sudo raspi-config nonint do_change_locale <locale>
 [[change-timezone]]
 ===== Time Zone
 
-Select your local time zone, starting with the region, e.g. Europe, then selecting a city, e.g. London. Type a letter to skip down the list to that point in the alphabet.
+选择您的本地时区，从区域开始，例如欧洲，然后选择一个城市，例如伦敦。键入一个字母以将列表向下跳到字母表中的该点。
 
 ----
 sudo raspi-config nonint do_change_timezone <timezone>
@@ -614,7 +609,7 @@ sudo raspi-config nonint do_change_timezone America/Los_Angeles
 [[change-keyboard-layout]]
 ===== Keyboard
 
-This option opens another menu which allows you to select your keyboard layout. It will take a long time to display while it reads all the keyboard types. Changes usually take effect immediately, but may require a reboot.
+此选项将打开另一个菜单，允许您选择键盘布局。读取所有键盘类型时，需要很长时间才能显示。更改通常会立即生效，但可能需要重新启动。
 
 ----
 sudo raspi-config nonint do_configure_keyboard <keymap>
@@ -623,7 +618,7 @@ sudo raspi-config nonint do_configure_keyboard us
 
 ===== WLAN Country
 
-This option sets the country code for your wireless network.
+此选项设置无线网络的国家/地区代码。
 
 ----
 sudo raspi-config nonint do_wifi_country <country>
@@ -636,9 +631,9 @@ sudo raspi-config nonint do_wifi_country US
 [[expand-filesystem]]
 ===== Expand Filesystem
 
-This option will expand your installation to fill the whole SD card, giving you more space to use for files. You will need to reboot the Raspberry Pi to make this available. 
+此选项将扩展您的安装以填充整个SD卡，从而为您提供更多空间用于文件。您需要重新启动Raspberry Pi才能使其可用。
 
-WARNING: There is no confirmation: selecting the option begins the partition expansion immediately.
+WARNING: 没有确认：选择该选项会立即开始分区扩展。
 
 ----
 sudo raspi-config nonint do_expand_rootfs
@@ -647,17 +642,17 @@ sudo raspi-config nonint do_expand_rootfs
 [[GL-driver]]
 ===== GL Driver
 
-Enable/disable the experimental GL desktop graphics drivers.
+启用/禁用实验性 GL 桌面图形驱动程序。
 
 [[GL-full-KMS]]
 ====== GL (Full KMS)
 
-Enable/disable the experimental OpenGL Full KMS (kernel mode setting) desktop graphics driver.
+启用/禁用实验性 OpenGL 完整 KMS（内核模式设置）桌面图形驱动程序。
 
 [[GL-fake-KMS]]
 ====== GL (Fake KMS)
 
-Enable/disable the experimental OpenGL Fake KMS desktop graphics driver.
+启用/禁用实验性的 OpenGL 假 KMS 桌面图形驱动程序。
 
 [[legacy]]
 ====== Legacy
@@ -666,22 +661,22 @@ Enable/disable the original legacy non-GL VideoCore desktop graphics driver.
 
 ===== Compositor
 
-Enable/Display the xcompmgr composition manager
+启用/显示 xcompmgr 合成管理器
 
 ===== Network Interface Names
 
-Enable or disable predictable network interface names.
+启用或禁用可预测的网络接口名称。
 
 ----
 sudo raspi-config nonint do_net_names <0/1>
 ----
 
-`0` - Enable predictable network interface names
-`1` - Disable predictable network interface names
+`0` - 启用可预测的网络接口名称
+`1` - 禁用可预测的网络接口名称
 
 ===== Network Proxy Settings
 
-Configure the network's proxy settings.
+配置网络的代理设置。
 
 ----
 sudo raspi-config nonint do_proxy <SCHEMES> <ADDRESS>
@@ -689,24 +684,24 @@ sudo raspi-config nonint do_proxy <SCHEMES> <ADDRESS>
 
 ===== Boot Order
 
-On the Raspberry Pi 4, you can specify whether to boot from USB or network if the SD card isn't inserted. See xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[this page] for more information.
+在Raspberry Pi 4 上，您可以指定如果未插入 SD 卡，是从 USB 还是网络启动。有关详细信息，请参阅 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[此页面]。
 
 ----
 sudo raspi-config nonint do_boot_order <B1/B2/B3>
 ----
 
- - `B1` - SD Card Boot - Boot from SD Card if available, otherwise boot from USB
- - `B2` - USB Boot - Boot from USB if available, otherwise boot from SD Card
- - `B3` - Network Boot - Boot from network if SD card boot fails
+ - `B1` - SD 卡启动 - 从 SD 卡启动（如果可用），否则从 USB 启动
+ - `B2` - USB 启动 - 如果可用，则从 USB 启动，否则从 SD 卡启动
+ - `B3` - 网络启动 - 如果 SD 卡启动失败，则从网络启动
 
 ===== Bootloader Version
 
-On the Raspberry Pi 4, you can tell the system to use the very latest boot ROM software, or revert to the factory default if the latest version causes problems.
+在Raspberry Pi 4 上，您可以告诉系统使用最新的启动 ROM 软件，或者如果最新版本导致问题，则恢复为出厂默认设置。
 
 [[update]]
 ==== Update
 
-Update this tool to the latest version.
+将此工具更新到最新版本。
 
 ----
 sudo raspi-config nonint do_update

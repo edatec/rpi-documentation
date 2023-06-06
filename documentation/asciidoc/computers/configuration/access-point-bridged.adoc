@@ -1,8 +1,8 @@
-== Setting up a Bridged Wireless Access Point
+[[setting-up-a-bridged-wireless-access-point]]
+== 设置桥接无线接入点
 
-The Raspberry Pi can be used as a bridged wireless access point within an existing Ethernet network. This will extend the network to wireless computers and devices.
-
-If you wish to create a standalone wireless network, consider instead setting up a xref:configuration.adoc#setting-up-a-routed-wireless-access-point[routed access point].
+Raspberry Pi 可用作现有以太网网络中的桥接无线接入点。这会将网络扩展到无线计算机和设备。
+如果要创建独立的无线网络，请考虑改为xref:configuration.adoc#setting-up-a-routed-wireless-access-point[设置路由接入点]。
 
 ----
                                          +- RPi -------+
@@ -20,56 +20,53 @@ If you wish to create a standalone wireless network, consider instead setting up
                                          +-------------+
 ----
 
-A bridged wireless access point can be created using the inbuilt wireless features of the Raspberry Pi 4, Raspberry Pi 3 or Raspberry Pi Zero W, or by using a suitable USB wireless dongle that supports access point mode.
-It is possible that some USB dongles may need slight changes to their settings. If you are having trouble with a USB wireless dongle, please check the https://forums.raspberrypi.com/[forums].
-
-This documentation was tested on a Raspberry Pi 3B running a fresh installation of Raspberry Pi OS Buster.
+桥接无线接入点可以使用Raspberry Pi 4，Raspberry Pi 3或Raspberry Pi Zero W的内置无线功能，或使用支持接入点模式的合适USB无线加密狗来创建。 某些 USB 加密狗可能需要对其设置稍作更改。如果您在使用 USB 无线加密狗时遇到问题，请查看https://forums.raspberrypi.com/[论坛]。
 
 [[intro-to-bridged-wap]]
-=== Before you Begin
+=== 开始之前
 
-* Ensure you have administrative access to your Raspberry Pi. The network setup will be entirely reset as part of the installation: local access, with screen and keyboard connected to your Raspberry Pi, is recommended.
+* 确保您对Raspberry Pi具有管理访问权限。作为安装的一部分，网络设置将完全重置：建议使用本地访问，将屏幕和键盘连接到Raspberry Pi。
 +
 [NOTE]
 ====
-If installing remotely via SSH, connect to your Raspberry Pi *by name* rather than by IP address, e.g. `ssh pi@raspberrypi.local`, as the address of your Raspberry Pi on the network will probably change after installation. You should also be ready to add screen and keyboard if needed in case you lose contact with your Raspberry Pi after installation.
+如果通过 SSH 远程安装，请按 *名称* 而不是 IP 地址连接到您的Raspberry Pi，例如 `ssh pi@raspberrypi.local`，因为您的Raspberry Pi在网络上的地址可能会在安装后发生变化。如果需要，您还应该准备好添加屏幕和键盘，以防您在安装后与Raspberry Pi失去联系。
 ====
-* Connect your Raspberry Pi to the Ethernet network and boot the Raspberry Pi OS.
-* Ensure the Raspberry Pi OS on your Raspberry Pi is xref:os.adoc#updating-and-upgrading-raspberry-pi-os[up-to-date] and reboot if packages were installed in the process.
-* Have a wireless client (laptop, smartphone, ...) ready to test your new access point.
+* 将Raspberry Pi连接到以太网并启动Raspberry Pi操作系统。
+* 确保Raspberry Pi上的Raspberry Pi操作系统是 xref:os.adoc#updating-and-upgrading-raspberry-pi-os[最新]的，如果在此过程中安装了软件包，请重新启动。 
+* 准备好无线客户端（笔记本电脑、智能手机等）来测试您的新接入点。
 
 [[access-point-software-install]]
-=== Install AP and Management Software
+=== 安装 AP 和管理软件
 
-In order to work as a bridged access point, the Raspberry Pi needs to have the `hostapd` access point software package installed:
-
+为了用作桥接接入点，Raspberry Pi 需要安装接入点软件包 `hostapd`：
 ----
 sudo apt install hostapd
 ----
 
-Enable the wireless access point service and set it to start when your Raspberry Pi boots:
+启用无线接入点服务并将其设置为在Raspberry Pi启动时启动：
 
 ----
 sudo systemctl unmask hostapd
 sudo systemctl enable hostapd
 ----
 
-Software installation is complete. We will configure the access point software later on.
+软件安装完成。稍后我们将配置接入点软件。
 
 [[bridging]]
-=== Setup the Network Bridge
+=== 设置网桥
 
-A bridge network device running on the Raspberry Pi will connect the Ethernet and wireless networks using its built-in interfaces.
+在Raspberry Pi上运行的桥接网络设备将使用其内置接口连接以太网和无线网络。
 
-==== Create a bridge device and populate the bridge
+[[create-a-bridge-device-and-populate-the-bridge]]
+==== 创建网桥设备并填充网桥
 
-Add a bridge network device named `br0` by creating a file using the following command, with the contents below:
+通过使用以下命令创建文件来添加网桥网络设备br0，内容如下：
 
 ----
 sudo nano /etc/systemd/network/bridge-br0.netdev
 ----
 
-File contents:
+文件内容：
 
 ----
 [NetDev]
@@ -77,13 +74,13 @@ Name=br0
 Kind=bridge
 ----
 
-In order to bridge the Ethernet network with the wireless network, first add the built-in Ethernet interface (`eth0`) as a bridge member by creating the following file:
+为了将以太网网络与无线网络桥接，首先通过创建以下文件将内置以太网接口 （`eth0`） 添加为网桥成员：
 
 ----
 sudo nano /etc/systemd/network/br0-member-eth0.network
 ----
 
-File contents:
+文件内容：
 
 ----
 [Match]
@@ -93,25 +90,26 @@ Name=eth0
 Bridge=br0
 ----
 
-NOTE: The access point software will add the wireless interface `wlan0` to the bridge when the service starts. There is no need to create a file for that interface. This situation is particular to wireless LAN interfaces.
+NOTE: 接入点软件将在服务启动时将无线接口wlan0添加到网桥。无需为该接口创建文件。这种情况特定于无线 LAN 接口。
 
-Now enable the `systemd-networkd` service to create and populate the bridge when your Raspberry Pi boots:
+接入点软件将在服务启动时将无线接口wlan0添加到网桥。无需为该接口创建文件。这种情况特定于无线 LAN 接口。
 
 ----
 sudo systemctl enable systemd-networkd
 ----
 
-==== Define the bridge device IP configuration
+[[define-the-bridge-device-ip-configuration]]
+==== 定义网桥设备 IP 配置
 
-Network interfaces that are members of a bridge device are never assigned an IP address, since they communicate via the bridge. The bridge device itself needs an IP address, so that you can reach your Raspberry Pi on the network.
+作为网桥设备成员的网络接口永远不会分配 IP 地址，因为它们通过网桥进行通信。桥接设备本身需要一个 IP 地址，以便您可以在网络上访问您的Raspberry Pi。
 
-`dhcpcd`, the DHCP client on the Raspberry Pi, automatically requests an IP address for every active interface. So we need to block the `eth0` and `wlan0` interfaces from being processed, and let `dhcpcd` configure only `br0` via DHCP.
+`dhcpcd`，Raspberry Pi上的 DHCP 客户端会自动为每个活动接口请求一个 IP 地址。因此，我们需要阻止处理  `eth0` 和 `wlan0`，并 `dhcpcd` 仅通过 DHCP 进行配置 `br0`。
 
 ----
 sudo nano /etc/dhcpcd.conf
 ----
 
-Add the following line near the beginning of the file (above the first `interface xxx` line, if any):
+在文件开头附近添加以下行（第一行上方interface xxx，如果有）：
 
 ----
 denyinterfaces wlan0 eth0
@@ -124,34 +122,36 @@ Go to the end of the file and add the following:
 interface br0
 ----
 
-With this line, interface `br0` will be configured in accordance with the defaults via DHCP. Save the file to complete the IP configuration of the machine.
+使用此行，接口 `br0` 将通过 DHCP 根据默认值进行配置。保存文件以完成计算机的 IP 配置。
 
 [[ensure-wireless-operation]]
-=== Ensure Wireless Operation
+=== 确保无线操作
 
-Countries around the world regulate the use of telecommunication radio frequency bands to ensure interference-free operation.
-The Linux OS helps users https://wireless.wiki.kernel.org/en/developers/regulatory/statement[comply] with these rules by allowing applications to be configured with a two-letter "WiFi country code", e.g. `US` for a computer used in the United States.
+世界各国对电信无线电频段的使用进行监管，以确保无干扰运行。
 
-In the Raspberry Pi OS, 5 GHz wireless networking is disabled until a WiFi country code has been configured by the user, usually as part of the initial installation process (see wireless configuration pages in this xref:configuration.adoc#configuring-networking[section] for details.)
+Linux 操作系统通过允许应用程序配置两个字母的“WiFi 国家/地区代码”来帮助用户遵守这些 https://wireless.wiki.kernel.org/en/developers/regulatory/statement[规则]，例如 `US` 用于在美国使用的计算机。
 
-To ensure WiFi radio is not blocked on your Raspberry Pi, execute the following command:
+在Raspberry Pi OS中，在用户配置WiFi国家/地区代码之前，5 GHz无线网络将被禁用，通常作为初始安装过程的一部分（有关详细信息，请参阅本节中的xref:configuration.adoc#configuring-networking[无线配置]页面。
+要确保 WiFi 无线电不会在Raspberry Pi上被阻止，请执行以下命令：
+
 
 ----
 sudo rfkill unblock wlan
 ----
 
-This setting will be automatically restored at boot time. We will define an appropriate country code in the access point software configuration, next.
+此设置将在启动时自动恢复。接下来，我们将在接入点软件配置中定义适当的国家/地区代码。
 
 [[configure-access-point-software]]
-=== Configure the AP Software
+=== 软件配置AP
 
-Create the `hostapd` configuration file, located at `/etc/hostapd/hostapd.conf`, to add the various parameters for your new wireless network.
+创建位于 `/etc/hostapd/hostapd.conf` 的配置文件 `hostapd` ，为新无线网络添加各种参数。
 
 ----
 sudo nano /etc/hostapd/hostapd.conf
 ----
 
-Add the information below to the configuration file. This configuration assumes we are using channel 7, with a network name of `NameOfNetwork`, and a password `AardvarkBadgerHedgehog`. Note that the name and password should *not* have quotes around them. The passphrase should be between 8 and 64 characters in length.
+将以下信息添加到配置文件中。此配置假设我们使用通道 7，网络名称为 `NameOfNetwork` ，密码 `AardvarkBadgerHedgehog`。请注意，名称和密码 *不* 应有引号。密码的长度应介于 8 到 64 个字符之间。
+
 
 ----
 country_code=GB
@@ -170,29 +170,26 @@ wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 ----
 
-Note the lines `interface=wlan0` and `bridge=br0`: these direct `hostapd` to add the `wlan0` interface as a bridge member to `br0` when the access point starts, completing the bridge between Ethernet and wireless.
-
-Note the line `country_code=GB`: it configures the computer to use the correct wireless frequencies in the United Kingdom. *Adapt this line* and specify the two-letter ISO code of your country. See https://en.wikipedia.org/wiki/ISO_3166-1[Wikipedia] for a list of two-letter ISO 3166-1 country codes.
-
-To use the 5 GHz band, you can change the operations mode from `hw_mode=g` to `hw_mode=a`. Possible values for `hw_mode` are:
+Note the lines `interface=wlan0` and `bridge=br0`: these direct `hostapd` 请注意这一行 `country_code=GB`：它将计算机配置为在英国使用正确的无线频率。调整此行并指定您所在国家/地区的两个字母的 ISO 代码。请参阅 https://en.wikipedia.org/wiki/ISO_3166-1[维基百科] 以获取两个字母的ISO 3166-1国家/地区代码列表。
+要使用 5 GHz 频段，可以将操作模式从 `hw_mode=g` 更改为 `hw_mode=a`。`hw_mode` 
+的可能值为：
 
 * a = IEEE 802.11a (5 GHz) (Raspberry Pi 3B+ onwards)
 * b = IEEE 802.11b (2.4 GHz)
 * g = IEEE 802.11g (2.4 GHz)
 
-Note that when changing the `hw_mode`, you may need to also change the `channel` - see https://en.wikipedia.org/wiki/List_of_WLAN_channels[Wikipedia] for a list of allowed combinations.
+请注意，在更改 `hw_mode` 时，您可能还需要更改channel - 有关允许的组合列表，请参阅https://en.wikipedia.org/wiki/List_of_WLAN_channels[维基百科]。
+
 
 [[run-wireless-access-point]]
-=== Run the new Wireless AP
+=== 运行新的无线 AP
 
-Now restart your Raspberry Pi and verify that the wireless access point becomes automatically available.
+现在重新启动Raspberry Pi并验证无线接入点是否自动可用。
 
 ----
 sudo systemctl reboot
 ----
 
-Once your Raspberry Pi has restarted, search for wireless networks with your wireless client. The network SSID you specified in file `/etc/hostapd/hostapd.conf` should now be present, and it should be accessible with the specified password.
-
-If your wireless client has access to the local network and the internet, congratulations on setting up your new access point!
-
-If you encounter difficulties, contact the https://forums.raspberrypi.com/[forums] for assistance. Please refer to this page in your message.
+Raspberry Pi重新启动后，使用无线客户端搜索无线网络。您在 `/etc/hostapd/hostapd.conf` 文件中指定的网络 SSID 现在应该存在，并且应该可以使用指定的密码访问它。
+如果您的无线客户端可以访问本地网络和互联网，则恭喜您设置了新的接入点！
+如果您遇到困难，请联系 https://forums.raspberrypi.com/[论坛]寻求帮助。请在您的消息中参考此页面。

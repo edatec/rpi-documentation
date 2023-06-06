@@ -1,14 +1,16 @@
-== Rotating your Display
+[[rotating-your-display]]
+== 旋转显示器
 
-The options to rotate the display of your Raspberry Pi depend on which display driver software it is running, which may also depend on which Raspberry Pi you are using.
+旋转Raspberry Pi显示器的选项取决于它正在运行的显示驱动程序软件，这可能还取决于您使用的Raspberry Pi。
 
-=== Fake or Full KMS Graphics Driver 
+[[fake-or-full-kms-graphics-driver]]
+=== Fake 或 Full KMS 图形驱动程序 
 
-NOTE: This is the default for Raspberry Pi 4 Model B.
+NOTE: 这是Raspberry Pi 4 Model B的默认设置。
 
-If you are running the Raspberry Pi desktop then rotation is achieved by using the `Screen Configuration Utility` from the desktop `Preferences` menu. This will bring up a graphical representation of the display or displays connected to the Raspberry Pi. Right click on the display you wish to rotate and select the required option.
+如果您正在运行Raspberry Pi桌面，则使用 `Screen Configuration Utility` 桌面 `Preferences` 菜单实现旋转。这将调出连接到Raspberry Pi的一个或多个显示器的图形表示。右键单击要旋转的显示屏，然后选择所需的选项。
 
-It is also possible to change these settings using the command line `xrandr` option. The following commands give 0°, -90°, +90° and 180° rotations respectively.
+也可以使用命令行 `xrandr` 选项更改这些设置。以下命令分别提供 0°、-90°、+90° 和 180° 旋转。
 
 [,bash]
 ----
@@ -18,24 +20,23 @@ xrandr --output HDMI-1 --rotate right
 xrandr --output HDMI-1 --rotate inverted
 ----
 
-Note that the `--output` entry specifies to which device the rotation applies. You can determine the device name by simply typing `xrandr` on the command line which will display information, including the name, for all attached devices.
-
-You can also use the command line to mirror the display using the `--reflect` option. Reflection can be one of 'normal' 'x', 'y' or 'xy'. This causes the output contents to be reflected across the specified axes. For example:
+请注意，该 `--output` 条目指定轮换应用于哪个设备。您只需在命令行上键入 `xrandr` 即可确定设备名称，该命令行将显示所有连接设备的信息，包括名称。
+您还可以使用该--reflect选项使用命令行镜像显示。反射可以是'normal' 'x', 'y' 或 'xy'之一。这会导致输出内容反映在指定的轴上。例如：
 
 [,bash]
 ----
 xrandr --output HDMI-1 --reflect x
 ----
 
-If you are using the console only (no graphical desktop) then you will need to set the appropriate kernel command line flags. Change the console settings as described on the xref:configuration.adoc#the-kernel-command-line[this page].
+如果仅使用控制台（没有图形桌面），则需要设置适当的内核命令行标志。按照此xref:configuration.adoc#the-kernel-command-line[页面]上的说明更改控制台设置。
 
-=== Legacy Graphics Driver 
+=== 传统的图形驱动程序
 
-NOTE: This is the default for models prior to the Raspberry Pi 4 Model B.
+NOTE: 这是Raspberry Pi 4 型号 B 之前的型号的默认设置。
 
-There are `config.txt` options for rotating when using the legacy display drivers.
+使用旧版显示驱动程序时，`config.txt` 有一些轮换选项。
 
-`display_hdmi_rotate` is used to rotate the HDMI display, `display_lcd_rotate` is used to rotate any attached LCD panel (using the DSI or DPI interface). These options rotate both the desktop and console. Each option takes one of the following parameters :
+`display_hdmi_rotate` 用于旋转HDMI显示器，`display_hdmi_rotate` 用于旋转任何连接的LCD面板（使用DSI或DPI接口）。这些选项可旋转桌面和控制台。每个选项都采用以下参数之一：
 
 |===
 | display_*_rotate | result
@@ -59,6 +60,6 @@ There are `config.txt` options for rotating when using the legacy display driver
 | vertical flip
 |===
 
-Note that the 90 and 270 degree rotation options require additional memory on the GPU, so these will not work with the 16MB GPU split.
+请注意，90 度和 270 度旋转选项在 GPU 上需要额外的内存，因此这些选项不适用于 16MB GPU 拆分。
 
-You can combine the rotation settings with the flips by adding them together. You can also have both horizontal and vertical flips in the same way. E.g. A 180 degree rotation with a vertical and horizontal flip will be 0x20000 + 0x10000 + 2 = 0x30002.
+您可以通过将它们添加在一起来将旋转设置与翻转组合在一起。您还可以以相同的方式进行水平和垂直翻转。例如，垂直和水平翻转的 180 度旋转将0x20000 + 0x10000 + 2 = 0x30002。

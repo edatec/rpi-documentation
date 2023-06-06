@@ -1,24 +1,25 @@
-== Device Trees, Overlays, and Parameters
+[[device-trees-overlays-and-parameters]]
+== 设备树, Overlays 和参数
 
-Raspberry Pi kernels and firmware use a Device Tree (DT) to describe the hardware present in the Raspberry Pi. These Device Trees may include DT parameters that provide a degree of control over some onboard features. DT overlays allow optional external hardware to be described and configured, and they also support parameters for more control.
+Raspberry Pi内核和固件使用设备树（DT）来描述Raspberry Pi中存在的硬件。这些设备树可能包括 DT 参数，这些参数提供对某些板载功能的一定程度的控制。DT叠加允许描述和配置可选的外部硬件，并且它们还支持参数以进行更多控制。
 
-The firmware loader (`start.elf` and its variants) is responsible for loading the DTB (Device Tree Blob - a machine readable DT file). It chooses which one to load based on the board revision number, and makes certain modifications to further tailor it (memory size, Ethernet addresses etc.). This runtime customisation avoids the need for lots of DTBs with only minor differences.
+固件加载程序（`start.elf` 及其变体）负责加载 DTB（设备树 blob - 机器可读的 DT 文件）。它根据主板修订号选择要加载的，并进行某些修改以进一步定制它（内存大小、以太网地址等）。这种运行时自定义避免了对大量 DTB 的需求，只有细微的差异。
 
-`config.txt` is scanned for user-provided parameters, along with any overlays and their parameters, which are then applied. The loader examines the result to learn (for example) which UART, if any, is to be used for the console. Finally it launches the kernel, passing a pointer to the merged DTB.
+`config.txt` 扫描用户提供的参数以及任何叠加及其参数，然后应用这些参数。加载程序检查结果以了解（例如）哪个 UART（如果有）将用于控制台。最后，它启动内核，传递指向合并的 DTB 的指针。
 
 [[part1]]
 === Device Trees
 
-A Device Tree (DT) is a description of the hardware in a system. It should include the name of the base CPU, its memory configuration, and any peripherals (internal and external). A DT should not be used to describe the software, although by listing the hardware modules it does usually cause driver modules to be loaded. It helps to remember that DTs are supposed to be OS-neutral, so anything which is Linux-specific probably shouldn't be there.
+设备树 （DT） 是对系统中硬件的描述。它应包括基本 CPU 的名称、内存配置和任何外围设备（内部和外部）。DT 不应用于描述软件，尽管通过列出硬件模块通常会导致加载驱动程序模块。记住DT应该是操作系统中立的，所以任何特定于Linux的东西可能都不应该存在。
 
-A Device Tree represents the hardware configuration as a hierarchy of nodes. Each node may contain properties and subnodes. Properties are named arrays of bytes, which may contain strings, numbers (big-endian), arbitrary sequences of bytes, and any combination thereof. By analogy to a filesystem, nodes are directories and properties are files. The locations of nodes and properties within the tree can be described using a path, with slashes as separators and a single slash (`/`) to indicate the root.
+设备树将硬件配置表示为节点层次结构。每个节点可以包含属性和子节点。属性是命名的字节数组，其中可能包含字符串、数字（大端序）、任意字节序列及其任意组合。通过类比文件系统，节点是目录，属性是文件。可以使用路径来描述树中节点和属性的位置，斜杠作为分隔符，单个斜杠 （`/`） 表示根。
 
 [[part1.1]]
-==== Basic DTS syntax
+==== 基本 DTS 语法
 
-Device Trees are usually written in a textual form known as Device Tree Source (DTS) and stored in files with a `.dts` suffix. DTS syntax is C-like, with braces for grouping and semicolons at the end of each line. Note that DTS requires semicolons after closing braces: think of C ``struct``s rather than functions. The compiled binary format is referred to as Flattened Device Tree (FDT) or Device Tree Blob (DTB), and is stored in `.dtb` files.
+设备树通常以称为设备树源 （DTS） 的文本形式编写，并存储在带有后缀的 `.dts` 文件中。DTS 语法类似于 C，每行末尾都有用于分组的大括号和分号。请注意，DTS 在右大括号后需要分号：考虑 C struct 而不是函数。编译的二进制格式称为平展设备树 （FDT） 或设备树 Blob （DTB），存储在.dtb文件中。
 
-The following is a simple tree in the `.dts` format:
+以下是 `.dts` 格式的简单树：
 
 ----
 /dts-v1/;
@@ -51,55 +52,55 @@ The following is a simple tree in the `.dts` format:
 };
 ----
 
-This tree contains:
+此树包含：
 
-* a required header: `/dts-v1/`.
-* The inclusion of another DTS file, conventionally named `*.dtsi` and analogous to a `.h` header file in C - see _An aside about /include/_ below.
-* a single root node: `/`
-* a couple of child nodes: `node1` and `node2`
-* some children for node1: `child-node1` and `child-node2`
-* a label (`cousin`) and a reference to that label (`&cousin`): see _Labels and References_ below.
-* several properties scattered through the tree
-* a repeated node (`/node2`) - see _An aside about /include/_ below.
+* 必需的标头 `/dts-v1/`.
+* 包含另一个 DTS 文件，通常命名 `*.dtsi` 并类似于 C 中的头文件 `.h`  - 请参阅下面的关于 /include/ 的旁白。
+* 单个根节点: `/`
+* 几个子节点: `node1` 和 `node2`
+* 节点 1 的一些子节点: `child-node1` 和 `child-node2`
+* 标签 (`cousin`) 和对该标签的引用 (`&cousin`): 参阅 _Labels and References_。
+* 分散在树中的几个属性
+* 重复节点 (`/node2`) - 参阅 _An aside about /include/_。
 
-Properties are simple key-value pairs where the value can either be empty or contain an arbitrary byte stream. While data types are not encoded in the data structure, there are a few fundamental data representations that can be expressed in a Device Tree source file.
+属性是简单的键值对，其中的值可以是空的，也可以包含任意字节流。虽然数据类型没有在数据结构中编码，但是有一些基本的数据表示可以在设备树源文件中表达。
 
-Text strings (NUL-terminated) are indicated with double quotes:
+文本字符串（以 NUL 结尾）用双引号表示：
 
 ----
 string-property = "a string";
 ----
 
-Cells are 32-bit unsigned integers delimited by angle brackets:
+单元格是用尖括号分隔的 32 位无符号整数：
 
 ----
 cell-property = <0xbeef 123 0xabcd1234>;
 ----
 
-Arbitrary byte data is delimited with square brackets, and entered in hex:
+任意字节数据用方括号分隔，并以十六进制输入：
 
 ----
 binary-property = [01 23 45 67 89 ab cd ef];
 ----
 
-Data of differing representations can be concatenated using a comma:
+不同表示形式的数据可以使用逗号连接：
 
 ----
 mixed-property = "a string", [01 23 45 67], <0x12345678>;
 ----
 
-Commas are also used to create lists of strings:
+逗号也用于创建字符串列表：
 
 ----
 string-list = "red fish", "blue fish";
 ----
 
 [[part1.2]]
-==== An aside about `/include/`
+==== 关于 `/include/`
 
-The `/include/` directive results in simple textual inclusion, much like C's `#include` directive, but a feature of the Device Tree compiler leads to different usage patterns. Given that nodes are named, potentially with absolute paths, it is possible for the same node to appear twice in a DTS file (and its inclusions). When this happens, the nodes and properties are combined, interleaving and overwriting properties as required (later values override earlier ones).
+`/include/` 指令导致简单的文本包含，很像C #的 `#include` 指令，但是设备树编译器的一个特性导致不同的使用模式。假定节点是命名的，可能带有绝对路径，则同一个节点可能会在DTS文件(及其包含文件)中出现两次。当这种情况发生时，节点和属性被组合，根据需要交错和覆盖属性(后面的值覆盖前面的值)。
 
-In the example above, the second appearance of `/node2` causes a new property to be added to the original:
+在上面的示例中，第二次 `/node2` 出现会导致将新属性添加到原始属性：
 
 ----
 /node2 {
@@ -112,48 +113,50 @@ In the example above, the second appearance of `/node2` causes a new property to
 };
 ----
 
-It is thus possible for one `.dtsi` to overwrite, or provide defaults for, multiple places in a tree.
+因此， `.dtsi` 可以覆盖树中的多个位置或为树中的多个位置提供默认值。
 
 [[part1.3]]
-==== Labels and references
+==== 标签和引用
 
-It is often necessary for one part of the tree to refer to another, and there are four ways to do this:
+树的一部分通常需要引用另一部分，有四种方法可以做到这一点：
 
 . Path strings
 +
-Paths should be self-explanatory, by analogy with a filesystem - `/soc/i2s@7e203000` is the full path to the I2S device in BCM2835 and BCM2836. Note that although it is easy to construct a path to a property (for example, `/soc/i2s@7e203000/status`), the standard APIs don't do that; you first find a node, then choose properties of that node.
+路径应该是不言自明的，类似于文件系统- `/soc/i2s@7e203000` 是BCM2835和BCM2836中i2s设备的完整路径。注意，虽然构造一个属性的路径很容易(例如，`/soc/i2s@7e203000/status`)，但是标准的API不会这样做；首先找到一个节点，然后选择该节点的属性。
 
 . phandles
 +
-A phandle is a unique 32-bit integer assigned to a node in its `phandle` property. For historical reasons, you may also see a redundant, matching `linux,phandle`. phandles are numbered sequentially, starting from 1; 0 is not a valid phandle. They are usually allocated by the DT compiler when it encounters a reference to a node in an integer context, usually in the form of a label (see below). References to nodes using phandles are simply encoded as the corresponding integer (cell) values; there is no markup to indicate that they should be interpreted as phandles, as that is application-defined.
+phandle是在其 `phandle` 属性中分配给节点的唯一32位整数。由于历史原因，你可能还会看到一个冗余的、匹配的 `linux,phandle`。phandles按顺序编号，从1开始；0不是有效的phandle。它们通常由DT编译器在遇到对整数上下文中的节点的引用时分配，通常以标签的形式(见下文)。使用phandles对节点的引用被简单地编码为相应的整数(单元)值；没有标记表明它们应该被解释为phandles，因为这是应用程序定义的。
 
 . Labels
 +
-Just as a label in C gives a name to a place in the code, a DT label assigns a name to a node in the hierarchy. The compiler takes references to labels and converts them into paths when used in string context (`&node`) and phandles in integer context (`<&node>`); the original labels do not appear in the compiled output. Note that labels contain no structure; they are just tokens in a flat, global namespace.
+就像C语言中的标签给代码中的位置命名一样，DT标签给层次结构中的节点命名。当在字符串上下文(`&node`)和整数上下文(`<&node>`)中使用phandles时，编译器接受对标签的引用并将其转换为路径；原始标签不会出现在编译后的输出中。请注意，标签不包含任何结构；它们只是平面全局名称空间中的标记。
 
 . Aliases
 +
-Aliases are similar to labels, except that they do appear in the FDT output as a form of index. They are stored as properties of the `/aliases` node, with each property mapping an alias name to a path string. Although the aliases node appears in the source, the path strings usually appear as references to labels (`&node`), rather then being written out in full. DT APIs that resolve a path string to a node typically look at the first character of the path, treating paths that do not start with a slash as aliases that must first be converted to a path using the `/aliases` table.
+别名与标注类似，只是它们以索引的形式出现在FDT输出中。它们存储为 `/aliases` 节点的属性，每个属性将一个别名映射到一个路径字符串。尽管别名节点出现在源代码中，但路径字符串通常作为对标签(`&node`)的引用出现，而不是被完整写出。将路径字符串解析为节点的DT APIs通常会查看路径的第一个字符，将不以斜杠开头的路径视为别名，必须首先使用 `/aliases` 表将其转换为路径。
+
 
 [[part1.4]]
-==== Device Tree semantics
+==== 设备树语义
 
-How to construct a Device Tree, and how best to use it to capture the configuration of some hardware, is a large and complex subject. There are many resources available, some of which are listed below, but several points deserve mentioning in this document:
+如何构建设备树，以及如何最好地使用它来捕获某些硬件的配置，是一个庞大而复杂的主题。有许多可用的资源，下面列出了其中一些资源，但本文档中有几点值得一提：
 
-`compatible` properties are the link between the hardware description and the driver software. When an OS encounters a node with a `compatible` property, it looks it up in its database of device drivers to find the best match. In Linux, this usually results in the driver module being automatically loaded, provided it has been appropriately labelled and not blacklisted.
+`compatible` 属性是硬件描述和驱动程序软件之间的链接。当操作系统遇到具有 `compatible` 属性的节点时，它会在设备驱动程序数据库中查找，以找到最佳匹配。在Linux中，这通常会导致驱动程序模块被自动加载，前提是它已经被适当地标记并且没有被列入黑名单。
 
-The `status` property indicates whether a device is enabled or disabled. If the `status` is `ok`, `okay` or absent, then the device is enabled. Otherwise, `status` should be `disabled`, so that the device is disabled. It can be useful to place devices in a `.dtsi` file with the status set to `disabled`. A derived configuration can then include that `.dtsi` and set the status for the devices which are needed to `okay`.
+`status` 属性表示设备是启用还是禁用。如果 `status` 为 `ok`, `okay` 或 absent，则设备已启用。否则，应禁用状态，以便禁用设备。将状态设置为禁用的设备放在. `dtsi` 文件中会很有用。派生的配置可以包括该内容。`.dtsi` ，并将所需设备的状态设置为正常。
 
 [[part2]]
 === Device Tree Overlays
 
-A modern SoC (System on a Chip) is a very complicated device; a complete Device Tree could be hundreds of lines long. Taking that one step further and placing the SoC on a board with other components only makes matters worse. To keep that manageable, particularly if there are related devices that share components, it makes sense to put the common elements in `.dtsi` files, to be included from possibly multiple `.dts` files.
+现代SoC（片上系统）是一个非常复杂的设备;一个完整的设备树可能有数百行长。更进一步，将SoC与其他组件一起放在电路板上只会让事情变得更糟。为了保持可管理性，特别是如果有共享组件的相关设备，将公共元素放在 `.dtsi` 文件中是有意义的，这些元素可能包含在多个 `.dts` 文件中。
 
-When a system like Raspberry Pi also supports optional plug-in accessories such as HATs, the problem grows. Ultimately, each possible configuration requires a Device Tree to describe it, but once you factor in all the different base models and the large number of available accessories, the number of combinations starts to multiply rapidly.
+当像Raspberry Pi这样的系统也支持可选的插件配件（如 HAT）时，问题就会增加。最终，每种可能的配置都需要设备树来描述它，但是一旦考虑到所有不同的基本型号和大量可用的附件，组合的数量就会开始迅速增加。
 
-What is needed is a way to describe these optional components using a partial Device Tree, and then to be able to build a complete tree by taking a base DT and adding a number of optional elements. You can do this, and these optional elements are called "overlays".
+需要的是一种使用部分设备树描述这些可选组件的方法，然后能够通过采用基本数字孪生并添加许多可选元素来构建完整的树。您可以执行此操作，这些可选元素称为"overlays"。
 
-Unless you want to learn how to write overlays for Raspberry Pis, you might prefer to skip on to <<part3,Part 3: Using Device Trees on Raspberry Pi>>.
+除非您想学习如何为 Raspberry Pis 编写叠加层，否则您可能更愿意跳到 <<part3,Part 3: Using Device Trees on Raspberry Pi>> 在 Raspberry Pi 上使用设备树。
+
 
 [[part2.1]]
 ==== Fragments
