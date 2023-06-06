@@ -1,3 +1,4 @@
+[[using-a-usb-webcam]]
 == 使用USB网络摄像头
 您可以使用标准 USB 网络摄像头在Raspberry Pi上拍摄照片和视频，而不是使用 xref:../accessories/camera.adoc#about-the-camera-modules[Raspberry Pi 相机模块]。
 
@@ -19,7 +20,8 @@ sudo usermod -a -G video <username>
 
 若要检查是否已将用户正确添加到组中，请使用 `groups` 命令。
 
-=== Basic Usage
+[[basic-usage]]
+=== 基础用法
 
 输入 `fswebcam` 命令，后跟文件名，将使用网络摄像头拍摄照片，并保存到指定的文件名：
 
@@ -72,6 +74,7 @@ image::images/image2.jpg[Full resolution image]
 
 网络摄像头以全分辨率拍摄的照片，并显示横幅。
 
+[[removing-the-banner]]
 ==== 删除横幅
 
 现在添加 `--no-banner` 标志：
@@ -100,6 +103,7 @@ image::images/image3.jpg[Full resolution image with no banner]
 
 现在，照片以全分辨率拍摄，没有横幅
 
+[[automating-image-capture]]
 === 自动执行图像捕获
 
 您可以编写一个使用网络摄像头拍照的 Bash 脚本。下面的脚本将图像保存在目 `/home/pi/webcam` 中，因此首先使用以下命令创建 `webcam` 子目录：
@@ -149,6 +153,7 @@ Disabling banner.
 Writing JPEG image to '/home/pi/webcam/2013-06-07_2338.jpg'.
 ----
 
+[[time-lapse-captures]]
 === 延时拍摄
 
 您可以使用 `cron` 来安排以给定的时间间隔（例如每分钟拍摄一次）拍摄照片，以拍摄延时摄影。首先打开 `crontab` 进行编辑：

@@ -1,3 +1,4 @@
+[[playing-audio-and-video]]
 == 播放音频和视频
 
 [WARNING]
@@ -9,7 +10,7 @@
 
 这是硬件加速的，可以播放许多流行的音频和视频文件格式。OMXPlayer使用OpenMAX（`omx`）硬件加速接口（API），这是Raspberry Pi官方支持的媒体API。OMXPlayer由Kodi项目的Edgar Hucek开发。
 
-
+[[the-omxplayer-application]]
 === OMXPlayer应用程序
 
 最简单的命令行是 `omxplayer <name of media file>`. 媒体文件可以是音频和/或视频。对于以下示例，我们使用了包含在标准Raspberry Pi操作系统中的 H264 视频文件。
@@ -42,6 +43,7 @@ omxplayer --crop 100,100,300,300 /opt/vc/src/hello_pi/hello_video/test.h264
 omxplayer --display n /opt/vc/src/hello_pi/hello_video/test.h264
 ----
 
+[[how-to-play-audio]]
 === 如何播放音频
 
 要播放 `.MP3` 文件，请使用以下 `cd` 命令导航到 `.mp3` 终端中文件的位置，然后键入以下命令:
@@ -83,6 +85,7 @@ omxplayer -o local example.mp3
 omxplayer -o both example.mp3
 ----
 
+[[how-to-play-video]]
 === 如何播放视频
 
 要播放视频，请使用cd导航到终端中视频文件的位置，然后键入以下命令：
@@ -96,6 +99,7 @@ omxplayer example.mp4
 
 在Raspberry Pi 4 上，已删除对 MPEG2 和 VC-1 编解码器的硬件支持，因此我们建议使用 VLC 应用程序，该应用程序在软件中支持这些格式。此外，VLC 还支持 H264 和新的 HEVC 编解码器。
 
+[[an-example-video]]
 ==== 示例视频
 
 您可在Raspberry Pi上找到动画电影《_Big Buck Bunny_》的视频样本。要播放它，请在终端窗口中输入以下命令：
@@ -124,6 +128,7 @@ vlc /opt/vc/src/hello_pi/hello_video/test.h264
 
 `ffmpeg -r 30 -i video.h264 -c:v copy video.mp4`
 
+[[options-during-playback]]
 === 播放期间的选项
 
 播放期间有许多选项可用，通过按适当的键来操作。并非所有选项在所有文件上都可用。可以使用 `omxplayer --keys` 显示键绑定列表:
@@ -154,6 +159,7 @@ vlc /opt/vc/src/hello_pi/hello_video/test.h264
     up arrow    seek +600 seconds
 ----
 
+[[playing-in-the-background]]
 === 后台播放
 
 如果在没有tty(用户输入)的情况下在后台运行 `omxplayer` 将立即关闭，因此要成功运行，您需要使用 `--no-keys` 选项告诉 `omxplayer` 不需要任何用户输入。

@@ -1,3 +1,4 @@
+[[gpio-and-the-40-pin-header]]
 == GPIO 和 40-pin
 
 Raspberry Pi 的一个强大功能是沿电路板顶部边缘的一排 GPIO（通用输入/输出）引脚。在所有当前的Raspberry Pi板上都可以找到一个40针GPIO接头（在Raspberry Pi Zero，Raspberry Pi Zero W和Raspberry Pi Zero 2 W上未填充）。在Raspberry Pi 1 Model B+（2014）之前，电路板由一个较短的26引脚接头组成。所有电路板（包括Raspberry Pi 400）上的GPIO接头具有0.1英寸（2.54毫米）的引脚间距。
@@ -10,18 +11,22 @@ image::images/GPIO.png[GPIO layout]
 
 NOTE: GPIO 引脚的编号不按数字顺序排列;板上存在 GPIO 引脚 0 和 1（物理引脚 27 和 28），但保留用于高级用途（见下文）。
 
+[[voltages]]
 === 电压
 
 电路板上有两个5V引脚和两个3.3V引脚，以及许多接地引脚（0V），这些引脚是不可配置的。其余引脚均为通用3.3V引脚，这意味着输出设置为3.3V，输入可承受3.3V。
 
+[[outputs]]
 === 输出
 
 指定为输出引脚的 GPIO 引脚可以设置为高 （3.3V） 或低 （0V）。
 
+[[inputs]]
 === 输入
 
 指定为输入引脚的GPIO引脚可以读取为高电平（3.3V）或低电平（0V）。使用内部上拉或下拉电阻器可以更轻松地做到这一点。引脚 GPIO2 和 GPIO3 具有固定的上拉电阻，但对于其他引脚，可以在软件中进行配置。
 
+[[more]]
 === 更多
 
 除了简单的输入和输出设备外，GPIO 引脚还可以与各种替代功能一起使用，有些可用于所有引脚，有些可用于特定引脚。
@@ -38,6 +43,7 @@ NOTE: GPIO 引脚的编号不按数字顺序排列;板上存在 GPIO 引脚 0 �
 * Serial
  ** TX (GPIO14); RX (GPIO15)
 
+[[gpio-pinout]]
 === GPIO 引脚排列
 
 可以通过打开终端窗口并运行pinout命令来访问树莓派上的便捷参考。此工具由https://gpiozero.readthedocs.io/[GPIO Zero]  Python库提供，该库默认安装在Raspberry Pi OS中。 
@@ -48,6 +54,7 @@ image::images/gpiozero-pinout.png[]
 
 WARNING: 虽然将简单组件连接到 GPIO 引脚是完全安全的，但请务必小心连接方式。LED应具有电阻器以限制通过它们的电流。不要将 5V 用于 3.3V 组件。不要将电机直接连接到 GPIO 引脚，而应使用 https://projects.raspberrypi.org/en/projects/physical-computing/14[H 桥电路或电机控制器板]。
 
+[[permissions]]
 === 权限
 
 要使用 GPIO 端口，您的 `gpio` 用户必须是该组的成员。 `pi` 用户默认为成员，其他用户需要手动添加
@@ -57,6 +64,7 @@ WARNING: 虽然将简单组件连接到 GPIO 引脚是完全安全的，但请�
 sudo usermod -a -G gpio <username>
 ----
 
+[[gpio-in-python]]
 === Python 中的 GPIO
 
 Python 中的 GPIO https://gpiozero.readthedocs.io/[GPIO Zero] 库可以轻松开始使用 Python 控制 GPIO 设备. 该库在 https://gpiozero.readthedocs.io/[gpiozero.readthedocs.io] 有全面的记录。
@@ -82,6 +90,7 @@ while True:
 在像Thonny这样的IDE中运行它，LED将反复闪烁。
 LED 方法包括  `on()`, `off()`, `toggle()`, 和 `blink()`。
 
+[[button]]
 ==== 按钮
 
 若要读取连接到 GPIO2 的按钮的状态，可以使用以下代码：
@@ -105,6 +114,8 @@ Button functionality includes the properties `is_pressed` and `is_held`; callbac
 
 按钮功能包括属性 `is_pressed` 和 `is_held` ;回调`when_pressed` 、`when_released` 和 `when_held` ;和方法 `wait_for_press()` 和 `wait_for_release`。
 
+
+[[button-led]]
 ==== 按钮 + 指示灯
 
 要将 LED 和按钮连接在一起，您可以使用以下代码：
