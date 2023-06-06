@@ -1,55 +1,59 @@
-== Attaching the Official 7-inch Display
+[[attaching-the-official-7-inch-display]]
+== 连接官方7英寸显示屏
 
-NOTE: These instructions are intended for advanced users, if anything is unclear please use the https://forums.raspberrypi.com/viewforum.php?f=98[Raspberry Pi Compute Module forums] for technical help.
+NOTE: 这些说明适用于高级用户, 如果有任何不清楚的地方，请使用 https://forums.raspberrypi.com/viewforum.php?f=98[Raspberry Pi 计算模块论坛] 获取技术帮助。
 
-Please ensure your system software is updated before starting. Largely speaking the approach taken for Compute Modules 1, 3, and 4 is the same, but there are minor differences in physical setup required. It will be indicated where a step applies only to a specific platform.
+在开始之前，请确保您的系统软件已更新。在很大程度上，计算模块 1、3 和 4 采用的方法是相同的，但所需的物理设置略有不同。将指示步骤仅适用于特定平台的位置。
 
-WARNING: The Raspberry Pi Zero camera cable cannot be used as an alternative to the RPI-DISPLAY adaptor, because its wiring is different.
+WARNING: Raspberry Pi Zero相机电缆不能用作RPI-DISPLAY适配器的替代品，因为它的接线不同。
 
-WARNING: Please note that the display is *not* designed to be hot pluggable. It (and camera modules) should always be connected or disconnected with the power off.
+WARNING: 请注意，显示器 *不是* 设计为可热插拔的。它（和相机模块）应始终在关闭电源时连接或断开连接。
 
-=== Quickstart Guide (Display Only)
+[[quickstart-guide-display-only]]
+=== 快速入门指南 (仅显示)
 
-Connecting to DISP1
+连接到DISP1
 
-. Connect the display to the DISP1 port on the Compute Module IO board through the 22W to 15W display adaptor.
-. (CM1 and CM3 only) Connect these pins together with jumper wires:
+. 连接到 DISP1通过 1W 至 22W 显示适配器将显示器连接到计算模块 IO 板上的 DISP15 端口。
+. (仅限 CM1 和 CM3) 用跳线将这些引脚连接在一起：
 +
 ----
  GPIO0 - CD1_SDA
  GPIO1 - CD1_SCL
 ----
 
-. Power up the Compute Module and run:
+. 打开计算模块电源并运行:
 +
 `+sudo wget https://datasheets.raspberrypi.com/cmio/dt-blob-disp1-only.bin -O /boot/dt-blob.bin+`
 
-. Reboot for the `dt-blob.bin` file to be read.
+. 重新启动以读取文件 `dt-blob.bin`。
 
 
-Connecting to DISP0
+连接到DISP0
 
-. Connect the display to the DISP0 port on the Compute Module IO board through the 22W to 15W display adaptor.
-. (CM1 and CM3 only) Connect these pins together with jumper wires:
+. 通过 0W 至 22W 显示适配器将显示器连接到计算模块 IO 板上的 DISP15 端口。
+. (仅限 CM1 和 CM3) 用跳线将这些引脚连接在一起：
 +
 ----
  GPIO28 - CD0_SDA
  GPIO29 - CD0_SCL
 ----
 
-. Power up the Compute Module and run:
+. 打开计算模块电源并运行:
 +
 `+sudo wget https://datasheets.raspberrypi.com/cmio/dt-blob-disp0-only.bin -O /boot/dt-blob.bin+`
 
-. Reboot for the `dt-blob.bin` file to be read.
+. 重新启动以读取文件 `dt-blob.bin`。
 
-=== Quickstart Guide (Display and Cameras)
+[[quickstart-guide-display-and-cameras]]
+=== 快速入门指南 (显示器和相机)
 
-==== To enable the display and one camera:*
+[[to-enable-the-display-and-one-camera]]
+==== 启用显示器和1个摄像头:*
 
-. Connect the display to the DISP1 port on the Compute Module IO board through the 22W to 15W display adaptor, called RPI-DISPLAY.
-. Connect the Camera Module to the CAM1 port on the Compute Module IO board through the 22W to 15W adaptor called RPI-CAMERA. Alternatively, the Raspberry Pi Zero camera cable can be used.
-. (CM1 and CM3 only) Connect these pins together with jumper wires:
+. 通过 1W 到 22W 显示适配器（称为 RPI-DISPLAY）将显示器连接到计算模块 IO 板上的 DISP15 端口。
+. 通过称为 RPI-CAMERA 的 1W 至 22W 适配器将相机模块连接到计算模块 IO 板上的 CAM15 端口。或者，可以使用Raspberry Pi Zero相机电缆。
+. (仅限 CM1 和 CM3) 用跳线将这些引脚连接在一起：
 +
 ----
  GPIO0 - CD1_SDA
@@ -59,19 +63,20 @@ Connecting to DISP0
 ----
 +
 image:images/CMIO-Cam-Disp-GPIO.jpg[GPIO connection for a single display and Camera Modules]
- (Please note this image needs to be updated to have the extra jumper leads removed and use the standard wiring (2&3 not 4&5))
+ (请注意，此图像需要更新以移除额外的跳线并使用标准接线（2&3而不是4&5） )
 
-. Power up the Compute Module and run:
+. 打开计算模块电源并运行:
 +
 `+sudo wget https://datasheets.raspberrypi.com/cmio/dt-blob-disp1-cam1.bin -O /boot/dt-blob.bin+`
 
-. Reboot for the `dt-blob.bin` file to be read.
+. 重新启动以读取文件 `dt-blob.bin`。
 
-==== To enable the display and both cameras:*
+[[to-enable-the-display-and-both-cameras]]
+==== 启用显示器和2个摄像头:*
 
-. Follow the steps for connecting the display and one camera above.
-. Connect the Camera Module to the CAM0 port on the Compute Module IO board through the 22W to 15W adaptor called RPI-CAMERA. Alternatively, the Raspberry Pi Zero camera cable can be used.
-. (CM1 and CM3 only) Add links:
+. 按照上述步骤连接显示器和一台相机。
+. 通过称为 RPI-CAMERA 的 0W 至 22W 适配器将相机模块连接到计算模块 IO 板上的 CAM15 端口。或者，可以使用Raspberry Pi Zero相机电缆。
+. (仅限 CM1 和 CM3) 增加连接:
 +
 ----
  GPIO28 - CD0_SDA
@@ -80,28 +85,29 @@ image:images/CMIO-Cam-Disp-GPIO.jpg[GPIO connection for a single display and Cam
  GPIO31 - CAM0_IO0
 ----
 
-. (CM4 only) Add jumpers to J6.
-. Power up the Compute Module and run:
+. （仅限 CM4）将跳线添加到 J6。
+. 打开计算模块电源并运行:
 +
 `+sudo wget https://datasheets.raspberrypi.com/cmio/dt-blob-disp1-cam2.bin -O /boot/dt-blob.bin+`
 
-. Reboot for the `dt-blob.bin` file to be read.
+. 重新启动以读取文件 `dt-blob.bin`。
 +
 image:images/CMIO-Cam-Disp-Example.jpg[Camera Preview on the 7 inch display]
- (Please note this image needs to be updated to show two Camera Modules and the standard wiring)
+ (请注意，此图像需要更新以显示两个摄像头模块和标准接线)
 
-=== Software Support
+[[software-support-2]]
+=== 软件支持
 
-There is no additional configuration required to enable the touchscreen. The touch interface should work out of the box once the screen is successfully detected.
+无需其他配置即可启用触摸屏。成功检测到屏幕后，触摸界面应开箱即用。
 
-If you wish to disable the touchscreen element and only use the display side, you can add the command `disable_touchscreen=1` to /boot/config.txt to do so.
+如果您希望禁用触摸屏元素并仅使用显示侧，则可以将 `disable_touchscreen=1` 命令添加到 /boot/config.txt 中。
 
-To make the firmware to ignore the display even if connected, then add `ignore_lcd=1` to /boot/config.txt.
+要使固件即使在连接后也忽略显示，请添加 `ignore_lcd=1` 到 /boot/config.txt。
 
-=== Firmware Configuration
+[[firmware-configuration]]
+=== 固件配置
 
-The firmware looks at the dt-blob.bin file for the relevant configuration to use
-for the screen. It looks at the pin_number@ defines for
+固件在dt-blob.bin文件中查找用于屏幕的相关配置。它查看pin_number@定义为：
 
 ----
 DISPLAY_I2C_PORT
@@ -110,16 +116,16 @@ DISPLAY_SCL
 DISPLAY_DSI_PORT
 ----
 
-The I2C port, SDA and SCL pin numbers are self explanatory. DISPLAY_DSI_PORT
-selects between DSI1 (the default) and DSI0.
+I2C 端口、SDA 和 SCL 引脚编号是不言自明的。DISPLAY_DSI_PORT 在 DSI1（默认）和 DSI0 之间进行选择。
 
-Once all the required changes have been made to the `dts` file, it needs to be compiled and placed on the boot partition of the device.
+对 `dts` 文件进行所有必需的更改后，需要对其进行编译并将其放置在设备的引导分区上。
 
-Instructions for doing this can be found on the xref:configuration.adoc#changing-the-default-pin-configuration[Pin Configuration] page.
+有关执行此操作的说明，请参阅 xref:configuration.adoc#changing-the-default-pin-configuration[引脚配置] 页面。
 
-==== Sources
+[[sources]]
+==== 来源
 
 * https://datasheets.raspberrypi.com/cmio/dt-blob-disp1-only.dts[dt-blob-disp1-only.dts]
 * https://datasheets.raspberrypi.com/cmio/dt-blob-disp1-cam1.dts[dt-blob-disp1-cam1.dts]
 * https://datasheets.raspberrypi.com/cmio/dt-blob-disp1-cam2.dts[dt-blob-disp1-cam2.dts]
-* https://datasheets.raspberrypi.com/cmio/dt-blob-disp0-only.dts[dt-blob-disp0-only.dts] (Uses wiring as for CAM0)
+* https://datasheets.raspberrypi.com/cmio/dt-blob-disp0-only.dts[dt-blob-disp0-only.dts] (使用与CAM0相同的接线)

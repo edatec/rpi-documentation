@@ -1,407 +1,406 @@
-== Raspberry Pi 4 Bootloader Configuration
+[[raspberry-pi-4-bootloader-configuration]]
+== Raspberry Pi 4 引导加载程序配置
 
-=== Editing the Configuration
+[[editing-the-configuration]]
+=== 编辑配置
 
-Before editing the bootloader configuration, xref:os.adoc#updating-and-upgrading-raspberry-pi-os[update your system] to get the latest version of the `rpi-eeprom` package.
 
-To view the current EEPROM configuration: +
+在编辑引导加载程序配置之前，请 xref:os.adoc#updating-and-upgrading-raspberry-pi-os[更新系统] 以获取最新版本的 `rpi-eeprom` 软件包。
+
+要查看当前的EEPROM配置: +
 `rpi-eeprom-config`
 
-To edit it and apply the updates to latest EEPROM release: +
+要对其进行编辑并将更新应用到最新的EEPROM版本，请执行以下操作: +
 `sudo -E rpi-eeprom-config --edit`
 
-Please see the xref:raspberry-pi.adoc#raspberry-pi-4-boot-eeprom[boot EEPROM] page for more information about the EEPROM update process.
+有关 EEPROM 更新过程的详细信息，请参阅 xref:raspberry-pi.adoc#raspberry-pi-4-boot-eeprom[启动 EEPROM] 界面。
 
-=== Configuration Properties
+[[configuration-properties]]
+=== 配置属性
 
-This section describes all the configuration items available in the bootloader. The syntax is the same as xref:config_txt.adoc[config.txt] but the properties are specific to the bootloader. xref:config_txt.adoc#conditional-filters[Conditional filters] are also supported except for EDID.
+本节介绍引导加载程序中可用的所有配置项。语法与 xref:config_txt.adoc[config.txt] 相同，但属性是特定于引导加载程序。除 EDID 外，还支持xref:config_txt.adoc#conditional-filters[条件筛选器] 。
 
 [[BOOT_UART]]
 ==== BOOT_UART
 
-If `1` then enable UART debug output on GPIO 14 and 15. Configure the receiving debug terminal at 115200bps, 8 bits, no parity bits, 1 stop bit.
+如果 `1` 然后启用 UART 调试输出在 GPIO 14 和 15 上。将接收调试终端配置为 115200bps、8 位、无奇偶校验位、1 个停止位。
 
-Default: `0`
+默认值: `0`
 
 [[WAKE_ON_GPIO]]
 ==== WAKE_ON_GPIO
 
-If `1` then `sudo halt` will run in a lower power mode until either GPIO3 or GLOBAL_EN are shorted to ground.
+如果 `1` 然后 `sudo halt` 将在低功耗模式下运行，直到GPIO3或GLOBAL_EN短路到地。
 
-Default: `1`
+默认值: `1`
 
 [[POWER_OFF_ON_HALT]]
 ==== POWER_OFF_ON_HALT
 
-If `1` and `WAKE_ON_GPIO=0` then `sudo halt` will switch off all PMIC outputs. This is lowest possible power state for halt but may cause problems with some HATs because 5V will still be on. `GLOBAL_EN` must be shorted to ground to boot.
+如果 `1` 且 `WAKE_ON_GPIO=0` ，则 `sudo halt` 将关闭所有PMIC输出。这是halt可能的最低功耗状态，但可能会给某些帽子带来问题，因为5V电压仍然存在。`GLOBAL_EN` 必须对地短路才能启动。
 
-Raspberry Pi 400 has a dedicated power button which operates even if the processor is switched off. This behaviour is enabled by default, however, `WAKE_ON_GPIO=2` may be set to use an external GPIO power button instead of the dedicated power button.
+Raspberry Pi 400 有一个专用的电源按钮，即使处理器关闭也能运行。这种行为默认启用，但是，`WAKE_ON_GPIO=2`可以设置为使用外部GPIO电源按钮，而不是专用电源按钮。
 
-Default: `0`
+默认值: `0`
 
 [[BOOT_ORDER]]
 ==== BOOT_ORDER
 
-The `BOOT_ORDER` setting allows flexible configuration for the priority of different boot modes. It is represented as a 32-bit unsigned integer where each nibble represents a boot-mode. The boot modes are attempted in lowest significant nibble to highest significant nibble order.
+该 `BOOT_ORDER` 设置允许灵活配置不同引导模式的优先级。它表示为 32 位无符号整数，其中每个半字节表示一个引导模式。引导模式以最低有效半字节到最高有效半字节顺序尝试。
 
 
 [discrete]
-====== `BOOT_ORDER` fields
+====== `BOOT_ORDER` 领域
 
-The BOOT_ORDER property defines the sequence for the different boot modes. It is read right to left and up to 8 digits may be defined.
+BOOT_ORDER 属性定义不同引导模式的顺序。它从右到左读取，最多可以定义 8 位数字。
 
 |===
-| Value | Mode | Description
+| 价值 | 模式 | 描述
 
 | 0x0
-| SD CARD DETECT
-| Try SD then wait for card-detect to indicate that the card has changed - deprecated now that 0xf (RESTART) is available.
+| SD卡检测
+| 尝试 SD，然后等待卡检测指示卡已更改 - 现在0xf（重新启动）可用，因此已弃用。
 
 | 0x1
-| SD CARD
-| SD card (or eMMC on Compute Module 4).
+| SD卡
+| SD 卡（或计算模块 4 上的 eMMC）。
 
 | 0x2
-| NETWORK
-| Network boot - See xref:remote-access.adoc#network-boot-your-raspberry-pi[Network boot server tutorial]
+| 网络
+| 网络引导 - 参见 xref:remote-access.adoc#network-boot-your-raspberry-pi[网络引导服务教程]
 
 | 0x3
 | RPIBOOT
-| RPIBOOT - See https://github.com/raspberrypi/usbboot[usbboot]
+| RPIBOOT - 参见 https://github.com/raspberrypi/usbboot[usbboot]
 
 | 0x4
 | USB-MSD
-| USB mass storage boot - See xref:raspberry-pi.adoc#usb-mass-storage-boot[USB mass storage boot]
+| USB 大容量存储引导 - 参见 xref:raspberry-pi.adoc#usb-mass-storage-boot[USB大容量存储引导]
 
 | 0x5
 | BCM-USB-MSD
-| USB 2.0 boot from USB Type C socket (CM4: USB type A socket on CM4IO board).
+| USB 2.0 从 USB C 型插座启动（CM4：CM4IO 板上的 USB A 型插座）。
 
 | 0x6
 | NVME
-| CM4 only: boot from an NVMe SSD connected to the PCIe interface. See xref:raspberry-pi.adoc#nvme-ssd-boot[NVMe boot] for more details.
+| 仅限 CM4：从连接到 PCIe 接口的 NVMe 固态硬盘启动。有关更多详细信息，参见 xref:raspberry-pi.adoc#nvme-ssd-boot[NVMe boot] 。
 
 | 0x7
 | HTTP
-| HTTP boot over ethernet. See xref:raspberry-pi.adoc#http-boot[HTTP boot] for more details.
+| 通过以太网进行 HTTP 引导。 有关更多详细信息，参见 xref:raspberry-pi.adoc#http-boot[HTTP boot] 。
 
 | 0xe
 | STOP
-| Stop and display error pattern. A power cycle is required to exit this state.
+| 停止并显示错误模式。需要电源重启才能退出此状态。
 
 | 0xf
 | RESTART
-| Restart from the first boot-mode in the BOOT_ORDER field i.e. loop
+| 从BOOT_ORDER字段中的第一个引导模式重新启动，即循环。
 |===
 
-`RPIBOOT` is intended for use with Compute Module 4 to load a custom debug image (e.g. a Linux RAM-disk) instead of the normal boot. This should be the last boot option because it does not currently support timeouts or retries.
+`RPIBOOT` 旨在与计算模块 4 一起使用，以加载自定义调试映像（例如 Linux RAM 磁盘）而不是正常引导。这应该是最后一个引导选项，因为它当前不支持超时或重试。
 
 [discrete]
-====== `BOOT_ORDER` examples
+====== `BOOT_ORDER` 示例
 
 |===
-| BOOT_ORDER | Description
+| BOOT_ORDER | 描述
 
 | 0xf41
-| Try SD first, followed by USB-MSD then repeat (default if BOOT_ORDER is empty)
+| 首先尝试 SD，然后尝试 USB-MSD，然后重复（如果BOOT_ORDER为空，则默认）。
 
 | 0xf14
-| Try USB first, followed by SD then repeat
+| 首先尝试 USB，然后尝试 SD，然后重复。
 
 | 0xf21
-| Try SD first, followed by NETWORK then repeat
+| 首先尝试 SD，然后尝试网络，然后重复。
 |===
 
 [[MAX_RESTARTS]]
 ==== MAX_RESTARTS
 
-If the RESTART (`0xf`) boot-mode is encountered more than MAX_RESTARTS times then a watchdog reset is triggered. This isn't recommended for general use but may be useful for test or remote systems where a full reset is needed to resolve issues with hardware or network interfaces.
+如果遇到 RESTART (`0xf`) 引导模式的次数超过 MAX_RESTARTS 次，则会触发看门狗复位。不建议将其用于常规用途，但对于需要完全重置以解决硬件或网络接口问题的测试或远程系统可能很有用。
 
-Default: `-1` (infinite)
+默认值: `-1` (无限)
 
 [[SD_BOOT_MAX_RETRIES]]
 ==== SD_BOOT_MAX_RETRIES
 
-The number of times that SD boot will be retried after failure before moving to the next boot-mode defined by `BOOT_ORDER`. +
-`-1` means infinite retries.
+SD引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一个引导模式。 +
+`-1` 意味着无限次重试。
 
-Default: `0`
+默认值: `0`
 
 [[NET_BOOT_MAX_RETRIES]]
 ==== NET_BOOT_MAX_RETRIES
 
-The number of times that network boot will be retried after failure before moving to the next boot-mode defined by `BOOT_ORDER`. +
-`-1` means infinite retries.
+网络引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一个引导模式。 +
+`-1` 意味着无限次重试。 +
 
-Default: `0`
+默认值: `0`
 
 [[DHCP_TIMEOUT]]
 ==== DHCP_TIMEOUT
 
-The timeout in milliseconds for the entire DHCP sequence before failing the current iteration.
+当前迭代失败之前整个 DHCP 序列的超时（以毫秒为单位）。
 
-Minimum: `5000` +
-Default: `45000`
+最小值: `5000` +
+默认值: `45000`
 
 [[DHCP_REQ_TIMEOUT]]
 ==== DHCP_REQ_TIMEOUT
 
-The timeout in milliseconds before retrying DHCP DISCOVER or DHCP REQ.
+重试 DHCP 发现或 DHCP REQ 之前的超时（以毫秒为单位）。
 
-Minimum: `500` +
-Default: `4000`
+最小值: `500` +
+默认值: `4000`
 
 [[TFTP_FILE_TIMEOUT]]
 ==== TFTP_FILE_TIMEOUT
 
-The timeout in milliseconds for an individual file download via TFTP.
+通过 TFTP 下载单个文件的超时（以毫秒为单位）。
 
-Minimum: `5000` +
-Default: `30000`
+最小值: `5000` +
+默认值: `30000`
 
 [[TFTP_IP]]
 ==== TFTP_IP
 
-Optional dotted decimal ip address (e.g. `192.168.1.99`) for the TFTP server which overrides the server-ip from the DHCP request. +
-This may be useful on home networks because tftpd-hpa can be used instead of dnsmasq where broadband router is the DHCP server.
+TFTP 服务器的可选点分十进制 IP 地址（例如192.168.1.99），用于覆盖来自 DHCP 请求的服务器 ip。 +
+这在家庭网络上可能很有用，因为可以使用tftpd-hpa代替dnsmasq，其中宽带路由器是DHCP服务器。
 
-Default: ""
+默认值: ""
 
 [[TFTP_PREFIX]]
 ==== TFTP_PREFIX
 
-In order to support unique TFTP boot directories for each Raspberry Pi the bootloader prefixes the filenames with a device specific directory. If neither start4.elf nor start.elf are found in the prefixed directory then the prefix is cleared.
-On earlier models the serial number is used as the prefix, however, on Raspberry Pi 4 the MAC address is no longer generated from the serial number making it difficult to automatically create tftpboot directories on the server by inspecting DHCPDISCOVER packets. To support this the TFTP_PREFIX may be customized to either be the MAC address, a fixed value or the serial number (default).
+为了支持每个Raspberry Pi的唯一 TFTP 引导目录，引导加载程序会在文件名前面加上设备特定的目录。如果在前缀目录中找不到 start4.elf 和 start.elf，则清除前缀。
+在早期型号上，序列号用作前缀，但是，在Raspberry Pi 4上，MAC地址不再从序列号生成，因此很难通过检查DHCPDISCOVER数据包在服务器上自动创建tftpboot目录。为了支持此功能，可以将TFTP_PREFIX自定义为 MAC 地址、固定值或序列号（默认）。
 
 |===
-| Value | Description
+| 数值 | 描述
 
 | 0
-| Use the serial number e.g. `9ffefdef/`
+| 使用序列号，例如 `9ffefdef/`
 
 | 1
-| Use the string specified by TFTP_PREFIX_STR
+| 使用由 TFTP_PREFIX_STR 指定的字符串
 
 | 2
-| Use the MAC address e.g. `dc-a6-32-01-36-c2/`
+| 使用 MAC 地址，例如 `dc-a6-32-01-36-c2/`
 |===
 
-Default: 0
+默认值: 0
 
 [[TFTP_PREFIX_STR]]
 ==== TFTP_PREFIX_STR
 
-Specify the custom directory prefix string used when `TFTP_PREFIX` is set to 1. For example:- `TFTP_PREFIX_STR=tftp_test/`
+指定当 `TFTP_PREFIX` 设置为1时使用的自定义目录前缀字符串。例如:- `TFTP_PREFIX_STR=tftp_test/`
 
-Default: "" +
-Max length: 32 characters
+默认值: "" +
+最大长度: 32个字符
 
 [[PXE_OPTION43]]
 ==== PXE_OPTION43
 
-Overrides the PXE Option43 match string with a different string. It's normally better to apply customisations to the DHCP server than change the client behaviour but this option is provided in case that's not possible.
+使用不同的字符串覆盖 PXE Option43 匹配字符串。通常，将自定义应用于 DHCP 服务器比更改客户端行为更好，但如果无法做到这一点，则会提供此选项。
 
-Default: `Raspberry Pi Boot`
+默认值: `Raspberry Pi Boot`
 
 [[DHCP_OPTION97]]
 ==== DHCP_OPTION97
 
-In earlier releases the client GUID (Option97) was just the serial number repeated 4 times. By default, the new GUID format is
-the concatenation of the fourcc for `RPi4` (0x34695052 - little endian), the board revision (e.g. 0x00c03111) (4-bytes), the least significant 4 bytes of the mac address and the 4-byte serial number.
-This is intended to be unique but also provide structured information to the DHCP server, allowing Raspberry Pi 4 computers to be identified without relying upon the Ethernet MAC OUID.
+在早期版本中，客户端GUID(选项97)只是重复4次的序列号。默认情况下，新的GUID格式是 `RPi4` 的fourcc(0x 34695052-little endian)、板版本(例如0x00c03111) (4字节)、mac地址的4个最低有效字节和4字节序列号的串联。这是唯一的，但也为DHCP服务器提供结构化信息，允许Raspberry Pi 4计算机在不依赖以太网MAC OUID的情况下被识别。
 
-Specify DHCP_OPTION97=0 to revert the old behaviour or a non-zero hex-value to specify a custom 4-byte prefix.
+指定 DHCP_OPTION97=0 以还原旧行为，或指定非零十六进制值以指定自定义 4 字节前缀。
 
-Default: `0x34695052`
+默认值: `0x34695052`
 
 [[MAC_ADDRESS]]
 ==== MAC_ADDRESS
 
-Overrides the Raspberry Pi Ethernet MAC address with the given value. e.g. `dc:a6:32:01:36:c2`
+用给定的值覆盖Raspberry Pi以太网 MAC 地址。例如 `dc:a6:32:01:36:c2`
 
-Default: ""
+默认值: ""
 
 [[MAC_ADDRESS_OTP]]
 ==== MAC_ADDRESS_OTP
-Overrides the Raspberry Pi Ethernet MAC address with a value stored in the xref:raspberry-pi.adoc#write-and-read-customer-otp-values[Customer OTP] registers.
+使用存储在 xref:raspberry-pi.adoc#write-and-read-customer-otp-values[Customer OTP] 寄存器中的值覆盖Raspberry Pi以太网 MAC 地址。
 
-For example, to use a MAC address stored in rows 0 and 1 of the `Customer OTP`.
+例如，要使用存储在 `Customer OTP` 的行 0 和行 1 中的 MAC 地址。
 ----
 MAC_ADDRESS_OTP=0,1
 ----
 
-The first value (row 0 in the example) contains the OUI and the most significant 8 bits of the MAC address. The second value (row 1 in the example) stores the remaining 16-bits of the MAC address.
-This is the same format as used for the Raspberry Pi MAC address programmed at manufacture.
+第一个值（示例中的第 0 行）包含 OUI 和 MAC 地址中最重要的 8 位。第二个值（示例中的第 1 行）存储 MAC 地址的剩余 16 位。 这与用于制造时编程的Raspberry Pi MAC地址的格式相同。
 
-Any two customer rows may be selected and combined in either order. 
-
-The `Customer OTP` rows are OTP registers 36 to 43 in the `vcgencmd otp_dump` output so if the first two rows are programmed as follows then `MAC_ADDRESS_OTP=0,1` would give a MAC address of `e4:5f:01:20:24:7e`.
+可以选择任意两个客户行，并按任一顺序组合。
+`Customer OTP` 行是 `vcgencmd otp_dump` 输出中的OTP寄存器36至43，因此，如果前两行编程如下，则 `MAC_ADDRESS_OTP=0,1` ，将给出 `e4:5f:01:20:24:7e` 的MAC地址。
 
 ----
 36:247e0000
 37:e45f0120
 ----
 
-Default: ""
+默认值: ""
 
-==== Static IP address configuration
+[[static-ip-address-configuration]]
+==== 静态IP地址配置
 
-If TFTP_IP and the following options are set then DHCP is skipped and the static IP configuration is applied. If the TFTP server is on the same subnet as the client then GATEWAY may be omitted.
+如果设置了TFTP_IP和以下选项，则跳过 DHCP 并应用静态 IP 配置。如果 TFTP 服务器与客户端位于同一子网上，则可以省略网关。
 
 [[CLIENT_IP]]
 ===== CLIENT_IP
 
-The IP address of the client e.g. `192.168.0.32`
+客户端的IP地址，例如 `192.168.0.32`
 
-Default: ""
+默认值: ""
 
 [[SUBNET]]
 ===== SUBNET
 
-The subnet address mask e.g. `255.255.255.0`
+子网掩码地址，例如 `255.255.255.0`
 
-Default: ""
+默认值: ""
 
 [[GATEWAY]]
 ===== GATEWAY
 
-The gateway address to use if the TFTP server is on a different subnet e.g. `192.168.0.1`
+如果 TFTP 服务器位于不同的子网上，则要使用的网关地址，例如 `192.168.0.1`
 
-Default: ""
+默认值: ""
 
 [[DISABLE_HDMI]]
 ==== DISABLE_HDMI
 
-The xref:raspberry-pi.adoc#boot-diagnostics-on-the-raspberry-pi-4[HDMI boot diagnostics] display is disabled if `DISABLE_HDMI=1`. Other non-zero values are reserved for future use.
+如果 `DISABLE_HDMI=1` ，则禁用 xref:raspberry-pi.adoc#boot-diagnostics-on-the-raspberry-pi-4[HDMI 启动诊断] 显示。 其他非零值保留供将来使用。
 
-Default: `0`
+默认值: `0`
 
 [[HDMI_DELAY]]
 ==== HDMI_DELAY
 
-Skip rendering of the HDMI diagnostics display for up to N seconds (default 5) unless a fatal error occurs. The default behaviour is designed to avoid the bootloader diagnostics screen from briefly appearing during a normal SD / USB boot.
+跳过 HDMI 诊断显示的渲染长达 N 秒（默认为 5），除非发生致命错误。默认行为旨在避免引导加载程序诊断屏幕在正常的SD / USB启动期间短暂出现。
 
-Default: `5`
+默认值: `5`
 
 [[ENABLE_SELF_UPDATE]]
 ==== ENABLE_SELF_UPDATE
 
-Enables the bootloader to update itself from a TFTP or USB mass storage device (MSD) boot filesystem.
+使引导加载程序能够从 TFTP 或 USB 大容量存储设备 （MSD） 引导文件系统更新自身。
 
-If self update is enabled then the bootloader will look for the update files (.sig/.upd) in the boot file system. If the update image differs from the current image then the update is applied and system is reset. Otherwise, if the EEPROM images are byte-for-byte identical then boot continues as normal.
+如果启用了自我更新，则引导加载程序将在引导文件系统中查找更新文件 （.sig/.upd）。如果更新映像与当前映像不同，则应用更新并重置系统。否则，如果EEPROM映像逐字节相同，则引导将继续正常进行。
 
-Notes:-
+注意:-
 
-* Self-update is not enabled in SD boot; the ROM can already load recovery.bin from the SD card.
-* Bootloader releases prior to 2021 do not support `self-update`.
-* For network boot make sure that the TFTP `boot` directory can be mounted via NFS and that `rpi-eeprom-update` can write to it.
+* SD启动中未启用自我更新；ROM已经可以从SD卡加载recovery.bin。
+* 2021年之前的引导加载程序版本不支持 `self-update`.
+* 对于网络引导，确保TFTP `boot` 目录可以通过NFS挂载，并且 `rpi-eeprom-update` 可以写入其中。
 
-Default: `1`
+默认值: `1`
 
 [[FREEZE_VERSION]]
 ==== FREEZE_VERSION
 
-Previously this property was only checked by the `rpi-eeprom-update` script. However, now that self-update is enabled the bootloader will also check this property. If set to 1, this overrides `ENABLE_SELF_UPDATE` to stop automatic updates. To disable `FREEZE_VERSION` you will have to use an SD card boot with recovery.bin.
+以前，该属性仅由 `rpi-eeprom-update` 脚本检查. 然而，现在自更新被启用，引导装载程序也将检查这个属性。 如果设置为1，这将覆盖 `ENABLE_SELF_UPDATE` 以停止自动更新。 要禁用 `FREEZE_VERSION` 您必须使用带recovery.bin的SD卡启动。
 
-*Custom EEPROM update scripts must also check this flag.*
+*自定义EEPROM更新脚本也必须检查该标志。*
 
-Default: `0`
+默认值: `0`
 
 [[HTTP_HOST]]
 ==== HTTP_HOST
 
-If network install or HTTP boot is initiated, `boot.img` and `boot.sig` are downloaded from this server.
+如果启动了网络安装或HTTP引导，则从该服务器下载 `boot.img` 和 `boot.sig` 。
 
-Invalid host names will be ignored. They should only contain lower case alphanumeric characters and `-` or `.`.
-If `HTTP_HOST` is set then HTTPS is disabled and plain HTTP used instead.
-You can specify an IP address to avoid the need for a DNS lookup.
-Don`t include the HTTP scheme or any forward slashes in the hostname.
+无效的主机名将被忽略。它们应该只包含小写字母数字字符和 `-` 或 `.` 。 如果设置了 `HTTP_HOST` ，则禁用HTTPS，而使用普通HTTP。您可以指定一个IP地址，以避免需要DNS查找。主机名中不要包含HTTP方案或任何正斜杠。
 
-Default: `fw-download-alias1.raspberrypi.com`
+默认值: `fw-download-alias1.raspberrypi.com`
 
 [[HTTP_PORT]]
 ==== HTTP_PORT
 
-You can use this property to change the port used for network install and HTTP boot. HTTPS is enabled when using the default host `fw-download-alias1.raspberrypi.com`. If `HTTP_HOST` is changed then HTTPS is disabled and plain HTTP will be used instead.
+您可以使用此属性来更改用于网络安装和HTTP引导的端口。使用默认主机 `fw-download-alias1.raspberrypi.com` 时，HTTPS处于启用状态。如果更改了 `HTTP_HOST` ，则会禁用HTTPS，而使用普通HTTP。
 
-When HTTPS is disabled, plain HTTP will still be used even if `HTTP_PORT` is changed to `443`.
+禁用HTTPS时，即使 `HTTP_PORT`更改为 `443` ，仍将使用普通HTTP。
 
-Default: `443` if HTTPS is enabled otherwise `80`
+如果启用了HTTPS，默认值为 `443` ，否则为 `80` 。
 
 [[HTTP_PATH]]
 ==== HTTP_PATH
 
-The path used for network install and HTTP boot.
+用于网络安装和HTTP引导的路径。
 
-The case of the path *is* significant.
-Use forward (Linux) slashes for the path separator.
-Leading and trailing forward slashes are not required.
+这条道路的情况 *是* 很重要。
+使用正斜杠(Linux)作为路径分隔符。
+不需要前导和尾随正斜杠。
 
-If `HTTP_HOST` is not set, `HTTP_PATH` is ignored and the URL will be `\https://fw-download-alias1.raspberrypi.com:443/net_install/boot.img`. If `HTTP_HOST` is set the URL will be `\http://<HTTP_HOST>:<HTTP_PORT>/<HTTP_PATH>/boot.img`
+如果未设置 `HTTP_HOST` , 则忽略 `HTTP_PATH` , URL将为 `\https://fw-download-alias1.raspberrypi.com:443/net_install/boot.img` 。 如果设置了 `HTTP_HOST` 值， URL 将为 `\http://<HTTP_HOST>:<HTTP_PORT>/<HTTP_PATH>/boot.img`
 
-Default: `net_install`
+默认值: `net_install`
 
 [[IMAGER_REPO_URL]]
 ==== IMAGER_REPO_URL
 
-The embedded Raspberry Pi Imager application is configured with a json file downloaded at startup.
+嵌入式Raspberry Pi成像仪应用程序配置有启动时下载的json文件。
 
-You can change the URL of the json file used by the embedded Raspberry Pi Imager application to get it to offer your own images.
-You can test this with the standard https://www.raspberrypi.com/software/[Raspberry Pi Imager] application by passing the URL via the `--repo` argument.
+您可以更改嵌入式Raspberry Pi Imager应用程序使用的json文件的URL，让它提供您自己的图像。
+您可以使用标准的 https://www.raspberrypi.com/software/[Raspberry Pi Imager] 应用程序通过 `--repo` 参数传递URL来测试这一点。
 
-Default: `\http://downloads.raspberrypi.org/os_list_imagingutility_v3.json`
+默认值: `\http://downloads.raspberrypi.org/os_list_imagingutility_v3.json`
 
 [[NET_INSTALL_ENABLED]]
 ==== NET_INSTALL_ENABLED
 
-When network install is enabled, the bootloader displays the network install screen on boot if it detects a keyboard.
+启用网络安装时，如果引导程序检测到键盘，它会在引导时显示网络安装屏幕。
 
-To enable network install, add `NET_INSTALL_ENABLED=1`, or to disable network install add `NET_INSTALL_ENABLED=0`.
+要启用网络安装，请添加 `NET_INSTALL_ENABLED=1`, 要禁用网络安装，请添加 `NET_INSTALL_ENABLED=0`。
 
-This setting is ignored and network install is disabled if `DISABLE_HDMI=1` is set.
+如果设置了 `DISABLE_HDMI=1` ，此设置将被忽略，网络安装将被禁用。.
 
-In order to detect the keyboard, network install must initialise the USB controller and enumerate devices. This increases boot time by approximately 1 second so it may be advantageous to disable network install in some embedded applications.
+为了检测键盘，网络安装必须初始化USB控制器并枚举设备。这增加了大约1秒的启动时间，因此在某些嵌入式应用中禁用网络安装可能是有利的。
 
-Default: `1` on Raspberry Pi 4 and Raspberry Pi 400, and `0` on Compute Module 4.
+默认值: 在Raspberry Pi 4和Raspberry Pi 400上为 `1` ，在计算模块4上为 `0` 。
 
 [[NET_INSTALL_KEYBOARD_WAIT]]
 ==== NET_INSTALL_KEYBOARD_WAIT
 
-If network install is enabled, the bootloader attempts to detect a keyboard and the `SHIFT` key to initiate network install. You can change the length of this wait in milliseconds with this property.
+如果启用了网络安装，引导程序会尝试检测键盘和 `SHIFT` 键来启动网络安装。您可以使用此属性更改等待时间(以毫秒为单位)。 
 
-Setting this to `0` disables the keyboard wait, although network install can still be initiated if no boot files are found and USB boot-mode `4` is in `BOOT_ORDER`.
+将此项设置为 `0` 将禁用键盘等待，尽管如果没有找到引导文件并且USB引导模式 `4` 处于`BOOT_ORDER` 状态，仍然可以启动网络安装。
 
-NOTE: Testing suggests keyboard and SHIFT detection takes at least 750ms.
+NOTE: 测试表明键盘和 SHIFT 检测至少需要 750 毫秒。
 
-Default: `900`
+默认值: `900`
 
 [[NETCONSOLE]]
-==== NETCONSOLE - advanced logging
+==== NETCONSOLE - 高级日志记录
 
-`NETCONSOLE` duplicates debug messages to the network interface. The IP addresses and ports are defined by the `NETCONSOLE` string.
+`NETCONSOLE` 将调试消息复制到网络接口。IP地址和端口由 `NETCONSOLE` 字符串定义。
 
-NOTE: NETCONSOLE blocks until the ethernet link is established or a timeout occurs. The timeout value is `DHCP_TIMEOUT` although DHCP is not attempted unless network boot is requested.
+NOTE: NETCONSOLE会一直阻塞，直到以太网链接建立或超时。超时值是 `DHCP_TIMEOUT` ，尽管除非请求网络启动，否则不会尝试DHCP。
 
-===== Format
+[[format]]
+===== 格式
 
-See https://wiki.archlinux.org/index.php/Netconsole
+参见 https://wiki.archlinux.org/index.php/Netconsole
 
 ----
 src_port@src_ip/dev_name,dst_port@dst_ip/dst_mac
 E.g. 6665@169.254.1.1/,6666@/
 ----
 
-In order to simplify parsing, the bootloader requires every field separator to be present. The source ip address must be specified but the following fields may be left blank and assigned default values.
+为了简化解析，引导加载程序要求每个字段分隔符都存在。必须指定源 IP 地址，但以下字段可以留空并分配默认值。
 
 * src_port - 6665
-* dev_name - "" (the device name is always ignored)
+* dev_name - "" (始终忽略设备名称)
 * dst_port - 6666
 * dst_ip - 255.255.255.255
 * dst_mac - 00:00:00:00:00
 
-One way to view the data is to connect the test Raspberry Pi 4 to another Raspberry Pi running WireShark and select "`udp.srcport == 6665`" as a filter and select `+Analyze -> Follow -> UDP stream+` to view as an ASCII log.
+查看数据的一种方法是将测试的Raspberry Pi 4连接到另一个运行WireShark的Raspberry Pi，选择 "`udp.srcport == 6665`" 作为过滤器，然后选择 `+Analyze -> Follow -> UDP stream+` 以ASCII日志的形式查看。
 
-`NETCONSOLE` should not be enabled by default because it may cause network problems. It can be enabled on demand via a GPIO filter e.g.
+`NETCONSOLE` 默认情况下不应启用，因为它可能会导致网络问题。它可以通过 GPIO 过滤器按需启用，例如
 
 ----
 # Enable debug if GPIO 7 is pulled low
@@ -409,219 +408,221 @@ One way to view the data is to connect the test Raspberry Pi 4 to another Raspbe
 NETCONSOLE=6665@169.254.1.1/,6666@/
 ----
 
-Default: ""  (not enabled) +
-Max length: 32 characters
+默认值: ""  (未启用) +
+最大长度: 32个字符
 
 [[PARTITION]]
-==== PARTITION
+==== 分区
 
-The `PARTITION` option may be used to specify the boot partition number, if it has not explicitly been set by the `reboot` command (e.g. `sudo reboot N`) or by `boot_partition=N` in `autoboot.txt`.
-This could be used to boot from a rescue partition if the user presses a button.
+如果没有通过 `reboot` 命令(例如sudo reboot N)或 `autoboot.txt` 中的 `boot_partition=N` 明确设置分区选项，则分区选项可用于指定引导分区号。
+如果用户按下按钮，这可用于从救援分区引导。
+
 ----
 # Boot from partition 2 if GPIO 7 is pulled low
 [gpio7=0]
 PARTITION=2
 ----
 
-Default: 0
+默认值: 0
 
 [[USB_MSD_EXCLUDE_VID_PID]]
 ==== USB_MSD_EXCLUDE_VID_PID
 
-A list of up to 4 VID/PID pairs specifying devices which the bootloader should ignore. If this matches a HUB then the HUB won't be enumerated, causing all downstream devices to be excluded.
-This is intended to allow problematic (e.g. very slow to enumerate) devices to be ignored during boot enumeration. This is specific to the bootloader and is not passed to the OS.
+最多 4 个 VID/PID 对的列表，指定引导加载程序应忽略的设备。如果这与 HUB 匹配，则不会枚举 HUB，从而导致排除所有下游设备。 
+这旨在允许在引导枚举期间忽略有问题（例如枚举非常慢）的设备。这是特定于引导加载程序的，不会传递给操作系统。
 
-The format is a comma-separated list of hexadecimal values with the VID as most significant nibble. Spaces are not allowed.
-E.g. `034700a0,a4231234`
+格式是以逗号分隔的十六进制值列表，其中 VID 是最重要的半字节。不允许使用空格。 例如 `034700a0,a4231234`
 
-Default: ""
+默认值: ""
 
 [[USB_MSD_DISCOVER_TIMEOUT]]
 ==== USB_MSD_DISCOVER_TIMEOUT
 
-If no USB mass storage devices are found within this timeout then USB-MSD is stopped and the next boot-mode is selected
+如果在此超时内未找到 USB 大容量存储设备，则停止 USB-MSD 并选择下一个启动模式。
 
-Minimum: `5000` (5 seconds) +
-Default: `20000` (20 seconds) +
+最小值: `5000` (5 秒) +
+默认值: `20000` (20 秒) +
 
 [[USB_MSD_LUN_TIMEOUT]]
 ==== USB_MSD_LUN_TIMEOUT
 
-How long to wait in milliseconds before advancing to the next LUN e.g. a multi-slot SD-CARD reader. This is still being tweaked but may help speed up boot if old/slow devices are connected as well as a fast USB-MSD device containing the OS.
+在前进到下一个 LUN（例如多插槽 SD-CARD 读卡器）之前等待多长时间（以毫秒为单位）。这仍在调整中，但如果连接了旧的/慢速设备以及包含操作系统的快速USB-MSD设备，则可能有助于加快启动速度。
 
-Minimum: `100` +
-Default: `2000` (2 seconds)
+最小值: `100` +
+默认值: `2000` (2 秒)
 
 [[USB_MSD_PWR_OFF_TIME]]
 ==== USB_MSD_PWR_OFF_TIME
 
-During USB mass storage boot, power to the USB ports is switched off for a short time to ensure the correct operation of USB mass storage devices. Most devices work correctly using the default setting: change this only if you have problems booting from a particular device. Setting `USB_MSD_PWR_OFF_TIME=0` will prevent power to the USB ports being switched off during USB mass storage boot.
+在 USB 大容量存储启动期间，USB 端口的电源会关闭一小段时间，以确保 USB 大容量存储设备的正确运行。大多数设备使用默认设置可以正常工作：仅当您在从特定设备启动时遇到问题时，才更改此设置。设置 `USB_MSD_PWR_OFF_TIME=0` 将防止在 USB 大容量存储启动期间关闭 USB 端口的电源。
 
-Minimum: `250` +
-Maximum: `5000` +
-Default: `1000` (1 second)
+最小值: `250` +
+最大值: `5000` +
+默认值: `1000` (1 秒)
 
 [[USB_MSD_STARTUP_DELAY]]
 ==== USB_MSD_STARTUP_DELAY
 
-If defined, delays USB enumeration for the given timeout after the USB host controller has initialised. If a USB hard disk drive takes a long time to initialise and triggers USB timeouts then this delay can be used to give the driver additional time to initialise. It may also be necessary to increase the overall USB timeout (`USB_MSD_DISCOVER_TIMEOUT`).
+如果已定义，则在 USB 主控制器初始化后，将 USB 枚举延迟给定超时。如果 USB 硬盘驱动器初始化需要很长时间并触发 USB 超时，则此延迟可用于为驱动程序提供额外的初始化时间。可能还需要增加整体 USB 超时 (`USB_MSD_DISCOVER_TIMEOUT`) 。
 
-Minimum: `0` +
-Maximum: `30000` (30 seconds) +
-Default: `0`
+最小值: `0` +
+最大值: `30000` (30 秒) +
+默认值: `0`
 
 [[VL805]]
 ==== VL805
-Compute Module 4 only.
+仅限计算模块 4。
 
-If the `VL805` property is set to `1` then the bootloader will search for a VL805 PCIe XHCI controller and attempt to initialise it with VL805 firmware embedded in the bootloader EEPROM. This enables industrial designs to use VL805 XHCI controllers without providing a dedicated SPI EEPROM for the VL805 firmware.
+如果该 `VL805` 属性设置为 `1` ， 则引导加载程序将搜索 VL805 PCIe XHCI 控制器，并尝试使用嵌入在引导加载程序 EEPROM 中的 VL805 固件对其进行初始化。这使得工业设计能够使用 VL805 XHCI 控制器，而无需为 VL805 固件提供专用的 SPI EEPROM。
 
-* On Compute Module 4 the bootloader never writes to the dedicated VL805 SPI EEPROM. This option just configures the controller to load the firmware from SDRAM.
-* Do not use this option if the VL805 XHCI controller has a dedicated EEPROM. It will fail to initialise because the VL805 ROM will attempt to use a dedicated SPI EEPROM if fitted.
-* The embedded VL805 firmware assumes the same USB configuration as Raspberry Pi 4B (2 USB 3.0 ports and 4 USB 2.0 ports). There is no support for loading alternate VL805 firmware images, a dedicated VL805 SPI EEPROM should be used instead for such configurations.
+* 在计算模块 4 上，引导加载程序从不写入专用的 VL805 SPI EEPROM。此选项仅将控制器配置为从 SDRAM 加载固件。
+* 如果 VL805 XHCI 控制器具有专用的 EEPROM，请不要使用此选项。它将无法初始化，因为VL805 ROM将尝试使用专用的SPI EEPROM（如果安装）。
+* 嵌入式 VL805 固件采用与树莓派 4B 相同的 USB 配置（2 个 USB 3.0 端口和 4 个 USB 2.0 端口）。不支持加载备用 VL805 固件映像，应使用专用的 VL805 SPI EEPROM 进行此类配置。
 
-Default: `0`
+默认值: `0`
 
 [[XHCI_DEBUG]]
 ==== XHCI_DEBUG
 
-This property is a bit-field which controls the verbosity of USB debug messages for mass storage boot-mode. Enabling all of these messages generates a huge amount of log data which will slow down booting and may even cause boot to fail. For verbose logs it's best to use `NETCONSOLE`.
+此属性是一个位字段，用于控制大容量存储引导模式的 USB 调试消息的详细程度。启用所有这些消息会生成大量日志数据，这会减慢启动速度，甚至可能导致启动失败。对于详细日志，最好使用 `NETCONSOLE` 。
 
 |===
-| Value | Log
+| 取值 | 日志
 
 | 0x1
-| USB descriptors
+| USB 描述符
 
 | 0x2
-| Mass storage mode state machine
+| 大容量存储模式状态机
 
 | 0x4
-| Mass storage mode state machine - verbose
+| 大容量存储模式状态机 - 详细
 
 | 0x8
-| All USB requests
+| 所有 USB 请求
 
 | 0x10
-| Device and hub state machines
+| 设备和集线器状态机
 
 | 0x20
-| All xHCI TRBs (VERY VERBOSE)
+| 所有 xHCI TRB（非常详细）
 
 | 0x40
-| All xHCI events (VERY VERBOSE)
+| 所有 xHCI 事件（非常详细）
 |===
 
-To combine values, add them together. For example:
+若要合并值，请将它们相加。例如：
 
 ----
 # Enable mass storage and USB descriptor logging
 XHCI_DEBUG=0x3
 ----
 
-Default: `0x0` (no USB debug messages enabled)
+默认值: `0x0` (未启用 USB 调试消息)
 
 [[config_txt]]
-==== config.txt section
+==== config.txt 部分
 
-After reading `config.txt` the GPU firmware `start4.elf` reads the bootloader EEPROM config and checks for a section called `[config.txt]`. If the `[config.txt]` section exists then the contents from the start of this section to the end of the file is appended in memory, to the contents of the `config.txt` file read from the boot partition.  This can be used to automatically apply settings to every operating system, for example, dtoverlays.
+在读取 `config.txt` 之后，GPU固件 `start4.elf` 读取引导加载程序EEPROM配置并检查名为 `[config.txt]` 的部分。如果 `[config.txt]` 部分存在，那么从该段开始到文件结尾的内容将被附加到内存中从引导分区读取的 `config.txt` f文件的内容中。这可用于自动将设置应用于每个操作系统，例如dtoverlays。
 
-WARNING: If an invalid configuration which causes boot to fail is specified then the bootloader EEPROM will have to be re-flashed.
+WARNING: 如果指定了导致引导失败的无效配置，则必须重新刷新引导加载程序EEPROM。
 
-=== Configuration Properties in `config.txt`
+[[configuration-properties-in-config-txt]]
+===  `config.txt` 中的配置属性
 
 [[boot_ramdisk]]
 ==== boot_ramdisk
-If this property is set to `1` then the bootloader will attempt load a ramdisk file called `boot.img` containing the boot xref:configuration.adoc#boot-folder-contents[boot file-system]. Subsequent files (e.g. `start4.elf`) are read from the ramdisk instead of the original boot file-system.
+如果该属性设置为 `1` ，那么引导加载程序将尝试加载一个名为 `boot.img` 的 ramdisk 文件， 其中包含 xref:configuration.adoc#boot-folder-contents[引导文件系统]。后续文件 (例如  `start4.elf`) 从ramdisk中读取，而不是从原始引导文件系统中读取。
 
-The primary purpose of `boot_ramdisk` is to support `secure-boot`, however, unsigned `boot.img` files can also be useful to Network Boot or `RPIBOOT` configurations.
+`boot_ramdisk`的主要目的是支持 `secure-boot`, 但是，未签名的 `boot.img` 文件对于网络引导或 `RPIBOOT` 配置也很有用。
 
-* The maximum size for a ramdisk file is 96MB.
-* `boot.img` files are raw disk `.img` files. The recommended format is a plain FAT32 partition with no MBR.
-* The memory for the ramdisk filesystem is released before the operating system is started.
-* If xref:raspberry-pi.adoc#fail-safe-os-updates-tryboot[TRYBOOT] is selected then the bootloader will search for `tryboot.img` instead of `boot.img`.
-* See also xref:config_txt.adoc#autoboot-txt[autoboot.txt]
+* 虚拟硬盘文件的最大大小为 96MB。
+* `boot.img` 文件是原始磁盘 `.img` 文件。 推荐的格式是没有 MBR 的普通 FAT32 分区。
+* 虚拟硬盘文件系统的内存在操作系统启动之前释放。
+* 如果选择了 xref:raspberry-pi.adoc#fail-safe-os-updates-tryboot[TRYBOOT] 引导加载程序将搜索 `tryboot.img` 而不是 `boot.img`。
+* 另参见 xref:config_txt.adoc#autoboot-txt[autoboot.txt]
 
-For more information about `secure-boot` and creating `boot.img` files please see https://github.com/raspberrypi/usbboot/blob/master/Readme.md[USBBOOT]
+有关 `secure-boot`和创建 `boot.img` 文件的更多信息，请参见 https://github.com/raspberrypi/usbboot/blob/master/Readme.md[USBBOOT]
 
-Default: `0`
+默认值: `0`
 
 [[boot_load_flags]]
 ==== boot_load_flags
 
-Experimental property for custom firmware (bare metal).
+自定义固件（裸机）的实验属性。
 
-Bit 0 (0x1) indicates that the .elf file is custom firmware. This disables any compatibility checks (e.g. is USB MSD boot supported) and resets PCIe before starting the executable.
+位 0 （0x1） 表示 .elf 文件是自定义固件。这将禁用任何兼容性检查（例如，是否支持 USB MSD 启动）并在启动可执行文件之前重置 PCIe。
 
-Default: `0x0`
+默认值: `0x0`
 
 [[uart_2ndstage]]
 ==== uart_2ndstage
 
-If `uart_2ndstage` is `1` then enable debug logging to the UART. This option also automatically enables UART logging in `start.elf`. This is also described on the xref:config_txt.adoc#boot-options[Boot options] page.
+如果 `uart_2ndstage` 为 `1` ，则启用UART的调试记录。该选项还会自动启用. 该选项还会自动启用 `start.elf` 中的UART日志记录。这也在 xref:config_txt.adoc#boot-options[Boot options] 页面中进行了描述。
 
-The `BOOT_UART` property also enables bootloader UART logging but does not enable UART logging in `start.elf` unless `uart_2ndstage=1` is also set.
+`BOOT_UART` 属性还会启用引导加载程序UART日志记录，但不会启用 `start.elf` 中的UART日志记录，除非还设置了 `uart_2ndstage=1` 。
 
-Default: `0`
+默认值: `0`
 
 [[erase_eeprom]]
 ==== erase_eeprom
 
-If `erase_eeprom` is set to `1` then `recovery.bin` will erase the entire SPI EEPROM instead of flashing the bootloader image. This property has no effect during a normal boot.
+如果 `erase_eeprom` 设置为 `1` ， `recovery.bin` 将擦除整个SPI EEPROM，而不是刷新引导加载程序映像。该属性在正常启动过程中不起作用。
 
-Default: `0`
+默认值: `0`
 
 [[eeprom_write_protect]]
 ==== eeprom_write_protect
 
-Configures the EEPROM `Write Status Register`. This can be set to either mark the entire EEPROM as write-protected or clear write-protection.
+配置EEPROM `Write Status Register`。 这可以设置为将整个EEPROM标记为写保护或清除写保护。
 
-This option must be used in conjunction with the EEPROM `/WP` pin which controls updates to the EEPROM `Write Status Register`.  Pulling `/WP` low (CM4 `EEPROM_nEP` or Pi4B `TP5`) does NOT write-protect the EEPROM unless the `Write Status Register` has also been configured.
+此选项必须与 EEPROM `/WP` 引脚配合使用，该引脚控制EEPROM `Write Status Register` 。  拉低 `/WP` low (CM4 `EEPROM_nEP` 或 Pi4B `TP5`) 不会对EEPROM进行写保护，除非已经配置了`Write Status Register` 。
 
-See the https://www.winbond.com/resource-files/w25x40cl_f%2020140325.pdf[Winbond W25x40cl datasheet] for further details.
+详情请参见 https://www.winbond.com/resource-files/w25x40cl_f%2020140325.pdf[Winbond W25x40cl datasheet] 。
 
-`eeprom_write_protect` settings in `config.txt` for `recovery.bin`.
+`recovery.bin` 的 `config.txt` 中的 `eeprom_write_protect` 设置。
 
 |===
-| Value | Description
+| 取值 | 描述
 
 | 1
-| Configures the write protect regions to cover the entire EEPROM.
+| 配置写保护区域以覆盖整个EEPROM。
 
 | 0
-| Clears the write protect regions.
+| 清除写保护区域。
 
 | -1
-| Do nothing.
+| 什么都不做。
 |===
 
-NOTE: `flashrom` does not support clearing of the write-protect regions and will fail to update the EEPROM if write-protect regions are defined.
+NOTE: `flashrom` 不支持清除写保护区域，如果定义了写保护区域，将无法更新 EEPROM。
 
-Default: `-1`
+默认值: `-1`
 
 [[bootloader_update]]
 ==== bootloader_update
 
-This option may be set to 0 to block self-update without requiring the EEPROM configuration to be updated. This is sometimes useful when updating multiple Raspberry Pis via network boot because this option can be controlled per Raspberry Pi (e.g. via a serial number filter in `config.txt`).
+此选项可以设置为 0 以阻止自我更新，而无需更新 EEPROM 配置。这在通过网络引导更新多个树莓派时有时很有用，因为此选项可以按树莓派控制（例如，通过 `config.txt` 中的序列号过滤器）。
 
-Default: `1`
+默认值: `1`
 
-=== Secure Boot configuration properties in `config.txt`
-The following `config.txt` properties are used to program the `secure-boot` OTP settings. These changes are irreversible and can only be programmed via `RPIBOOT` when flashing the bootloader EEPROM image.  This ensures that `secure-boot` cannot be set remotely or by accidentally inserting a stale SD card image.
+[[secure-boot-configuration-properties-in-config-txt]]
+===  `config.txt` 中的安全启动配置属性
+以下 `config.txt` 属性用于对 `secure-boot` OTP设置进行编程。这些更改是不可逆的，并且只能在刷新引导加载程序EEPROM映像时通过RPIBOOT进行编程。这确保了 `secure-boot` 不能被远程设置或通过意外插入过时的SD卡映像来设置。
 
-For more information about enabling `secure-boot` please see the https://github.com/raspberrypi/usbboot/blob/master/Readme.md#secure-boot[secure-boot readme] and the https://github.com/raspberrypi/usbboot/blob/master/secure-boot-example/README.md[secure-boot tutorial] in the https://github.com/raspberrypi/usbboot[USBBOOT] repo.
+有关启用 `secure-boot` 的详细信息，请参见 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#secure-boot[secure-boot readme] 和   https://github.com/raspberrypi/usbboot[USBBOOT] 中的 https://github.com/raspberrypi/usbboot/blob/master/secure-boot-example/README.md[secure-boot tutorial] 。
 
 [[program_pubkey]]
 ==== program_pubkey
-If this property is set to `1` then `recovery.bin` will write the hash of the public key in the EEPROM image to OTP.  Once set, the bootloader will reject EEPROM images signed with different RSA keys or unsigned images.
+如果此属性设置为 `1`， 则 `recovery.bin` 将 EEPROM 映像中公钥写入 OTP。设置后，引导加载程序将拒绝使用不同 RSA 密钥签名的 EEPROM 映像或未签名映像。
 
-Default: `0`
+默认值: `0`
 
 [[revoke_devkey]]
 ==== revoke_devkey
-If this property is set to `1` then `recovery.bin` will write a value to OTP that prevents the ROM from loading old versions of the second stage bootloader which do not support `secure-boot`. This prevents `secure-boot` from being turned off by reverting to an older release of the bootloader.
+如果该属性被设置为 `1` ，则 `recovery.bin` 将 向OTP写入一个值，以防止ROM加载不支持`secure-boot` 的第二阶段引导加载程序的旧版本。这可以防止通过恢复到旧版本的引导加载程序来关闭安全引导。
 
-Default: `0`
+默认值: `0`
 
 [[program_rpiboot_gpio]]
 ==== program_rpiboot_gpio

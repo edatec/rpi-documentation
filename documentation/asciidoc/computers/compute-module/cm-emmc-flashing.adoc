@@ -1,73 +1,84 @@
-== Flashing the Compute Module eMMC
+[[flashing-the-compute-module-emmc]]
+== 烧录处理器模块eMMC
 
-The Compute Module has an on-board eMMC device connected to the primary SD card interface. This guide explains how to write data to the eMMC storage using a Compute Module IO board.
+处理器模块有一个连接到主SD卡接口的板载eMMC设备。本指南介绍了如何使用处理器模块IO board将数据写入eMMC存储。
 
-Please also read the section in the xref:compute-module.adoc#datasheets-and-schematics[Compute Module Datasheets]
+请参见 xref:compute-module.adoc#datasheets-and-schematics[处理器模块Datasheets]中的对应内容。
 
-IMPORTANT: For mass provisioning of CM3, CM3+ and CM4 the https://github.com/raspberrypi/cmprovision[Raspberry Pi Compute Module Provisioning System] is recommended.
+IMPORTANT: 对于CM3、CM3+ 和 CM4 的大规模配置，建议使用 https://github.com/raspberrypi/cmprovision[Raspberry Pi 处理器模块配置系统].
 
-=== Steps to Flash the eMMC 
+[[steps-to-flash-the-emmc]]
+=== 烧录eMMC的步骤 
 
-To flash the Compute Module eMMC, you either need a Linux system (a Raspberry Pi is recommended, or Ubuntu on a PC) or a Windows system (Windows 10 is recommended). For BCM2837 (CM3), a bug which affected the Mac has been fixed, so this will also work.
+烧录处理器模块eMMC时, 需要1个Linux系统 (推荐使用Raspberry Pi, 或PC端的Ubuntu) 或者1个Windows系统 (推荐Windows 10). 对于BCM2837 (CM3)，一个影响Mac的漏洞已被修复，因此也可以使用。.
 
-NOTE: There is a bug in the BCM2835 (CM1) bootloader which returns a slightly incorrect USB packet to the host. Most USB hosts seem to ignore this benign bug and work fine; we do, however, see some USB ports that don't work due to this bug. We don't quite understand why some ports fail, as it doesn't seem to be correlated with whether they are USB2 or USB3 (we have seen both types working), but it's likely to be specific to the host controller and driver. This bug has been fixed in BCM2837.
+NOTE: BCM2835 （CM1） 引导加载程序中存在一个漏洞，它会向主机返回错误的USB数据包. 大多数USB主机忽略了这个良性错误并且正常工作; 但是，我们确实看到一些USB端口由于此漏洞而无法正常工作。我们不太明白为什么某些端口会失败，因为它似乎与它们是USB2还是USB3无关（我们已经看到这两种类型都可以工作），但它可能特定于主机控制器和驱动程序。这个漏洞已在 BCM2837 中修复。
 
-=== Setting up the CMIO board
+[[Setting up the CMIO board]]
+=== 设置CMIO Board
 
-==== Compute Module 4
+[[compute-module-4-2]]
+==== 处理器模块 4
 
-Ensure the Compute Module is fitted correctly installed on the IO board. It should lie flat on the IO board.
+确保处理器模块正确安装在IO board上，它应该平放在IO board上。
 
-* Make sure that `nRPI_BOOT` which is on J2 (`disable eMMC Boot`) on the IO board jumper is fitted
-* Use a micro USB cable to connect the micro USB slave port J11 on IO board to the host device.
-* Do not power up yet.
+* 确保安装了IO board上端口J2 (`disable eMMC Boot`)的 `nRPI_BOOT`跳线。
+* 使用Micro USB线将IO board的micro USB从端口J11 连接到主机设备。
+* 暂时不要上电。
 
-==== Compute Module 1 and 3
+[[compute-module-1-and-3]]
+==== 处理器模块1和3
 
-Ensure the Compute Module itself is correctly installed on the IO board. It should lie parallel with the board, with the engagement clips clicked into place.
+确保处理器模块已正确安装在IO board上. 它应与电路板平行，接合夹卡入到位。
 
-* Make sure that J4 (USB SLAVE BOOT ENABLE) is set to the 'EN' position.
-* Use a micro USB cable to connect the micro USB slave port J15 on IO board to the host device.
-* Do not power up yet.
+* 确保 J4（USB SLAVE BOOT ENABLE）设置为“EN”位置。
+* 使用Micro USB线将IO board的micro USB从端口J15 连接到主机设备.
+* 暂时不要上电。
 
-==== For Windows Users
+[[for-windows-users]]
+==== 对于Windows用户
 
-Under Windows, an installer is available to install the required drivers and boot tool automatically. Alternatively, a user can compile and run it using Cygwin and/or install the drivers manually.
+在 Windows下，安装程序可用于自动安装所需的驱动程序和启动工具。或者用户可以使用Cygwin编译和运行/或手动安装驱动程序。
 
-==== Windows Installer
+[[windows-installer]]
+==== Windows 安装程序
 
-For those who just want to enable the Compute Module eMMC as a mass storage device under Windows, the stand-alone installer is the recommended option. This installer has been tested on Windows 10 64-bit.
+对于那些只想在Windows下启用处理器模块eMMC作为大容量存储设备的用户，建议使用独立安装程序。此安装程序已在64位的Windows 10上进行了测试。
 
-Please ensure you are not writing to any USB devices whilst the installer is running.
+请确保在安装程序运行时未写入任何USB设备。
 
-. Download and run the https://github.com/raspberrypi/usbboot/raw/master/win32/rpiboot_setup.exe[Windows installer] to install the drivers and boot tool.
-. Plug your host PC USB into the USB SLAVE port, making sure you have setup the board as described above.
-. Apply power to the board; Windows should now find the hardware and install the driver.
-. Once the driver installation is complete, run the `RPiBoot.exe` tool that was previously installed.
-. After a few seconds, the Compute Module eMMC will pop up under Windows as a disk (USB mass storage device).
+. 下载和运行 https://github.com/raspberrypi/usbboot/raw/master/win32/rpiboot_setup.exe[Windows安装程序] 以安装驱动程序和启动工具。
+. 将主机 PC USB 插入 USB SLAVE 端口，确保已按上述方式设置主板。
+. 给电路上电；Windows现在可以识别硬件并安装驱动程序。
+. 驱动程序安装完成后，运行以前安装的 `RPiBoot.exe` 工具。
+. 几秒钟后，处理器模块eMMC将在Windows下作为磁盘（USB 大容量存储设备）弹出。
 
-==== Building `rpiboot` on your host system.
+[[building-rpiboot-on-your-host-system]]
+==== 在主机上构建 `rpiboot`
 
-Instructions for building and running the latest release of `rpiboot` are documented in the https://github.com/raspberrypi/usbboot/blob/master/Readme.md#building[usbboot readme] on Github.
+有关构建和运行最新版本的 `rpiboot`的说明记录在Github上 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#building[usbboot readme] 的文件中。
 
-==== Writing to the eMMC (Windows)
+[[writing-to-the-emmc-windows]]
+==== 写入eMMC (Windows)
 
-After `rpiboot` completes, a new USB mass storage drive will appear in Windows. We recommend using https://www.raspberrypi.com/software/[Raspberry Pi Imager] to write images to the drive.
+`rpiboot` 完成后，一个新的USB大容量存储驱动器将出现在Windows中。 建议使用 https://www.raspberrypi.com/software/[Raspberry Pi Imager] 将图像写入驱动器.
 
-Make sure J4 (USB SLAVE BOOT ENABLE) / J2 (nRPI_BOOT) is set to the disabled position and/or nothing is plugged into the USB slave port. Power cycling the IO board should now result in the Compute Module booting from eMMC.
+确保 J4（USB SLAVE BOOT ENABLE）/J2 (nRPI_BOOT) 被设置为disabled状态和and/或USB从端口未插入任何内容. 重新给IO board上电，处理器模块将从eMMC启动。
 
-==== Writing to the eMMC (Linux)
+[[writing-to-the-emmc-linux]]
+==== 写入eMMC (Linux)
 
-After `rpiboot` completes, you will see a new device appear; this is commonly `/dev/sda` on a Raspberry Pi but it could be another location such as `/dev/sdb`, so check in `/dev/` or run `lsblk` before running `rpiboot` so you can see what changes.
+`rpiboot` 完成后， 会出现一个新的设备; 在Raspberry Pi上，通常是 `/dev/sda`路径，也可能是其他位置，如  `/dev/sdb`, 所以在运行 `rpiboot` 之前检查 `/dev/` 或 运行 `lsblk` ，这样可以看到具体发生的变化.
 
-You now need to write a raw OS image (such as https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit[Raspberry Pi OS]) to the device. Note the following command may take some time to complete, depending on the size of the image: (Change `/dev/sdX` to the appropriate device.)
+现在你需要将原始的操作系统镜像 (如 https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit[Raspberry Pi OS]) 写入设备. 
+注意根据镜像的大小，以下命令可能需要一些时间才能完成:(将 `/dev/sdX` 更改为适当的设备。)
 
 [,bash]
 ----
 sudo dd if=raw_os_image_of_your_choice.img of=/dev/sdX bs=4MiB
 ----
 
-Once the image has been written, unplug and re-plug the USB; you should see two partitions appear (for Raspberry Pi OS) in `/dev`. In total, you should see something similar to this:
+写入镜像后，拔下并重新插入USB；您应该看到两个分区（对于Raspberry Pi OS）出现在`/dev` 。总的来说，您应该看到类似于以下的内容：:
 
 [,bash]
 ----
@@ -76,46 +87,49 @@ Once the image has been written, unplug and re-plug the USB; you should see two 
 /dev/sdX2   <- Second partition (Linux filesystem)
 ----
 
-The `/dev/sdX1` and `/dev/sdX2` partitions can now be mounted normally.
+现在可以正常挂载 `/dev/sdX1` 和 `/dev/sdX2` 分区。
 
-Make sure J4 (USB SLAVE BOOT ENABLE) / J2 (nRPI_BOOT) is set to the disabled position and/or nothing is plugged into the USB slave port. Power cycling the IO board should now result in the Compute Module booting from eMMC.
+确保 J4（USB SLAVE BOOT ENABLE）/J2 (nRPI_BOOT) 被设置为disabled状态和and/或USB从端口未插入任何内容. 重新给IO board上电，处理器模块将从eMMC启动。
 
 [[cm4bootloader]]
-=== Compute Module 4 Bootloader
+=== 处理器模块4 (CM4) 引导程序
 
-The default bootloader configuration on CM4 is designed to support bringup and development on a https://www.raspberrypi.com/products/compute-module-4-io-board/[Compute Module 4 IO board] and the software version flashed at manufacture may be older than the latest release. For final products please consider:-
+CM4上的默认引导程序配置旨在支持 https://www.raspberrypi.com/products/compute-module-4-io-board/[CM4 IO board] 上的启动和开发，制造时刷新的软件版本可能早于最新版本. 对于最终的产品，请注意以下几点:
 
-* Selecting and verifying a specific bootloader release. The version in the `usbboot` repo is always a recent stable release.
-* Configuring the boot device (e.g. network boot). See `BOOT_ORDER` section in the xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[bootloader configuration] guide.
-* Enabling hardware write protection on the bootloader EEPROM to ensure that the bootloader can't be modified on remote/inaccessible products.
+* 选择并验证特定的引导程序版本。`usbboot`仓库中的版本始终是最新的稳定版本。
+* 配置启动设备 (例如网络启动). 请参见 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[引导程序配置] 指南中的`BOOT_ORDER` 部分。
+* 在引导程序 EEPROM 上启用硬件写保护，以确保无法在远程/无法访问的产品上修改引导程序。
 
-N.B. The Compute Module 4 ROM never runs `recovery.bin` from SD/EMMC and the `rpi-eeprom-update` service is not enabled by default. This is necessary because the EMMC is not removable and an invalid `recovery.bin` file would prevent the system from booting. This can be overridden and used with `self-update` mode where the bootloader can be updated from USB MSD or Network boot. However, `self-update` mode is not an atomic update and therefore not safe in the event of a power failure whilst the EEPROM was being updated.
+注意 CM4 ROM 从未通过SD/EMMC运行 `recovery.bin` ，默认情况下不启用 `rpi-eeprom-update` 服务。 这是必要的，因为EMMC不可移动，且无效的 `recovery.bin` 文件会组织系统启动。 这可以被覆盖并与 `self-update` 模式一起使用，在这种模式下，可以从USB MSD或网络引导更新加载程序. 但是`self-update` 不是原子更新，因此在更新EEPROM时发生电源故障时不安全的.
 
-==== Flashing NVMe / other storage devices.
-The new Linux-based https://github.com/raspberrypi/usbboot/blob/master/mass-storage-gadget/README.md[mass-storage gadget] supports flashing of NVMe, EMMC and USB block devices.
-This is normally faster than using the `rpiboot` firmware driver and also provides a UART console to the device for easier debug.
+[[flashing-nvme-other-storage-devices]]
+==== 烧录NVMe / 其他存储设备.
+新的基于Linux的 https://github.com/raspberrypi/usbboot/blob/master/mass-storage-gadget/README.md[大容量存储设备] 支持烧录NVMe、EMMC和USB块设备。
+这通常比使用 `rpiboot` 固件驱动程序更快，并且还为设备提供了UART控制台，以便于调试。
 
-See also: https://github.com/raspberrypi/usbboot/blob/master/Readme.md#compute-module-4-extensions[CM4 rpiboot extensions]   
+另外，请参见 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#compute-module-4-extensions[CM4 rpiboot 扩展] 。  
 
-==== Modifying the bootloader configuration
+[[modifying-the-bootloader-configuration]]
+==== 修改引导程序配置
 
-To modify the CM4 bootloader configuration:-
+修改CM4 引导程序配置:-
 
 * cd `usbboot/recovery`
-* Replace `pieeprom.original.bin` if a specific bootloader release is required.
-* Edit the default `boot.conf` bootloader configuration file. Typically, at least the BOOT_ORDER must be updated:-
- ** For network boot `BOOT_ORDER=0xf2`
- ** For SD/EMMC boot `BOOT_ORDER=0xf1`
- ** For USB boot failing over to EMMC `BOOT_ORDER=0xf15`
-* Run `./update-pieeprom.sh` to update the EEPROM image `pieeprom.bin` image file.
-* If EEPROM write protection is required then edit `config.txt` and add `eeprom_write_protect=1`. Hardware write-protection must be enabled via software and then locked by pulling the `EEPROM_nWP` pin low.
-* Run `../rpiboot -d .` to update the bootloader using the updated EEPROM image `pieeprom.bin`
+* 如果需要特定的引导程序版本，请替换 `pieeprom.original.bin`。
+* 编辑默认的 `boot.conf` 引导程序加载文件. 通常情况下, 需要更新 BOOT_ORDER:-
+ ** 对于网络启动 `BOOT_ORDER=0xf2`
+ ** 对于SD/EMMC启动 `BOOT_ORDER=0xf1`
+ ** 对于故障转移到EMMC的USB启动 `BOOT_ORDER=0xf15`
+* 运行 `./update-pieeprom.sh` 以更新EEPROM 镜像 `pieeprom.bin` 镜像文件.
+* 如果需要EEPROM写保护，请编辑 `config.txt` 并添加 `eeprom_write_protect=1`。硬件写保护必须通过软件启用，然后通过将 `EEPROM_nWP` 引脚拉低来锁定。
+* 运行 `../rpiboot -d .` 以使用更新的EEPROM 镜像 `pieeprom.bin`更新引导程序。
 
-The pieeprom.bin file is now ready to be flashed to the Compute Module 4.
+pieeprom.bin 文件已准备好烧录到CM4.
 
-==== Flashing the bootloader EEPROM - Compute Module 4
+[[flashing-the-bootloader-eeprom-compute-module-4]]
+==== 烧录引导程序EEPROM - CM4
 
-To flash the bootloader EEPROM follow the same hardware setup as for flashing the EMMC but also ensure EEPROM_nWP is NOT pulled low. Once complete `EEPROM_nWP` may be pulled low again.
+烧录引导程序EEPROM需要遵循与烧录EMMC相同的硬件设置，同时需要确保EEPROM_nWP引脚没有拉低。一旦烧录完成，EEPROM_nWP引脚可能会再次拉低。
 
 [,bash]
 ----
@@ -123,9 +137,10 @@ To flash the bootloader EEPROM follow the same hardware setup as for flashing th
 ./rpiboot -d recovery
 ----
 
-=== Troubleshooting
+[[troubleshooting]]
+=== 故障排除
 
-For a small percentage of Raspberry Pi Compute Module 3s, booting problems have been reported. We have traced these back to the method used to create the FAT32 partition; we believe the problem is due to a difference in timing between the BCM2835/6/7 and the newer eMMC devices. The following method of creating the partition is a reliable solution in our hands.
+对于一小部分Raspberry Pi处理器模块3s，已经报告了启动问题。 们已经追溯到创建FAT32分区的方法; 我们认为该问题是由于BCM2835/6/7和较新的eMMC设备之间的时间差异造成的。 以下创建分区的方法是我们手中可靠的解决方案。
 
 [,bash]
 ----

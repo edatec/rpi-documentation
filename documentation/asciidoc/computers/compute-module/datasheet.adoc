@@ -1,43 +1,48 @@
-== Datasheets and Schematics
+[[datasheets-and-schematics]]
+== Datasheet和原理图
 
-=== Compute Module 4
+[[compute-module-4]]
+=== 处理器模块4
 
-The latest version of the Compute Module is the Compute Module 4 (CM4). It is the recommended Compute Module for all current and future development.
+处理器模块的最新版本是处理器模块4 (CM4)，是所有目前和未来开发推荐的处理器模块.
 
-* https://datasheets.raspberrypi.com/cm4/cm4-datasheet.pdf[Compute Module 4 Datasheet]
-* https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf[Compute Module 4 IO Board Datasheet]
+* https://datasheets.raspberrypi.com/cm4/cm4-datasheet.pdf[处理器模块4 Datasheet]
+* https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf[处理器模块4 IO 板 Datasheet]
 
-NOTE: Schematics are not available for the Compute Module 4, but are available for the IO board. Schematics for the CMIO4 board are included in the datasheet.
+NOTE: 原理图不适用于处理器模块4，但可用于IO板。CMIO4板的原理图包含在Datasheet中。
 
-There is also a KiCad PCB design set available:
+还有一个 KiCad PCB 设计套件可用:
 
-* https://datasheets.raspberrypi.com/cm4io/CM4IO-KiCAD.zip[Compute Module 4 IO Board KiCad files]
+* https://datasheets.raspberrypi.com/cm4io/CM4IO-KiCAD.zip[处理器模块4 IO 板 KiCad文件]
 
-=== Older Products
+[[older-products]]
+=== 老产品
 
-Raspberry Pi CM1, CM3 and CM3L are supported products with an End-of-Life (EOL) date no earlier than January 2026. The Compute Module 3+ offers improved thermal performance, and a wider range of Flash memory options.
+Raspberry Pi CM1、CM3和CM3L是支持的产品，其生命周期结束（EOL）日期不早于2026年1月。处理器模块3+提供了改进的散热性能和更广泛的闪存选择。
 
-* https://datasheets.raspberrypi.com/cm/cm1-and-cm3-datasheet.pdf[Compute Module 1 and Compute Module 3]
+* https://datasheets.raspberrypi.com/cm/cm1-and-cm3-datasheet.pdf[处理器模块1和处理器模块3]
 
-Raspberry Pi CM3+ and CM3+ Lite are supported prodicts with an End-of-Life (EOL) date no earlier than January 2026.
+Raspberry Pi CM3+和CM3+ Lite是支持的产品，其生命周期结束（EOL）日期不早于2026年1月.
 
-* https://datasheets.raspberrypi.com/cm/cm3-plus-datasheet.pdf[Compute Module 3+]
+* https://datasheets.raspberrypi.com/cm/cm3-plus-datasheet.pdf[处理器模块3+]
 
-Schematics for the Compute Module 1, 3 and 3L
+处理器模块 1、3 和 3L 的原理图
 
 * https://datasheets.raspberrypi.com/cm/cm1-schematics.pdf[CM1 Rev 1.1]
 * https://datasheets.raspberrypi.com/cm/cm3-schematics.pdf[CM3 and CM3L Rev 1.0]
 
-Schematics for the Compute Module IO board (CMIO):
+处理器模块 IO 板 （CMIO） 原理图:
 
-* https://datasheets.raspberrypi.com/cmio/cmio-schematics.pdf[CMIO Rev 3.0] (Supports CM1, CM3, CM3L, CM3+ and CM3+L)
+* https://datasheets.raspberrypi.com/cmio/cmio-schematics.pdf[CMIO Rev 3.0] (支持 CM1、CM3、CM3L、CM3+ 和 CM3+L)
 
-Schematics for the Compute Module camera/display adapter board (CMCDA):
+处理器模块相机/显示适配器板 （CMCDA） 的原理图:
 
 * https://datasheets.raspberrypi.com/cmcda/cmcda-schematics.pdf[CMCDA Rev 1.1]
 
-==== Under Voltage Detection
 
-Schematic for an under-voltage detection circuit, as used in older models of Raspberry Pi:
+[[under-voltage-detection]]
+==== 欠压检测
+
+欠压检测电路原理图，用于旧型号的Raspberry Pi:
 
 image::images/under_voltage_detect.png[Under-voltage detect]

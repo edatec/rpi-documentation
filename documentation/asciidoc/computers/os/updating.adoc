@@ -1,54 +1,49 @@
-== Updating and Upgrading Raspberry Pi OS
+== 更新和升级树莓派操作系统
 
-It's important to keep your Raspberry Pi up to date. The first and probably the most important reason is security. A device running Raspberry Pi OS contains millions of lines of code that you rely on. Over time, these millions of lines of code will expose well-known vulnerabilities, which are documented in https://cve.mitre.org/index.html[publicly available databases] meaning that they are easy to exploit. The only way to mitigate these exploits as a user of Raspberry Pi OS is to keep your software up to date, as the upstream repositories track CVEs closely and try to mitigate them quickly.
+保持你的树莓派版本最新是很重要的。第一个也可能是最重要的原因是安全性。运行Raspberry Pi OS的设备包含数百万行您所依赖的代码。随着时间的推移，这数百万行代码将暴露众所周知的漏洞，这些漏洞记录在https://cve.mitre.org/index.html[公开可用的数据库]中，这意味着它们很容易被利用。作为Raspberry Pi操作系统的用户，减轻这些攻击的唯一方法是保持您的软件最新，因为上游存储库会密切跟踪CVE并尝试快速减轻它们。
 
-The second reason, related to the first, is that the software you are running on your device most certainly contains bugs. Some bugs are CVEs, but bugs could also be affecting the desired functionality without being related to security. By keeping your software up to date, you are lowering the chances of hitting these bugs.
+与第一个原因相关的第二个原因是，你在设备上运行的软件肯定有缺陷。有些bug是CVE，但是这些bug也可能会影响预期的功能，而与安全性无关。通过让你的软件保持最新，就降低了遇到这些错误的几率。
 
-=== Using APT
+=== 使用APT
 
-The easiest way to manage installing, upgrading, and removing software is using APT (Advanced Packaging Tool) from Debian. To update software in Raspberry Pi OS, you can use the `apt` tool from a Terminal window.
+管理软件安装、升级和删除的最简单方法是使用 Debian 的 `apt`（高级打包工具）。要在树莓派操作系统中更新软件，您可以在终端窗口使用该工具
 
-==== Keeping your Operating System up to Date
+==== 定期升级系统
 
 video::2AhCWJ6YQHk[youtube]
 
-APT keeps a list of software sources on your Raspberry Pi in a file at `/etc/apt/sources.list`. Before installing software, you should update your package list with `apt update`. Go ahead and open a Terminal window and type:
+APT 将树莓派上的软件源列表保存在一个文件中。在安装软件之前，应使用`apt update`更新软件包列表。继续打开终端窗口并键入`/etc/apt/sources.list`：
 
 [,bash]
 ----
 sudo apt update
 ----
 
-Next, *upgrade* all your installed packages to their latest versions with the following command:
+接下来，使用以下命令将所有已安装的软件包升级到最新版本：
 
 [,bash]
 ----
 sudo apt full-upgrade
 ----
 
-Note that `full-upgrade` is used in preference to a simple `upgrade`, as it also picks up any dependency changes that may have been made.
+请注意，full-upgrade优先于upgrade，因为它还会选择任何可能已进行的依赖关系更改。
+一般来说，定期执行此操作将使您的安装与您正在使用的特定主要 Raspberry Pi OS 版本（例如 Buster）保持最新状态。它不会从一个主要版本更新到另一个主要版本，例如，Stretch to Buster 或 Buster 到Bullseye。
+但是，Raspberry Pi OS 映像中偶尔会进行需要手动干预的更改，例如新引入的软件包。这些不会随升级一起安装，因为此命令仅更新已安装的软件包。
+注意	内核和固件是作为 Debian 软件包安装，所以在使用上面的过程时也会得到更新。这些软件包很少更新，并且是在大量测试后更新的。
+如果将现有 SD 卡移动到新的树莓派型号（例如树莓派Zero 2 W），您可能还需要先使用上述说明更新内核和固件。
 
-Generally speaking, doing this regularly will keep your installation up to date for the particular major Raspberry Pi OS release you are using (e.g. Buster). It will not update from one major release to another, for example, Stretch to Buster or Buster to Bullseye.
+==== 空间不足
 
-However, there are occasional changes made in the Raspberry Pi OS image that require manual intervention, for example a newly introduced package. These are not installed with an upgrade, as this command only updates the packages you already have installed.
+运行`sudo apt full-upgrade`时，会显示将下载多少数据占用SD卡上多少空间。用`df -h`检查您是否有足够的可用磁盘空间，`apt`不会主动执行此操作。另请注意，下载的软件包文件（`.deb`文件）保存在`/var/cache/apt/archives` 中。您可以使用`sudo apt clean`删除这些内容以释放空间（在较旧版本中使用`sudo apt-get clean`）。
 
-NOTE: The kernel and firmware are installed as a Debian package, and so will also get updates when using the procedure above. These packages are updated infrequently and after extensive testing.
+==== 从以前的操作系统版本升级
 
-If moving an existing SD card to a new Raspberry Pi model (for example the Raspberry Pi Zero 2 W), you may also need to update the kernel and the firmware first using the instructions above.
+WARNING: 升级现有映像是可能的，但不能保证在任何情况下都能正常工作，我们不建议这样做。如果您确实希望尝试升级操作系统版本，我们强烈建议您先进行备份 -- 对于更新失败造成的数据丢失，我们不承担任何责任。
+最新版本的Raspberry Pi OS基于https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/[Debian Bullseye]。以前的版本是基于https://www.raspberrypi.com/news/buster-the-new-version-of-raspbian/[Buster]的。如果要执行从 Buster 到 Bullseye 的就地升级（并且您知道其中的风险），请参阅 https://forums.raspberrypi.com/viewtopic.php?t=323279[论坛中的说明]。
 
-==== Running Out of Space
+==== 搜索软件
 
-When running `sudo apt full-upgrade`, it will show how much data will be downloaded and how much space it will take up on the SD card. It's worth checking with `df -h` that you have enough free disk space, as unfortunately `apt` will not do this for you. Also be aware that downloaded package files (`.deb` files) are kept in `/var/cache/apt/archives`. You can remove these in order to free up space with `sudo apt clean` (`sudo apt-get clean` in older releases of apt).
-
-==== Upgrading from Previous Operating System Versions
-
-WARNING: Upgrading an existing image is possible, but is not guaranteed to work in every circumstance and we do not recommend it. If you do wish to try upgrading your operating system version, we strongly suggest making a backup first -- we can accept no responsibility for loss of data from a failed update.
-
-The latest version of Raspberry Pi OS is based on https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/[Debian Bullseye]. The previous version was based on https://www.raspberrypi.com/news/buster-the-new-version-of-raspbian/[Buster]. If you want to perform an in-place upgrade from Buster to Bullseye (and you're aware of the risks) see the https://forums.raspberrypi.com/viewtopic.php?t=323279[instructions in the forums].
-
-==== Searching for Software
-
-You can search the archives for a package with a given keyword with `apt-cache search`:
+您可以使用以下命令在存档中搜索具有给定关键字的包：`apt-cache search`:
 
 [,bash]
 ----
@@ -56,7 +51,7 @@ apt-cache search locomotive
 sl - Correct you if you type `sl' by mistake
 ----
 
-You can view more information about a package before installing it with `apt-cache show`:
+在安装软件包之前，您可以使用`apt-cache show`命令查看有关软件包的详细信息
 
 [,bash]
 ----
@@ -81,34 +76,34 @@ Description: Correct you if you type `sl' by mistake
  SL stands for Steam Locomotive.
 ----
 
-==== Installing a Package with APT
+==== 使用 APT 安装软件包
 
 [,bash]
 ----
 sudo apt install tree
 ----
 
-Typing this command should inform the user how much disk space the package will take up and asks for confirmation of the package installation. Entering `Y` (or just pressing `Enter`, as yes is the default action) will allow the installation to occur. This can be bypassed by adding the `-y` flag to the command:
+键入此命令应通知用户软件包将占用多少磁盘空间，并要求确认软件包安装。输入`Y`（或仅按`Enter` ，因为 `yes` 是默认操作）将允许安装。这可以通过添加`-y`命令来绕过：
 
 [,bash]
 ----
 sudo apt install tree -y
 ----
 
-Installing this package makes `tree` available for the user.
+安装此软件包使 `tree` 对客户可用.
 
-==== Uninstalling a Package with APT
+==== 使用 APT 卸载软件包
 
-You can uninstall a package with `apt remove`:
+您可以使用 `apt remove`命令卸载软件包:
 
 [,bash]
 ----
 sudo apt remove tree
 ----
 
-The user is prompted to confirm the removal. Again, the `-y` flag will auto-confirm.
+系统会提示用户确认删除。同样，`-y`将自动确认。
 
-You can also choose to completely remove the package and its associated configuration files with `apt purge`:
+您还可以选择使用`apt purge`命令完全删除软件包及其关联的配置文件:
 
 [,bash]
 ----
@@ -116,9 +111,9 @@ sudo apt purge tree
 ----
 
 [[rpi-update]]
-=== Using `rpi-update`
+=== 使用`rpi-update`
 
-`rpi-update` is a command line application that will update your Raspberry Pi OS kernel and VideoCore firmware to the latest pre-release versions.
+`rpi-update` 是一个命令行应用程序，可将树莓派操作系统内核和 VideoCore 固件更新到最新的预发布版本。
 
 WARNING: Pre-release versions of software are not guaranteed to work. You should not use `rpi-update` on any system unless recommended to do so by a Raspberry Pi engineer. It may leave your system unreliable or even completely broken. It should not be used as part of any regular update process.
 

@@ -1,19 +1,20 @@
+[[rp3a0]]
 == RP3A0
 
-The Raspberry Pi RP3A0 is our first System-in-Package (SiP) consisting of a Broadcom BCM2710A1 — which is the silicon die packaged inside the Broadcom xref:processors.adoc#bcm2837[BCM2837] chip which is used on the xref:raspberry-pi.adoc#raspberry-pi-3-model-b-2[Raspberry Pi 3] — along with 512MB of DRAM. 
+Raspberry Pi RP3A0是我们的第一个系统级封装 (SiP) ，由Broadcom BCM2710A1 ( xref:processors.adoc#bcm2837[BCM2837] 芯片封装在 xref:raspberry-pi.adoc#raspberry-pi-3-model-b-2[Raspberry Pi 3] 上使用的硅芯片) 以及512MB的DRAM组成。 
 
-It is used by the xref:raspberry-pi.adoc#raspberry-pi-zero-2-w[Raspberry Pi Zero 2 W].
+它由 xref:raspberry-pi.adoc#raspberry-pi-zero-2-w[Raspberry Pi Zero 2 W] 使用。
 
 image:images/RP3A0-crosssection.png[width="70%"]
 
-The RP3A0 is a Quad-core 64-bit Arm Cortex A53 CPU clocked at 1 GHz, although with a heat sink or other cooling solution in place, the chip can be potentially overclocked to 1.2 GHz.
+RP3A0是一款四核64位ARM Cortex A53 CPU，主频频率为1 GHz，尽管有散热器或其他冷却解决方案，该芯片可能会超频至1.2 GHz。
 
-Please refer to the following BCM2836 document for details on the ARM peripherals specification, which also applies to the BCM2837 and RP3A0.
+有关ARM外设规范的详细信息，请参阅以下BCM2836文档，该规范也适用于BCM2837和RP3A0。
 
-* https://datasheets.raspberrypi.com/bcm2836/bcm2836-peripherals.pdf[BCM2836 ARM-local peripherals]
-* https://developer.arm.com/documentation/ddi0500/latest/[Cortex-A53 MPCore Processor Technical Reference Manual]
+* https://datasheets.raspberrypi.com/bcm2836/bcm2836-peripherals.pdf[BCM2836 ARM本地外设]
+* https://developer.arm.com/documentation/ddi0500/latest/[Cortex-A53 MPCore 处理器技术参考手册]
 
 [NOTE]
 ====
-The original xref:raspberry-pi.adoc#raspberry-pi-zero[Raspberry Pi Zero] uses Package-on-Package (PoP) DRAM, where the DRAM is soldered directly on top of the xref:processors.adoc#bcm2835[BCM2835] chip. 
+最初的 xref:raspberry-pi.adoc#raspberry-pi-zero[Raspberry Pi Zero] 使用封装上 (PoP) DRAM, 其中DRAM直接焊接在 xref:processors.adoc#bcm2835[BCM2835] 芯片的顶部. 
 ====
