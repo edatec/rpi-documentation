@@ -12,13 +12,13 @@
                     "subpath": "getting-started.adoc"
                 },
                 {
-                    "title": "Raspberry Pi OS",
+                    "title": "Raspberry Pi 系统",
                     "description": "The official Raspberry Pi operating system",
                     "image": "full-sized/Raspberry-Pi-OS.png",
                     "subpath": "os.adoc"
                 },
                 {
-                    "title": "Configuration",
+                    "title": "配置",
                     "description": "Configuring your Raspberry Pi's settings",
                     "image": "full-sized/Configuration.png",
                     "subpath": "configuration.adoc"
@@ -30,7 +30,7 @@
                     "subpath": "config_txt.adoc"
                 },
                 {
-                    "title": "The Linux kernel",
+                    "title": "Linux 内核",
                     "description": "How to configure and build a custom kernel for your Raspberry Pi",
                     "image": "full-sized/Linux-Kernel.png",
                     "subpath": "linux_kernel.adoc"
@@ -48,19 +48,19 @@
                     "subpath": "camera_software.adoc"
                 },
                 {
-                    "title": "Raspberry Pi hardware",
+                    "title": "Raspberry Pi 硬件",
                     "description": "Technical information about Raspberry Pi hardware",
                     "image": "full-sized/Raspberry-Pi-Hardware.png",
                     "subpath": "raspberry-pi.adoc"
                 },
                 {
-                    "title": "Compute Module hardware",
+                    "title": "Compute Module 硬件",
                     "description": "Technical information about Raspberry Pi Compute Module hardware",
                     "image": "full-sized/Compute-Module-Hardware.png",
                     "subpath": "compute-module.adoc"
                 },
                 {
-                    "title": "Processors",
+                    "title": "处理器",
                     "description": "Technical information about the CPUs used by Raspberry Pi",
                     "image": "full-sized/Processors.png",
                     "subpath": "processors.adoc"
