@@ -2,11 +2,17 @@
 <html lang="en">
   <head>
     {% include head.html %} 
+    <style>
+        #container {
+            margin: 0;
+            justify-content: left;
+        }
+        #content{
+            margin-top: 40px;
+        }
+    </style>
   </head>
   <body>
-    {% include header.html %}      
-    {% include toptitle.html %}
-    {% include tabs.html %}
 
     <div id="container">
       {% include mobile_nav.html %}
@@ -18,8 +24,6 @@
       </section>
     </div>
 
-    {% include copyright.html %} 
-    {% include footer.html %}  
     {% include scripts.html %}
     {% include search.html %}
 
