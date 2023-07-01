@@ -1,4 +1,63 @@
+<style>
+    #container nav#contents{
+        max-width: 300px;
+        padding-left: 6px;
+        padding-right: 6px;
+        background-color: #524f4f;
+    }
+    
+    nav#contents a, nav#mobile-contents a{
+        color: #f6f0f0;
+    }
+    nav#contents h3, nav#mobile-contents h3{
+        color: #f6f0f0;
+        font-size: 16px;
+    }
+    
+    nav#contents {
+        --offset: 0rem;
+        align-self: unset;
+        padding-top: unset;
+    }
+    nav#contents h2{
+        font-size: 19px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #b8aaaa;
+    }
+    #docsearch{
+        padding-bottom: 40px;
+    }
+    ul#tocify-header0 {
+      display: contents;
+    }
+
+    ul#tocify-header0 > ul.tocify-subheader{
+      margin-left: 0;
+      padding-left: 0;
+    }
+    nav#contents .tocify-item.active {
+        text-decoration: none;
+    }
+    nav#contents .tocify-item.active a{
+        color: #c25a1d;
+    }
+    #sidebar_title{
+        color: white;
+        font-size: 24px;
+        /* height: 100px; */
+        font-weight: bold;
+        /* text-align: center; */
+        padding-top: 20px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+        border-bottom: 4px solid #0a7db8;
+        margin-bottom: 30px;
+    }
+</style>
 <nav id="contents">
+    <div id="sidebar_title">Rsapberry Pi 中文手册</div>
+    
 {% for subdir in site.data.nav %}
 {% if page.dir == subdir.path %}
 
@@ -9,7 +68,7 @@
       {% if item.sections[0] %}
         {% if page.url == item.path %}
         <div class="itemcontents" id="toc"></div>
-        <div class="itemcontents noJS">
+        <div class="itemcontents noJS hidden">
           <ul class="sectlevel1">
             {% for entry in item.sections %}
               <li>

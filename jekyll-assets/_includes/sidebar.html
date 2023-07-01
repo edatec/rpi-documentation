@@ -1,0 +1,55 @@
+<style>
+    .sidebar{
+        background-color: #524f4f;
+        padding-left: 6px;
+        padding-right: 6px;
+        width: 300px;
+    }
+    ul#tab-container {
+        width: 300px;
+        flex-direction: column;
+    }
+    ul#tab-container li {
+        border-bottom: 4px solid #524f4f;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-left: 6px;
+        text-align: left;
+    }
+    ul#tab-container li a {
+        color: #f6f0f0;
+    }
+
+    ul#tab-container li.selected{
+        border-bottom-color: #524f4f;
+    }
+
+    ul#tab-container li.selected a {
+        color: #c25a1d;
+    }
+    #sidebar_title{
+        color: white;
+        font-size: 24px;
+        /* height: 100px; */
+        font-weight: bold;
+        /* text-align: center; */
+        padding-top: 20px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        border-bottom: 4px solid #0a7db8;
+    }
+</style>
+<div class="sidebar">
+    <div id="sidebar_title">Rsapberry Pi 中文手册</div>
+    <ul id="tab-container">
+        {% for item in site.data.index.tabs %}
+          {% if page.dir == item.path or page.dir == "/" and item.default_tab and item.default_tab == "yes" %}
+          <li class="selected">
+          {% else %}
+          <li>
+          {% endif %}  
+            <a href="{{ site.baseurl }}{{ item.path }}">{{ item.title }}</a>
+          </li>
+        {% endfor %}
+    </ul>
+</div>
