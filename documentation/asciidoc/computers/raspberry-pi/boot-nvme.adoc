@@ -1,41 +1,47 @@
-== NVMe SSD Boot
+[[nvme-ssd-boot]]
+== NVMe SSD 启动
 
-NVMe (non-volatile memory express) is a standard for accessing solid state drives (SSDs) via a PCIe bus. You can connect these drives via the PCIe slot on a Compute Module 4 (CM4) IO board, allowing a CM4 to boot from SSD.
+NVMe（非易失性存储器）是通过 PCIe 总线访问固态硬盘 （SSD） 的标准。你可以通过CM4 IO 板上的 PCIe 插槽连接这些驱动器，从而允许 CM4 从 SSD 启动。
 
-=== Required Hardware
+[[required-hardware]]
+=== 所需硬件
 
-You need an NVMe M.2 SSD. You cannot plug an M.2 SSD directly into the PCIe slot on the IO board - an adaptor is needed. Be careful to get the correct type: a suitable adaptor can be found online by searching for 'PCI-E 3.0 x1 Lane to M.2 NGFF M-Key SSD Nvme PCI Express Adapter Card'.
+你需要一个NVMe M.2 SSD。你无法将 M.2 SSD直接插入 IO 板上的 PCIe 插槽 - 需要使用适配器。请注意获取正确的适配器类型：可以通过搜索 'PCI-E 3.0 x1 Lane to M.2 NGFF M-Key SSD Nvme PCI Express Adapter Card' 。
 
-The latest version of Raspberry Pi OS supports booting from NVMe drives. To check that your NVMe drive is connected correctly, boot Raspberry Pi OS from another drive and run `ls -l /dev/nvme*`; example output is shown below.
+最新版本的Raspberry Pi操作系统支持从NVMe驱动器启动。要检查你的 NVMe 驱动器是否正确连接，请从另一个驱动器启动 Raspberry Pi OS 并运行 `ls -l /dev/nvme*`;示例输出如下所示。
 
 ----
 crw------- 1 root root 245, 0 Mar  9 14:58 /dev/nvme0
 brw-rw---- 1 root disk 259, 0 Mar  9 14:58 /dev/nvme0n1
 ----
 
-If you need to connect the NVMe drive to a PC or Mac you can use a USB adaptor: search for 'NVME PCI-E M-Key Solid State Drive External Enclosure'. The enclosure must support M key SSDs.
+如果你需要将 NVMe 驱动器连接到 PC 或 Mac，你可以使用 USB 适配器：搜索 'NVME PCI-E M-Key Solid State Drive External Enclosure' 。硬件上必须支持 M key SSD。
 
-=== Required Software
+[[required-software]]
+=== 所需软件
 
-To boot from NVMe you need a recent version of the bootloader (after July 2021), and a recent version of the VideoCore firmware and Raspberry Pi OS Linux kernel. The latest Raspberry Pi OS release has everything you need, so you can use the xref:getting-started.adoc#using-raspberry-pi-imager[Raspberry Pi Imager] to install the software to your SSD.
+如果需要从NVMe 启动，则需要最新版本的启动加载程序（2021 年7月之后的版本），以及最新版本的 VideoCore 固件和Raspberry Pi操作系统 Linux 内核。最新的Raspberry Pi操作系统版本包含最新的启动加载程序、最新版本的VideoCore和最新版本的Linux内核，因此你可以使用 xref:getting-started.adoc#using-raspberry-pi-imager[Raspberry Pi Imager] 将软件安装到SSD。
 
-==== Bootloader
+[[bootloader]]
+==== 启动加载程序
 
-You might need to use `rpiboot` to update the CM4 bootloader. Instructions for building `rpiboot` and configuring the IO board to switch the ROM to usbboot mode are in the https://github.com/raspberrypi/usbboot[usbboot Github repository].
+你可能需要使用 `rpiboot` 来更新CM4启动加载程序。 有关构建rpiboot和配置IO板以将ROM切换到usbboot模式的说明，请参见 https://github.com/raspberrypi/usbboot[usbboot Github 存储库] 。
 
-Remember to add the NVMe boot mode `6` to BOOT_ORDER in `recovery/boot.conf`.
+记得在 `recovery/boot.conf` 中将NVMe启动模式 `6` 添加到 BOOT_ORDER 中。
 
-==== Firmware and kernel
+[[firmware-and-kernel]]
+==== 固件和内核
 
-You must have the latest versions of the VideoCore firmware and Raspberry Pi OS Linux kernel to boot directly from an NVMe SSD disk. The Raspberry Pi Bullseye and Buster Legacy releases have everything needed.
+你必须拥有最新版本的VideoCore固件和Raspberry Pi OS Linux内核才能直接从NVMe SSD磁盘启动。Raspberry Pi Bullseye和Buster Legacy版本拥有最新版本的VideoCore固件和Raspberry Pi OS Linux内核。
 
-If you are using CM4 lite, remove the SD card and the board will boot from the NVMe disk. For versions of CM4 with an eMMC, make sure you have set NVMe first in the boot order.
+如果你使用的是 CM4 lite，请取出 SD 卡，主板将从 NVMe 磁盘启动。对于带有 eMMC 的 CM4 版本，请确保在启动顺序中先设置 NVMe。
 
+[[nvme-boot_order]]
 ==== NVMe BOOT_ORDER
 
-This boot behaviour is controlled via the `BOOT_ORDER` setting in the EEPROM configuration: we have added a new boot mode `6` for NVMe. See xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[Raspberry Pi 4 Bootloader Configuration].
+这种启动行为通过EEPROM配置中的BOOT_ORDER设置进行控制:我们为NVMe添加了新的启动模式 `6` 。请参见 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[Raspberry Pi 4 启动加载程序配置] 。
 
-Below is an example of UART output when the bootloader detects the NVMe drive:
+如下为启动加载程序检测到 NVMe 驱动器时的 UART 输出示例：
 
 ----
 Boot mode: SD (01) order f64
@@ -45,13 +51,13 @@ VID 0x144d MN Samsung SSD 970 EVO Plus 250GB
 NVME on
 ----
 
-It will then find a FAT partition and load `start4.elf`:
+然后它将找到一个 FAT 分区并加载 `start4.elf`:
 
 ----
 Read start4.elf bytes  2937840 hnd 0x00050287 hash ''
 ----
 
-It will then load the kernel and boot the OS:
+然后它将加载内核并启动操作系统：
 
 ----
 MESS:00:00:07.096119:0: brfs: File read: /mfs/sd/kernel8.img
@@ -59,7 +65,7 @@ MESS:00:00:07.098682:0: Loading 'kernel8.img' to 0x80000 size 0x1441a00
 MESS:00:00:07.146055:0:[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd083]
 ----
 
-In Linux the SSD appears as `/dev/nvme0` and the "namespace" as `/dev/nvme0n1`. There will be two partitions `/dev/nvme0n1p1` (FAT) and `/dev/nvme0n1p2` (EXT4). Use `lsblk` to check the partition assignments:
+在Linux中，SSD显示为 `/dev/nvme0` ，  "命名空间" 显示为 `/dev/nvme0n1`。将包含 `/dev/nvme0n1p1` (FAT) 和 `/dev/nvme0n1p2` (EXT4) 两个分区。使用 `lsblk` 检查分区分配:
 
 ----
 NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
@@ -68,6 +74,7 @@ nvme0n1     259:0    0 232.9G  0 disk
 └─nvme0n1p2 259:2    0 232.6G  0 part /
 ----
 
-=== Troubleshooting
+[[troubleshooting]]
+=== 故障排除
 
-If the boot process fails, please file an issue on the https://github.com/raspberrypi/rpi-eeprom[rpi-eeprom Github repository], including a copy of the console and anything displayed on the screen during boot.
+如果启动过程失败，请在 https://github.com/raspberrypi/rpi-eeprom[rpi-eeprom Github 存储库] 上提交问题，包括控制台的副本以及启动期间屏幕上显示的任何内容。

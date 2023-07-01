@@ -2,47 +2,47 @@
 == Datasheet和原理图
 
 [[compute-module-4]]
-=== 处理器模块4
+=== CM4
 
-处理器模块的最新版本是处理器模块4 (CM4)，是所有目前和未来开发推荐的处理器模块.
+处理器模块4(CM4)是处理器模块（CM）的最新版本，对于所有当前和未来的开发，均推荐使用CM4。
 
-* https://datasheets.raspberrypi.com/cm4/cm4-datasheet.pdf[处理器模块4 Datasheet]
-* https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf[处理器模块4 IO 板 Datasheet]
+* https://datasheets.raspberrypi.com/cm4/cm4-datasheet.pdf[CM4 Datasheet]
+* https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf[CM4 IO 板 Datasheet]
 
-NOTE: 原理图不适用于处理器模块4，但可用于IO板。CMIO4板的原理图包含在Datasheet中。
+NOTE: 暂不提供CM4的原理图，但提供CM4 IO 板的原理图(可以在CM4 IO 板 Datasheet中查看) 
 
-还有一个 KiCad PCB 设计套件可用:
+提供一个可用的 KiCad PCB 设计套件：
 
-* https://datasheets.raspberrypi.com/cm4io/CM4IO-KiCAD.zip[处理器模块4 IO 板 KiCad文件]
+* https://datasheets.raspberrypi.com/cm4io/CM4IO-KiCAD.zip[CM4 IO 板 KiCad文件]
 
 [[older-products]]
 === 老产品
 
-Raspberry Pi CM1、CM3和CM3L是支持的产品，其生命周期结束（EOL）日期不早于2026年1月。处理器模块3+提供了改进的散热性能和更广泛的闪存选择。
+Raspberry Pi CM1、CM3和CM3L预计将在2026年1月及之后停产，CM3+提供了更高性能的散热和更多的闪存选择。
 
-* https://datasheets.raspberrypi.com/cm/cm1-and-cm3-datasheet.pdf[处理器模块1和处理器模块3]
+* https://datasheets.raspberrypi.com/cm/cm1-and-cm3-datasheet.pdf[CM1和CM3]
 
-Raspberry Pi CM3+和CM3+ Lite是支持的产品，其生命周期结束（EOL）日期不早于2026年1月.
+Raspberry Pi CM3+和CM3+ Lite预计将在2026年1月及之后停产。
 
-* https://datasheets.raspberrypi.com/cm/cm3-plus-datasheet.pdf[处理器模块3+]
+* https://datasheets.raspberrypi.com/cm/cm3-plus-datasheet.pdf[CM3+]
 
-处理器模块 1、3 和 3L 的原理图
+CM1、CM3 和 CM3L 的原理图
 
-* https://datasheets.raspberrypi.com/cm/cm1-schematics.pdf[CM1 Rev 1.1]
-* https://datasheets.raspberrypi.com/cm/cm3-schematics.pdf[CM3 and CM3L Rev 1.0]
+* https://datasheets.raspberrypi.com/cm/cm1-schematics.pdf[CM1 修订版 1.1]
+* https://datasheets.raspberrypi.com/cm/cm3-schematics.pdf[CM3 和 CM3L 修订版 1.0]
 
-处理器模块 IO 板 （CMIO） 原理图:
+CMIO(Compute Module IO 板)原理图：
 
-* https://datasheets.raspberrypi.com/cmio/cmio-schematics.pdf[CMIO Rev 3.0] (支持 CM1、CM3、CM3L、CM3+ 和 CM3+L)
+* https://datasheets.raspberrypi.com/cmio/cmio-schematics.pdf[CMIO 修订版 3.0] (支持 CM1、CM3、CM3L、CM3+ 和 CM3+L)
 
-处理器模块相机/显示适配器板 （CMCDA） 的原理图:
+CMCDA(Compute Module camera/display adapter 板)原理图：
 
-* https://datasheets.raspberrypi.com/cmcda/cmcda-schematics.pdf[CMCDA Rev 1.1]
+* https://datasheets.raspberrypi.com/cmcda/cmcda-schematics.pdf[CMCDA 修订版 1.1]
 
 
 [[under-voltage-detection]]
 ==== 欠压检测
 
-欠压检测电路原理图，用于旧型号的Raspberry Pi:
+Raspberry Pi的老产品使用的欠压检测电路原理图。
 
 image::images/under_voltage_detect.png[Under-voltage detect]

@@ -1,54 +1,55 @@
-== Boot Diagnostics on the Raspberry Pi 4
+[[boot-diagnostics-on-the-raspberry-pi-4]]
+== Raspberry Pi 4上的启动诊断
 
-Starting with version 2020-04-16 of the Raspberry Pi 4 bootloader, diagnostic information can be displayed at boot time on an HDMI display. To see this diagnostic information, power down the Raspberry Pi 4, remove the SD card, then power back up. A diagnostic display similar to below should appear on the attached display.
+从Raspberry Pi 4启动程序版本2020-04-16开始，诊断信息可以在启动时显示在HDMI显示器上。如果要查看此诊断信息，请关闭Raspberry Pi 4的电源，移除SD卡，然后重新通电。连接的显示器上应出现类似以下的诊断信息。
 
 image::images/bootloader-diagnostics.png[Boot Diagnostics Screen]
 
-This diagnostics page will also appear if the bootloader is unable to boot from an inserted SD card, or is unable to network boot; for example, if there is no bootable image on the card, or it is defective, or the network boot parameters are incorrect.
+如果启动加载程序无法从插入的 SD卡启动或者无法通过网络启动，则会出现此诊断页面; 例如，如果卡上没有启动镜像或者卡有缺陷或者网络启动参数不正确。
 
-Once the diagnostics page is displayed, a reboot is only possible by power cycling the device (i.e. unplug then re-plug the power supply).
+显示诊断页面后，只能通过重新上电（即拔下电源然后重新插入电源）来重新启动。
 
-The top line describes the model of Raspberry Pi and its memory capacity. The QR code is a link to the https://www.raspberrypi.com/software/[Downloads Page].
+顶行描述了Raspberry Pi的型号及其内存容量。二维码是 https://www.raspberrypi.com/software/[下载页面] 的链接。
 
-The diagnostic information is as follows:
+诊断信息如下：:
 
 |===
-| Line: | Information
+| 行: | 信息
 
 | bootloader
-| Bootloader git version - RO (if EEPROM is write protected) - software build date
+| 启动加载程序 git 版本 - RO（如果 EEPROM有写保护） - 软件构建日期
 
 | update-ts
-| The timestamp corresponding to when the EEPROM configuration was updated.  This timestamp is checked in xref:raspberry-pi.adoc#ENABLE_SELF_UPDATE[self-update] mode to avoid updating to an old configuration.
+| 与更新 EEPROM 配置的时间对应的时间戳。在 xref:raspberry-pi.adoc#ENABLE_SELF_UPDATE[自更新] 模式下检查此时间戳，以避免更新到旧配置。
 
 | secure-boot
-| If xref:raspberry-pi.adoc#secure-boot[secure-boot] is enabled then the processor revision (B0/C0) and xref:configuration.adoc#part4[signed-boot status flags] are displayed. Otherwise, this line is blank.
+| 如果启用了 xref:raspberry-pi.adoc#secure-boot[安全启动] ，则会显示处理器版本 (B0/C0) 和 xref:configuration.adoc#part4[签名启动状态标志] 。否则，此行为空。
 
 | board
-| xref:raspberry-pi.adoc#raspberry-pi-revision-codes[Board revision] - Serial Number - Ethernet MAC address
+| xref:raspberry-pi.adoc#raspberry-pi-revision-codes[主板版本] - 序列号 - 以太网MAC地址
 
 | boot
-| *mode* (current boot mode name and number) *order* (the xref:raspberry-pi.adoc#BOOT_ORDER[BOOT ORDER] configuration) *retry* (retry count in the current boot mode) *restart* (number of cycles through the list of boot modes).
+| *模式* (当前启动模式名称和编号) *顺序* (the xref:raspberry-pi.adoc#BOOT_ORDER[启动顺序] 配置) *重试* (当前启动模式下的重试计数) *重新启动* (通过启动模式列表的循环次数).
 
 | SD
-| The SD card detect status (detected / not detected).
+| SD卡检测状态（检测到/未检测到）。
 
 | part
-| Master Boot Record primary partitions type:LBA.
+| 主启动记录主分区类型：LBA。
 
 | fw
-| Filename for start.elf and fixup.dat if present (e.g. start4x.elf, fixup4x.dat).
+| start.elf 和 fixup.dat 的文件名是否存在 (例如 start4x.elf、fixup4x.dat)。
 
 | net
-| Network boot: - Link status (up/down) client IP address (ip), Subnet (sn), Default gateway (gw)
+| 网络启动: - 链路状态 (打开/关闭) 客户端 IP 地址 (ip)、子网 (sn)、默认网关  (gw)
 
 | tftp
-| Network boot: TFTP server IP address
+| 网络启动: TFTP 服务器 IP 地址
 
 | display
-| Indicates whether hotplug was detected (`HPD=1`) and if so whether the EDID was read successfully (`EDID=ok`) for each HDMI output.
+| 表示示是否检测到热插拔 (`HPD=1`) ，如果是，则指示是否成功读取了每个 HDMI 输出的 EDID (`EDID=ok`) 。
 |===
 
-This display can be disabled using the `DISABLE_HDMI` option, see xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[Bootloader Configuration].
+可以使用 `DISABLE_HDMI` 禁用此显示，晴参见 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[启动加载程序配置]。
 
-NOTE: This is purely for diagnosing boot failures; it is not an interactive bootloader. If you require an interactive bootloader, consider using a tool such as U-Boot.
+NOTE: 这仅仅是为了诊断启动故障;其不是一个交互式启动加载程序。如果你需要交互式启动加载程序，请考虑使用 U-Boot 等工具。

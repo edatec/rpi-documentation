@@ -1,154 +1,161 @@
-== Industrial use of the Raspberry Pi
+[[industrial-use-of-the-raspberry-pi]]
+== Raspberry Pi 的工业用途
 
-The Raspberry Pi is often used as part of another product. This documentation describes some extra facilities available to use other capabilities of the Raspberry Pi.
+Raspberry Pi通常用作其他产品的一部分。本文档介绍了一些可用于使用 Raspberry Pi 其他功能的额外工具。
 
-=== One-Time Programmable Settings
+[[one-time-programmable-settings]]
+=== 一次性可编程设置
 
-There are a number of OTP values that can be used. To see a list of all the xref:raspberry-pi.adoc#otp-register-and-bit-definitions[OTP values], you can use:
+可以使用许多 OTP 值。要查看所有 xref:raspberry-pi.adoc#otp-register-and-bit-definitions[OTP 值] 的列表，你可以使用：
 
 [,bash]
 ----
 vcgencmd otp_dump
 ----
 
-Some interesting lines from this dump are:
+这个转储中的一些有用定义：
 
-* 28 - Serial number
-* 29 - Ones complement of serial number
-* 30 - Revision number
+* 28 - 序列号
+* 29 - 序列号的补码
+* 30 - 修订吗
 
-Also, from 36 to 43 (inclusive), there are eight rows of 32 bits available for the customer
+此外从 36 到 43（含），有8行 32 位可供客户使用
 
-To program these bits, you will need to use the vcmailbox. This is a Linux driver interface to the firmware which will handle the programming of the rows. To do this, please refer to the https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface[documentation], and the vcmailbox https://github.com/raspberrypi/userland/blob/master/host_applications/linux/apps/vcmailbox/vcmailbox.c[example application].
+要对这些位进行编程，你需要使用 vcmailbox。 这是固件的 Linux 驱动程序接口，它将处理行的编程。为此，请参见 https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface[文档] 和 vcmailbox https://github.com/raspberrypi/userland/blob/master/host_applications/linux/apps/vcmailbox/vcmailbox.c[示例应用程序]。
 
-The vcmailbox application can be used directly from the command line on Raspberry Pi OS. An example usage would be:
+vcmailbox应用程序可以直接从Raspberry Pi OS上的命令行使用。一个用法示例如下：
 
 [,bash]
 ----
 vcmailbox 0x00010004 8 8 0 0
 ----
 
-which will return something like:
+这将返回类似以下内容：
 
 ----
 0x00000020 0x80000000 0x00010004 0x00000008 0x800000008 0xnnnnnnnn 0x00000000 0x00000000
 ----
 
-The above uses the https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface[mailbox property interface] `GET_BOARD_SERIAL` with a request size of 8 bytes and response size of 8 bytes (sending two integers for the request 0, 0). The response to this will be two integers (0x00000020 and 0x80000000) followed by the tag code, the request length, the response length (with the 31st bit set to indicate that it is a response) then the 64-bit serial number (where the MS 32 bits are always 0).
+上面使用 https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface[邮箱属性接口] `GET_BOARD_SERIAL` ，请求大小为 8 字节，响应大小为 8 字节（为请求 0、0 发送两个整数）。对此的响应将是两个整数（0x00000020 和 0x80000000），后跟标签代码、请求长度、响应长度（将第 31 位设置表示它是响应），然后是 64 位序列号（其中 MS 32 位始终为 0）。
 
-=== Write and Read Customer OTP Values
+[[write-and-read-customer-otp-values]]
+=== 写入和读取客户OTP值
 
-WARNING: The OTP values are One-Time Programmable, once a bit has been changed from 0 to 1, it can't be changed back
+WARNING: OTP 值是一次性可编程的，如果已经从 0 更改为 1，此操作无法撤销。
 
-To set the customer OTP values you will need to use the `SET_CUSTOMER_OTP` (0x38021) tag as follows:
+要设置客户 OTP 值，你需要使用 `SET_CUSTOMER_OTP` (0x38021) 标签，如下所示：
 
 [,bash]
 ----
 vcmailbox 0x00038021 [8 + number * 4] [8 + number * 4] [start_num] [number] [value] [value] [value] ...
 ----
 
-* `start_num` = the first row to program from 0-7
-* `number` = number of rows to program
-* `value` = each value to program
+* `start_num` = 从 0-7 编程的第一行
+* `number` = 要编程的行数
+* `value` = 要编程的每个值
 
-So, to program OTP customer rows 4, 5, and 6 to 0x11111111, 0x22222222, 0x33333333 respectively, you would use:
+因此，要将 OTP 客户行 4、5 和 6 分别编程为 0x11111111, 0x22222222, 0x33333333 ，你将使用：
 
 [,bash]
 ----
 vcmailbox 0x00038021 20 20 4 3 0x11111111 0x22222222 0x33333333
 ----
 
-This will then program rows 40, 41, and 42.
+然后，这将对第 40、41 和 42 行进行编程。
 
-To read the values back, you can use:
+要读回这些值，你可以使用：
 
 [,bash]
 ----
 vcmailbox 0x00030021 20 20 4 3 0 0 0
 ----
 
-which should display:
+应显示：
 
 ----
 0x0000002c 0x80000000 0x00030021 0x00000014 0x80000014 0x00000000 0x00000003 0x11111111 0x22222222 0x33333333
 ----
 
-If you'd like to integrate this functionality into your own code, you should be able to achieve this by using the vcmailbox.c code as an example.
+如果要将此功能集成到自己的代码中，应该能够使用 vcmailbox.c 代码作为示例来实现此目的。
 
-=== Locking the OTP Changes
+[[locking-the-otp-changes]]
+===锁定 OTP 更改
 
-It is possible to lock the OTP changes to avoid them being edited again. This can be done using a special argument with the OTP write mailbox:
+可以锁定 OTP 更改以避免再次编辑它们。这可以使用带有 OTP 写入邮箱的特殊参数来完成：
 
 [,bash]
 ----
 vcmailbox 0x00038021 8 8 0xffffffff 0xaffe0000
 ----
 
-Once locked, the customer OTP values can no longer be altered. Note that this locking operation is irreversible.
+锁定后，无法再更改客户 OTP 值。请注意，此锁定操作是不可逆的。
 
-=== Making Customer OTP bits Unreadable
+[[making-customer-otp-bits-unreadable]]
+=== 使客户OTP位不可读
 
-It is possible to prevent the customer OTP bits from being read at all. This can be done using a special argument with the OTP write mailbox:
+完全可以防止客户的OTP位被读取。这可以使用带有 OTP 写入邮箱的特殊参数来完成：
 
 [,bash]
 ----
 vcmailbox 0x00038021 8 8 0xffffffff 0xaffebabe
 ----
 
-This operation is unlikely to be useful for the vast majority of users, and is irreversible.
+此操作对于绝大多数用户来说是不太可能有用，并且是不可逆的。
 
-=== Device specific private key
-Eight rows of OTP (256 bits) are available for use as a device-specific private key. This is intended to support file-system encryption.
+[[device-specific-private-key]]
+=== 设备专用密钥
+8行 OTP（256 位）可用作特定于设备的私钥，旨在支持文件系统加密。
 
-These rows can be programmed and read using similar `vcmailbox` commands to those used for managing customer OTP rows. If
-secure-boot / file-system encryption is not required then the device private key rows can be used to store general purpose information.
+可以使用与管理客户OTP行类似的vcmailbox命令对这些行进行编程和读取。如果不需要安全启动/文件系统加密，则设备私钥行可用于存储通用信息。
 
-* The device private key rows can only be read via the `vcmailbox` command which requires access to `/dev/vcio` which is restricted to the `video` group on Raspberry Pi OS.
-* Raspberry Pi computers do not have a hardware protected key store.  It is recommended that this feature is used in conjunction with https://github.com/raspberrypi/usbboot/blob/master/secure-boot-example/README.md[secure-boot] in order to restrict access to this data.
-* Raspberry Pi OS does not support an encrypted root-filesystem.
+* 只能通过 `vcmailbox` 命令读取设备私钥行，该命令需要访问 `/dev/vcio` ，该权限仅限于Raspberry Pi操作系统上的 `视频` 组。
+* Raspberry Pi计算机无硬件保护的密钥存储。建议将此功能与 https://github.com/raspberrypi/usbboot/blob/master/secure-boot-example/README.md[安全启动] 结合使用，以限制对此数据的访问。
+* Raspberry Pi OS不支持加密的根文件系统。
 
-See https://gitlab.com/cryptsetup/cryptsetup[cryptsetup] for more information about open-source disk encryption.
+有关开源磁盘加密的详细信息，请参见 https://gitlab.com/cryptsetup/cryptsetup[cryptsetup] 。
 
-==== Key programming script `rpi-otp-private-key`
-The https://github.com/raspberrypi/usbboot/blob/master/tools/rpi-otp-private-key[rpi-otp-private-key] script wraps the device private key `vcmailbox` APIs in order to make it easier to read/write a key in the same format as OpenSSL.
+[[key-programming-script-rpi-otp-private-key]]
+==== 关键编程脚本 `rpi-otp-private-key`
+ https://github.com/raspberrypi/usbboot/blob/master/tools/rpi-otp-private-key[rpi-otp-private-key] 脚本包装了设备私 `vcmailbox` API，以便更轻松地读取/写入与 OpenSSL 相同的格式密钥。
 
-Read the key as a 64-byte hex number
+将密钥读取为 64 字节十六进制数字
 [,bash]
 ----
 rpi-otp-private-key
 ----
 
-Example output
+输出示例
 ----
 f8dbc7b0a4fcfb1d706e298ac9d0485c2226ce8df7f7596ac77337bd09fbe160
 ----
 
-Writes a 64-byte randomly generated number to the device private key. +
-**Warning: This operation cannot be undone. **
+将随机生成的 64 字节数字写入设备私钥。 +
+**Warning: 此操作无法撤销。 **
 [,bash]
 ----
 # rpi-otp-private-key -w $(openssl rand -hex 32)
 ----
 
-==== Mailbox API for reading/writing the key.
-Read all of the rows.
+[[mailbox-api-for-readingwriting-the-key]]
+==== 用于读取/写入密钥的邮箱 API
+读取所有行。
 [,bash]
 ----
 vcmailbox 0x00030081 40 40 0 8 0 0 0 0 0 0 0 0
 ----
 
-Example output
+输出示例
 ----
 0x00000040 0x80000000 0x00030081 0x00000028 0x80000028 0x00000000 0x00000008 0xf8dbc7b0 0xa4fcfb1d 0x706e298a 0xc9d0485c 0x2226ce8d 0xf7f7596a 0xc77337bd 0x09fbe160 0x00000000
 ----
 
-Write all of the row (replace the trailing eight zeros with the key data)
+写入所有行（将末尾的八个0替换为关键数据）
 [,bash]
 ----
 vcmailbox 0x00038081 40 40 0 8 0 0 0 0 0 0 0 0
 ----
 
-Write the key shown in the previous example
+写入上一示例中所示的密钥
 ----
 vcmailbox 0x38081 40 40 0 8 0xf8dbc7b0 0xa4fcfb1d 0x706e298a 0xc9d0485c 0x2226ce8d 0xf7f7596a 0xc77337bd 0x09fbe160
 ----

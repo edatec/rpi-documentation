@@ -1,20 +1,20 @@
 [[bcm2711]]
 == BCM2711
 
-这是Raspberry Pi 4 Model B，Raspberry Pi 400和Raspberry Pi Compute Module 4中使用的Broadcom芯片。BCM2711 的架构是对早期 Raspberry Pi 型号中 SoC 使用的架构的重大升级。它延续了BCM2837的四核CPU设计，但使用了更强大的ARM A72内核。它具有大大改进的GPU功能集，具有更快的输入/输出，因为合并了连接USB 2和USB 3端口的PCIe链路以及本机连接的以太网控制器。它还能够寻址比以前使用的 SoC 更多的内存。
+BCM2711是一款用在Raspberry Pi 4 Model B、Raspberry Pi 400和Raspberry Pi CM4中的Broadcom芯片。BCM2711 的架构是对早期 Raspberry Pi 型号中 SoC 使用的架构进行了升级，其延续了BCM2837的四核CPU设计，但采用了更强大的ARM A72内核。由于结合了连接USB 2和USB 3端口的PCIe链路以及本机连接的以太网控制器，它的GPU功能集得到了极大的改进，具有更快的输入/输出速度，支持寻址更多的内存。
 
-ARM内核能够以高达1.5 GHz的频率运行，使Raspberry Pi 4比Raspberry Pi 50B +快约3%。新的VideoCore VI 3D单元现在运行频率高达500 MHz。ARM内核是64位的，而VideoCore是32位的，但有一个新的内存管理单元，这意味着它可以访问比以前的版本更多的内存。
+ARM内核的运行频率高达1.5 GHz，使Raspberry Pi 4比Raspberry Pi 3B+快约50%。新的VideoCore VI 3D单元运行频率高达500 MHz。ARM内核是64位的， VideoCore支持32位，但其具备一个新的内存管理单元，支持访问更多的内存。
 
-BCM2711芯片继续使用从BCM2837B0开始的散热技术，该技术提供了更好的热管理。
+BCM2711芯片继续采用BCM2837B0的散热技术，该技术提供了更好的热管理。
 
 *Processor:*  四核 https://en.wikipedia.org/wiki/ARM_Cortex-A72[Cortex-A72] (ARM v8) 64 位 SoC @ 1.5 GHz。
 
-*Memory:* 可存取高达 8GB 的 LPDDR4-2400 SDRAM（取决于型号）。
+*Memory:* 高达 8GB 的 LPDDR4-2400 SDRAM（还支持其他可选的规格）。
 
-*Caches:* 每个内核 32kB 数据 + 48kB 指令一级缓存, 1MB 二级缓存。
+*Caches:* 每个内核 32kB 数据 + 48kB 指令L1级缓存，1MB L2级缓存。
 
-*Multimedia:* H.265（4Kp60解码）; H.264（1080p60解码，1080p30编码）; OpenGL ES，3.0图形。
+*Multimedia:* H.265（4Kp60解码）; H.264（1080p60解码，1080p30编码）; OpenGL ES 3.0
 
-*I/O:* PCIe总线、板载以太网端口、2 × DSI 端口（ Raspberry Pi 4B 上仅暴露一个）、2 × CSI 端口（Raspberry Pi 4B 上仅暴露一个）、最多6 × I2C、最多 6 × UART（与 I2C 多路复用）、多达 6 × SPI（在Raspberry Pi 4B 上仅暴露五个）、双HDMI视频输出、复合视频输出。
+*I/O:* PCIe 总线、板载以太网端口、2× DSI 端口（Raspberry Pi 4B仅包含1个）、2× CSI 端口（Raspberry Pi 4B仅包含1个）、最多6×I2C、最多6× UART（与 I2C复用）、最多6× SPI（在Raspberry Pi 4B仅包含5个）、双 HDMI 视频输出、复合视频输出。
 
-请查阅 https://datasheets.raspberrypi.com/bcm2711/bcm2711-peripherals.pdf[BMC2711 datasheet] 获取更多信息.
+请参见 https://datasheets.raspberrypi.com/bcm2711/bcm2711-peripherals.pdf[BMC2711 datasheet] 获取更多信息.

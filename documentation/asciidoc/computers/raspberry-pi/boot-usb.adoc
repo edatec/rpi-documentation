@@ -1,46 +1,50 @@
-== USB Boot Modes
+[[usb-boot-modes]]
+== USB 启动模式
 
-WARNING: The default way of using a Raspberry Pi is to boot it using an SD card. This is the recommended method for new and inexperienced users. 
+WARNING: Raspberry Pi的默认方法是使用 SD 卡启动，对于新手和缺乏经验的用户推荐此方法。
 
-There are two separate boot modes for USB; USB device boot and USB host boot. 
+USB 有两种独立的启动模式;USB 设备启动和 USB 主机启动。
 
-The choice between the two boot modes is made by the firmware at boot time when it reads the OTP bits. There are two bits to control USB boot: the first enables USB device boot and is enabled by default. The second enables USB host boot; if the USB host boot mode bit is set, then the processor reads the OTGID pin to decide whether to boot as a host (driven to zero as on any Raspberry Pi Model B / B+) or as a device (left floating). The Raspberry Pi Zero has access to this pin through the OTGID pin on the USB connector, and the Compute Module has access to this pin on the edge connector.
 
-There are also OTP bits that allow certain GPIO pins to be used for selecting which boot modes the Raspberry Pi should attempt to use.
+两种启动模式之间的选择是通过固件在启动时读取 OTP 位来实现的。有两个位可以控制 USB 启动：第一个位使能 USB 设备启动(默认)。第二个位使能USB主机启动;如果设置了USB主机启动模式位，则处理器读取 OTGID 引脚以决定是作为主机启动（在Raspberry Pi Model B / B+上驱动为零）还是作为设备启动（左浮动）。Raspberry Pi Zero可通过USB连接器上的OTGID引脚访问该引脚，CM可以访问边缘连接器上的该引脚。
 
-NOTE: USB boot modes only available on certain models.
+部分OTP位可以通过使用某些GPIO引脚来选择Raspberry Pi使用的启动模式。
 
-=== USB Device Boot Mode
+NOTE: USB 启动模式仅适用于部分产品型号。
 
-NOTE: Device boot is available on Raspberry Pi Compute Module, Compute Module 3, Raspberry Pi Zero, Zero W, A, A+, and 3A+ only.
+[[usb-device-boot-mode]]
+=== USB 设备启动模式
 
-When this boot mode is activated (usually after a failure to boot from the SD card), the Raspberry Pi puts its USB port into device mode and awaits a USB reset from the host. Example code showing how the host needs to talk to the Raspberry Pi can be found https://github.com/raspberrypi/usbboot[on Github].
+NOTE: USB设备启动模式适用于Raspberry Pi CM、CM3、Raspberry Pi Zero、Raspberry Pi Zero W、Raspberry Pi Zero  A、Raspberry Pi Zero A+ 和 Raspberry Pi Zero 3A+。
 
-The host first sends a structure to the device down control endpoint 0. This contains the size and signature for the boot (security is not enabled, so no signature is required). Secondly, code is transmitted down endpoint 1 (bootcode.bin).  Finally, the device will reply with a success code of:
+当使能此启动模式时（通常在从SD卡启动失败后），Raspberry Pi将其USB端口置于设备模式并等待主机的USB重置。可以在 https://github.com/raspberrypi/usbboot[Github] 上找到显示主机需要如何与Raspberry Pi通信的示例代码。
 
-* 0    - Success
-* 0x80 - Failed
+主机首先向设备向下控制终结点0发送结构，这包含启动的大小和签名（未启用安全性，因此无需签名）。其次代码沿终结点 1（bootcode.bin）向下传输。最后，设备将回复成功代码：
 
-=== USB Host Boot Mode
+* 0    - 成功
+* 0x80 - 失败
 
-NOTE: Host boot is available on Raspberry Pi 3B, 3B+, 3A+, and 2B v1.2 only. Raspberry Pi 3A+ only supports mass storage boot, not network boot.
+[[usb-host-boot-mode]]
+=== USB 主机启动模式
 
-The USB host boot mode follows this sequence:
+NOTE: USB主机启动模式适用于Raspberry Pi 3B、Raspberry Pi 3B+、Raspberry Pi 3A+ 和Raspberry Pi 2B v1.2。其中Raspberry Pi 3A+ 仅支持大容量存储启动，不支持网络启动。
 
-* Enable the USB port and wait for D+ line to be pulled high indicating a USB 2.0 device (we only support USB2.0)
-* If the device is a hub:
- ** Enable power to all downstream ports of the hub
- ** For each port, loop for a maximum of two seconds (or five seconds if `program_usb_boot_timeout=1` has been set)
-  *** Release from reset and wait for D+ to be driven high to indicate that a device is connected
-  *** If a device is detected:
-   **** Send "Get Device Descriptor"
-    ***** If VID == SMSC && PID == 9500
-     ****** Add device to Ethernet device list
-   **** If class interface == mass storage class
-    ***** Add device to mass storage device list
-* Else
- ** Enumerate single device
-* Go through mass storage device list
- ** Boot from xref:raspberry-pi.adoc#usb-mass-storage-boot[mass storage device]
-* Go through Ethernet device list
- ** Boot from xref:raspberry-pi.adoc#network-booting[Ethernet]
+USB 主机启动模式遵循以下顺序：
+
+* 启用 USB 端口并等待 D+ 线被拉高，则表示是 USB 2.0 设备（我们仅支持 USB2.0）
+* 如果设备是hub：
+ ** 给hub的所有下行端口供电
+ ** 	对于每个端口，循环最多2秒（如果已设置 `program_usb_boot_timeout=1` ，则循环5秒）
+  *** 从复位中释放并等待 D+ 被驱动为高电平，则表示设备已连接
+  *** 如果检测到设备：
+   **** 发送 "Get Device Descriptor"
+    ***** 如果 VID == SMSC && PID == 9500
+     ****** 将设备添加到以太网设备列表
+   **** 如果 class interface == mass storage class
+    ***** 将设备添加到大容量存储设备列表
+* 否则
+ ** 枚举单个设备
+* 浏览大容量存储设备列表
+ ** 从 xref:raspberry-pi.adoc#usb-mass-storage-boot[大容量存储设备] 启动
+* 浏览以太网设备列表
+ ** 从 xref:raspberry-pi.adoc#network-booting[以太网] 启动

@@ -1,12 +1,14 @@
+[[samba-smbcifs]]
 == Samba (SMB/CIFS)
 
-Samba is an implementation of the SMB/CIFS networking protocol that is used by Microsoft Windows devices to provide shared access to files, printers, and serial ports.
+Samba 是 SMB/CIFS 网络协议的实现，Microsoft Windows 设备使用它来提供对文件、打印机和串行端口的共享访问。
 
-You can use Samba to mount a folder shared from a Windows machine so it appears on your Raspberry Pi, or to share a folder from your Raspberry Pi so it can be accessed by your Windows machine.
+您可以使用Samba挂载从Windows计算机共享的文件夹，使其显示在Raspberry Pi上，或者从Raspberry Pi共享文件夹，以便Windows机器可以访问它。
 
-=== Installing Samba Support
+[[installing-samba-support]]
+=== 安装 Samba 支持
 
-By default, Raspberry Pi OS does not include CIFS/Samba support, but this can be added. The following commands will install all the required components for using Samba as a server or a client.
+默认情况下，Raspberry Pi OS不包括CIFS / Samba支持，但可以添加。以下命令将安装使用 Samba 作为服务器或客户端所需的所有组件。
 
 [,bash]
 ----
@@ -14,62 +16,67 @@ sudo apt update
 sudo apt install samba samba-common-bin smbclient cifs-utils
 ----
 
-=== Mount a Folder Shared from Windows
+[[mount-a-folder-shared-from-windows]]
+=== 挂载从窗口共享的文件夹
 
-First, you need to share a folder on your Windows device. This is quite a convoluted process!
+首先，您需要在Windows设备上共享一个文件夹。这是一个相当复杂的过程！
 
-==== Turn on sharing
+[[turn-on-sharing]]
+==== 开启共享
 
-. Open the Networking and Sharing Centre by right-clicking on the system tray and selecting it
-. Click on *Change advanced sharing settings*
-. Select *Turn on network discovery*
-. Select *Turn on file and printer sharing*
-. Save changes
+. 打开网络和共享中心，方法是右键单击系统菜单并选择它
+. 单击 *Change advanced sharing settings*
+. 选择 *Turn on network discovery*
+. 选择 *Turn on file and printer sharing*
+. 保存更改
 
-==== Share the folder
+[[share-the-folder]]
+==== 共享文件夹
 
-You can share any folder you want, but for this example, simply create a folder called `share`.
+您可以共享所需的任何文件夹，但对于此示例，只需创建一个名为 `share`的文件夹。
 
-. Create the folder `share` on your desktop.
-. Right-click on the new folder, and select *Properties*.
-. Click on the *Sharing* tab, and then the *Advanced Sharing* button
-. Select *Share this folder*; by default, the share name is the name of the folder
-. Click on the *Permissions* button
-. For this example, select *Everyone* and *Full Control* (you can limit access to specific users if required); click *OK* when done, then *OK* again to leave the *Advanced Sharing* page
-. Click on the *Security* tab, as we now need to configure the same permissions
-. Select the same settings as the *Permissions* tab, adding the chosen user if necessary
-. Click *OK*
+. 在桌面上创建文件夹 `share` 。
+. 右键单击此文件夹然后选择 *Properties*.
+. 单击 *Sharing* 页签, 然后选择 *Advanced Sharing* 按键
+. 选择 *Share this folder*; 默认情况下，共享名称是文件夹的名称
+. 单击 *Permissions* 按键
+. 6. 对于此示例，请选择 *Everyone* 和 *Full Control* (如果需要，可以将访问权限限制为特定用户); 完成后单击 *OK* w, 然后再次单击 *OK* 以离开 *Advanced Sharing* 页面
+. 单击 *Security* 页签, 因为我们现在需要配置相同的权限
+. 选择与 *Permissions* 页签相同的设置, 并在必要时添加所选用户
+. 单击 *OK*
 
-The folder should now be shared.
+该文件夹现在应该已共享。
 
-==== Windows 10 Sharing Wizard
+[[windows-10-sharing-wizard]]
+==== Windows 10 共享向导
 
-On Windows 10 there is a Sharing Wizard that helps with some of these steps.
+在 Windows 10 上，有一个共享向导可以帮助完成其中一些步骤。
 
-. Run the Computer Management application from the Start Bar
-. Select *Shared Folders*, then *Shares*
-. Right-click and select *New Share*, which will start up the Sharing Wizard; click *Next*
-. Select the folder you wish to share, and click *Next*
-. Click *Next* to use all the sharing defaults
-. Select *Custom* and set the required permissions, and click *OK*, then *Finish*
+. 从“开始”栏运行“计算机管理”应用程序
+. 选择 *共享文件夹* 文件夹, 然后选择 *共享*
+. 右键单击并选择 *新建共享*, 这将启动共享向导;单击 *下一步*
+. 选择要共享的文件夹，然后单击 *下一步*
+. 单击 *下一步* 以使用所有共享默认值
+. 选择 *自定义* 并设置所需的权限，然后选择 *OK*, 最后单击 *Finish*
 
-==== Mount the folder on the Raspberry Pi
+[[mount-the-folder-on-the-raspberry-pi]]
+==== 将文件夹挂载在 Raspberry Pi上
 
-*Mounting* in Linux is the process of attaching a folder to a location, so firstly we need that location.
+在 Linux 中 *挂载* 是将文件夹附加到某个位置的过程，因此首先我们需要该位置。
 
 [,bash]
 ----
 mkdir windowshare
 ----
 
-Now, we need to mount the remote folder to that location. The remote folder is the host name or IP address of the Windows PC, and the share name used when sharing it. We also need to provide the Windows username that will be used to access the remote machine.
+现在，我们需要将远程文件夹挂载到该位置。远程文件夹是 Windows PC 的主机名或 IP 地址，以及共享时使用的共享名称。我们还需要提供将用于访问远程计算机的 Windows 用户名。
 
 [,bash]
 ----
 sudo mount.cifs //<hostname or IP address>/share /home/pi/windowshare -o user=<name>
 ----
 
-You should now be able to view the content of the Windows share on your Raspberry Pi.
+您现在应该能够在Raspberry Pi上查看Windows共享的内容。
 
 [,bash]
 ----
@@ -77,44 +84,46 @@ cd windowshare
 ls
 ----
 
-==== "Host is down" error
+[[host-is-down-error]]
+==== "主机已关闭" 错误
 
-This error is caused by a combination of two things: A SMB protocol version mismatch, and the CIFS client on Linux returning a misleading error message. In order to fix this a version entry needs to be added to the mount command. By default Raspberry Pi OS will only use versions 2.1 and above, which are compatible with Windows 7 and later. Older devices, including some NAS, may require version 1.0:
+此错误是由两种因素共同导致的：SMB 协议版本不匹配，以及 Linux 上的 CIFS 客户端返回误导性错误消息。为了解决这个问题，需要将版本条目添加到 mount 命令中。默认情况下，Raspberry Pi OS 将仅使用与 Windows 7 及更高版本兼容的 2.1 及更高版本。较旧的设备（包括某些 NAS）可能需要版本 1.0：
 
 ----
 sudo mount.cifs //IP/share /mnt/point -o user=<uname>,vers=1.0
 ----
 
-You may need to try different versions to match up with the server version. Possible values are:
+您可能需要尝试不同的版本以与服务器版本匹配。可能的值为：
 
 |===
-| Version | Description
+| 版本 | 描述
 
 | 1.0
-| Classic CIFS/SMBv1 protocol
+| 经典 CIFS/SMBv1 协议
 
 | 2.0
-| The SMBv2.002 protocol. Windows Vista Service Pack 1, and Windows Server 2008
+| SMBv2.002 协议。Windows Vista Service Pack 1 和 Windows Server 2008
 
 | 2.1
-| The SMBv2.1 protocol. Microsoft Windows 7 and Windows Server 2008R2
+| SMBv2.1 协议。 Microsoft Windows 7 和 Windows Server 2008R2
 
 | 3.0
-| The SMBv3.0 protocol.  Microsoft Windows 8 and Windows Server 2012
+| SMBv3.0 协议。  Microsoft Windows 8 和 Windows Server 2012
 
 | 3.02
-| The SMBv3.0.2 protocol. Microsoft Windows 8.1 and Windows Server 2012R2
+| SMBv3.0.2 协议。 Microsoft Windows 8.1 和 Windows Server 2012R2
 
 | 3.11
-| The SMBv3.1.1 protocol. Microsoft Windows 10 and Windows Server 2016
+| SMBv3.1.1 协议。 Microsoft Windows 10 和 Windows Server 2016
 
 | 3
-| The SMBv3.0 protocol version and above
+| SMBv3.0 协议版本及以上
 |===
 
-=== Sharing a Folder from your Raspberry Pi
+[[sharing-a-folder-from-your-raspberry-pi]]
+=== 为Raspberry Pi共享文件夹
 
-Firstly, create a folder to share. This example creates a folder called `shared` in the `home` folder of the current user, and  assumes the current user is `pi`.
+首先，创建一个共享文件夹。本示例在当前用户的 `home` 文件夹中创建一个名为 `shared`的文件夹，并假设当前用户是pi。
 
 [,bash]
 ----
@@ -123,21 +132,21 @@ mkdir shared
 chmod 0740 shared
 ----
 
-Now we need to tell Samba that there is a `pi` user when accessing that folder. When asked, enter the password of the `pi` user - this can be the default password, but that is well known and should be changed for better security.
+现在我们需要告诉Samba有一个 `pi` 用户在访问那个文件夹。当被询问时，输入 `pi` 用户的密码 - 这可以是默认密码，但这是众所周知的，为了更好的安全性应该更改。
 
 [,bash]
 ----
 sudo smbpasswd -a pi
 ----
 
-Now we need to tell Samba to share this folder, using the Samba configuration file.
+现在我们需要告诉 Samba 使用 Samba 配置文件共享此文件夹。
 
 [,bash]
 ----
 sudo nano /etc/samba/smb.conf
 ----
 
-At the end of the file, add the following to share the folder, giving the remote user read/write permissions:
+在文件末尾，添加以下内容以共享文件夹，并授予远程用户读/写权限：
 
 ----
 [share]
@@ -147,11 +156,11 @@ At the end of the file, add the following to share the folder, giving the remote
     writable = yes
 ----
 
-In the same file, find the `workgroup` line, and if necessary, change it to the name of the workgroup of your local Windows network.
+在同一文件中，找到该 `workgroup` 行，如有必要，将其更改为本地 Windows 网络的工作组的名称。
 
 [,bash]
 ----
 workgroup = <your workgroup name here>
 ----
 
-That should be enough to share the folder. On your Windows device, when you browse the network, the folder should appear and you should be able to connect to it.
+这应该足以共享文件夹。在您的 Windows 设备上，当您浏览网络时，应该会出现该文件夹，并且您应该能够连接到它。

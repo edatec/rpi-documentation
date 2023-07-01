@@ -1,31 +1,30 @@
 [[attaching-and-enabling-peripherals]]
 == 连接和启用外围设备
 
-NOTE: 除非另有明确说明，否则这些说明在处理器模块1和处理器模块3及其IO board上的工作方式相同。
+NOTE: 除非另有明确说明，否则本章使用说明适用于CM1、CM3、CM1 IO 板和CM3 IO 板。
 
-本指南旨在帮助使用处理器模块1（和处理器模块3）的开发人员掌握如何将外设连接到处理器模块引脚，以及如何对软件进行更改以使这些外设正常工作。
+本指南旨在帮助使用CM1（和CM3）的开发人员掌握如何将外设连接到CM引脚，以及如何配置软件使这些外设正常工作。
 
-处理器模块1 (CM1)和处理器模块3 (CM3)包含Raspberry Pi BCM2835 (或者 CM3包含BCM2837 )片上系统(SoC) 或 '处理器'、内存和eMMC。
- eMMC类似于SD卡，但焊接在电路板上。与SD卡不同，eMMC专门设计用作磁盘，并具有额外的功能，使其在应用中更加可靠。SoC 的大部分引脚（GPIO、两个CSI摄像头接口、两个DSI显示接口、HDMI等）都是免费提供的，并且可以根据用户认为合适的方式进行接线（或者，如果不使用，通常可以不连接）。处理器模块是一个DDR2 SODIMM外形兼容模块，因此应该可以使用任何DDR2 SODIMM插槽。
+CM1和CM3包含Raspberry Pi的BCM2835（或用于CM3的BCM2837）片上系统 （SoC） 或 或 '处理器'、内存和eMMC。eMMC类似于SD卡，但焊接在电路板上。与SD卡不同，eMMC专门设计用作磁盘，并具有额外的功能，使其在本应用场景中更加可靠。SoC的大多数引脚（GPIO，两个CSI摄像头接口，两个DSI显示接口，HDMI等）都是免费可用的，并且可以根据用户认为合适的方式进行连接（或者，如果不使用，通常可以不连接）。处理器模块（CM）是 DDR2 SODIMM 外形兼容的模块，因此任何 DDR2 SODIMM 插槽都是可用的。
   
-NOTE: 引出线与实际的SODIMM内存模块不同。
+NOTE: 引脚排列与实际的SODIMM内存模块不同。
 
-为了使用处理器模块，用户需要设计一个（相对简单的）'主板'，它可以为计算模块提供电源（最低 3.3V和1.8V），并将引脚连接到用户应用程序所需的外围设备。
+为了使用处理器模块（CM），用户需要设计一个（相对简单的）'主板'，它可以为处理器模块（CM）提供电源（最低 3.3V和1.8V），并将引脚连接到用户应用所需的外围设备。
 
-Raspberry Pi为处理器模块（称为处理器模块IO board或 CMIO board）提供了一个最小的主板，为模块供电，将GPIO引出到引脚接头，并将相机和显示器接口连接到FFC连接器。其还提供HDMI，USB和'ACT' LED灯，以及通过PC或Raspberry Pi的USB对模块的eMMC进行编程的能力。
+Raspberry Pi 为处理器模块（CM）提供了一个最小的主板（称为CM IO 板或 CMIO 板），该主板为CM供电，将 GPIO引出到pin header，并将相机和显示器接口连接到 FFC 连接器。其提供HDMI、USB和和“ACT” LED灯，并具备通过PC或Raspberry Pi的USB对模块的eMMC进行编程。
 
-本指南首先介绍启动过程以及如何使用设备树来描述连接的硬件;这些是使用处理器模块进行设计时要了解的基本事项。然后，它提供了一个工作示例，将I2C和SPI外设连接到CMIO（或 CM3 的 CMIO V3）board，并创建使两个外设在Linux下工作所需的设备树文件，从普通的Raspberry Pi OS镜像开始。
+本指南首先介绍启动过程以及如何使用设备树来描述连接的硬件;这些是使用处理器模块（CM）进行设计时需要了解的基本内容。同时，本指南也提供了一个使用示例，将 I2C 和 SPI 外设连接到 CMIO（或 CM3 的 CMIO V3）板，并创建使两个外设在 Linux 下工作所需的设备树文件，从创建普通的 Raspberry Pi OS 镜像开始。
 
 [[bcm283x-gpios]]
 === BCM283x GPIOs
 
-BCM283x 具有三组通用输入/输出 (GPIO) 引脚：Bank 0 上有 28 个引脚，Bank 1 上有 18 个引脚，Bank 2 上有 8 个引脚，总共有 54 个引脚。这些引脚可以用作真正的 GPIO 引脚，即软件可以将它们设置为输入或输出、读取和/或设置状态，并将它们用作中断。它们可以设置为'备用功能'，例如I2C，SPI，I2S，UART，SD卡等。
+BCM283x 有三组通用输入/输出 （GPIO） 引脚：Bank 0上有28个引脚、Bank 1上有18个引脚和Bank2上有8个引脚，总共有 54 个引脚。这些引脚可以用作真正的GPIO引脚，即软件可以将它们设置为输入或输出、读取和/或设置状态，并将它们用作中断；也可以将它们设置为“备用功能”，例如I2C、SPI、I2S、UART、SD卡等。
 
-在处理器模块上，Bank 0和Bank 1都可以免费使用。Bank 2用于eMMC 和 HDMI的热插拔检测和 ACT LED/USB启动控制。
+在处理器模块上（CM），Bank 0 和Bank 1 都是免费可用的，Bank 2 用于 eMMC、、HDMI 热插拔检测和 ACT LED/USB启动控制。
 
-在正在运行的系统上，查看每个GPIO引脚的状态（它们设置的功能以及引脚上的电压电平）非常有用，这样您就可以查看系统是否按预期设置。如果要查看设备树是否按预期工作，或在硬件调试期间查看引脚状态，这将特别有用。
+在正在运行的系统上，查看每个GPIO引脚的状态（它们设置的功能以及引脚上的电压电平）是非常有用的，可以帮助确认系统是否按需求设置。如果要查看设备树是否按需求工作，或在硬件调试期间查看引脚状态，此操作特别有用。
 
-Raspberry Pi 提供了用于黑客和调试GPIO的工具包 `raspi-gpio` 。
+Raspberry Pi提供了用于破解和调试GPIO工具的软件包 `raspi-gpio` 。
 
 NOTE: 你需要以root身份运行 `raspi-gpio` 。
 
@@ -47,7 +46,7 @@ sudo apt update
 sudo raspi-gpio help
 ----
 
-例如, 要查看多有GPIO引脚当前功能和电平，请使用:
+例如, 要查看所有GPIO引脚当前功能和电平，请使用:
 
 ----
 sudo raspi-gpio get
@@ -62,23 +61,23 @@ sudo raspi-gpio funcs > gpio-funcs.csv
 [[bcm283x-boot-process]]
 === BCM283x 启动过程
 
-BCM283x 设备由 VideoCore GPU和ARM CPU组成。 GPU实际上是一个由DSP处理器和硬件加速器组成的系统，用于成像、视频编码和解码、3D图形和图像合成。
+BCM283x 器件由 VideoCore GPU 和 ARM CPU 内核组成。GPU是一个由 DSP 处理器和硬件加速器组成的系统，用于成像、视频编码和解码、3D 图形和图像合成。
 
 
-在BCM283x设备中，首先启动的是GPU中的DSP核心。它负责启动主ARM处理器之前的一般设置和管理。
+在 BCM283x 器件中，首先启动的是 GPU 中的 DSP 内核，其负责启动主 ARM 处理器之前的常规设置和内务管理。
 
-在Raspberry Pi和处理器板上使用的BCM283x设备由三个阶段的启动过程：
+Raspberry Pi和处理器模块（CM） 板上使用的 BCM283x 器件具有三阶段启动过程：
 
-. GPU DSP从复位中出来，从一个小的内部ROM(引导ROM)执行代码。这段代码的唯一目的是通过一个外部接口加载第二阶段引导加载程序。在Raspberry Pi或处理器模块上，此代码首先在SD卡(eMMC)上查找第二阶段引导加载程序;它希望它被称为`bootcode.bin`，并且位于第一个分区(必须是FAT32)上。如果没有找到SD卡或者没有找到`bootcode.bin`，引导ROM就会以'USB boot'模式等待，等待主机通过USB接口给它一个第二阶段的加载程序。
-. 第二阶段加载程序(SD卡上的`bootcode.bin`或usb引导的`usbbootcode.bin`)负责设置LPDDR2 SDRAM接口和各种其他关键系统功能，然后加载和执行主GPU固件(称为`start.elf`还是在主SD卡分区上)。
-. `start.elf`接管并负责进一步的系统设置和启动ARM处理器子系统，并包含在GPU的各个部分上运行的固件。它首先读取`dt-blob.bin`以确定初始GPIO引脚状态和GPU特定的接口和时钟，然后解析`config.txt`。然后，在启动ARM子系统并将设备树数据传递给引导Linux kernel之前，它加载ARM设备树文件(例如，用于处理器模块1的`bcm2708-rpi-cm.dtb`)和`config.txt`中指定的任何设备树覆盖。
+. GPU DSP退出复位并执行小型内部 ROM（启动 ROM）中的代码，该代码的唯一目的是通过其中一个外部接口加载第二阶段引导加载程序。在Raspberry Pi或CM上，此代码首先在 SD 卡 （eMMC） 上查找第二阶段引导加载程序;它期望被称为`bootcode.bin`并位于第一个分区（必须是 FAT32）。如果未找到SD卡或未找到`bootcode.bin`，则启动ROM将处于'USB 启动'模式并等待，等待主机通过USB接口为其提供第二阶段启动加载程序。
+. 第二阶段启动加载程序(SD卡上的`bootcode.bin`或usb引导的`usbbootcode.bin`)负责设置LPDDR2 SDRAM接口和各种其他关键系统功能，然后加载和执行主GPU固件(称为`start.elf`还是在主SD卡分区上)。
+. `start.elf`接管并负责进一步的系统设置和启动ARM处理器子系统，并包含在GPU的各个部分上运行的固件。它首先读取`dt-blob.bin`以确定初始GPIO引脚状态和GPU特定的接口和时钟，然后解析`config.txt`。然后，在启动ARM子系统并将设备树数据传递给启动Linux kernel之前，它加载ARM设备树文件(例如，用于CM1的`bcm2708-rpi-cm.dtb`)和`config.txt`中指定的任何设备树覆盖。
 
 [[device-tree]]
 === 设备树
 
-http://www.devicetree.org/[设备树] 是一种特殊的编码方式，它将所有关于附加到系统上的硬件的信息(以及所需的驱动程序)进行编码。
+http://www.devicetree.org/[设备树] 是一种特殊的编码方式，用于编码有关连接到系统的硬件（以及所需的驱动程序）的所有信息。
 
-在Raspberry Pi或处理器模块上，SD/eMMC的第一个FAT分区中有几个文件是二进制'Device Tree'文件。这些二进制文件（通常带有扩展名`.dtb`）是由设备树编译器从人类可读的文本描述（通常是带有扩展名`.dts`的文件）编译的。
+在Raspberry Pi或处理器模块（CM）上，SD/eMMC的第一个FAT分区中有几个文件是二进制'Device Tree'文件。这些二进制文件（通常带有扩展名`.dtb`）是由设备树编译器从人类可读的文本描述（通常是带有扩展名`.dts`的文件）编译的。
 
  
  在第一个（FAT）分区中的标准 Raspberry Pi OS镜像上，您会发现两种不同类型的设备树文件，一种仅由GPU使用，其余是每个基于BCM283x的Raspberry Pi产品的标准ARM设备树文件：
@@ -93,24 +92,24 @@ http://www.devicetree.org/[设备树] 是一种特殊的编码方式，它将所
 
 NOTE: `dt-blob.bin` 默认不存在，因为start.elf`中编译了一个 'default' 版本。 但对于处理器模块项目，通常需要提供一个 `dt-blob.bin` (它覆盖默认的内置文件)。
 
-NOTE: `dt-blob.bin`是编译的设备树格式, 但仅由GPU固件读取以设置GPU专有的功能-见下文。
+NOTE: `dt-blob.bin`采用已编译的设备树格式，但仅由 GPU 固件读取以设置 GPU 独有的功能-见下文。
 
 * xref:configuration.adoc#changing-the-default-pin-configuration[创建 `dt-blob.bin`] 指南.
-*  xref:configuration.adoc#device-trees-overlays-and-parameters[Raspberry Pi的Linux Device Tree] 指南。
+*  xref:configuration.adoc#device-trees-overlays-and-parameters[Raspberry Pi的Linux 设备树] 指南。
 
-在引导过程中，用户可以通过`config.txt`中的`device_tree`参数指定要使用的特定ARM设备树，例如添加`device_tree=mydt.dtb`行至`config.txt`，其中`mydt.dtb`是要加载的dtb文件，而不是标准的ARM dtb文件之一。虽然用户可以为他们的处理器模块产品创建完整的设备树，但推荐的添加硬件的方式是使用覆盖(参见下一节)。
+在启动过程中，用户可以通过`config.txt`中的`device_tree`参数指定要使用的特定ARM设备树，例如添加`device_tree=mydt.dtb`行至`config.txt`，其中`mydt.dtb`是要加载的dtb文件，而不是标准的ARM dtb文件。虽然用户可以为他们的处理器模块（CM）产品创建完整的设备树，但推荐的添加硬件的方式是使用覆盖(参见下一节)。
 
 除了加载ARM dtb之外，`start.elf` 支持通过 `config.txt` 中的 `dtoverlay` 参数加载额外的设备树 'overlays' ，例如根据需要向 `config.txt` 中添加与overlays一样多的 `dtoverlay=myoverlay` 行。请注意overlays位于 `/overlays` 并带有后缀 `-overlay.dtb` ，如 `/overlays/myoverlay-overlay.dtb` 。当Linux kernel启动时，在数据被传到内核之前，Overlays会与基本的dtb文件合并。
 
 Overlays用于将数据添加至基本的dtb中，该dtb(名义上)描述非特定于主板的硬件。
-这包括使用的GPIO引脚及其功能，以及连接的设备，以便加载正确的驱动程序。惯例是，在Raspberry Pi上，所有连接到bank 0 GPIO(GPIO头)的硬件都应该用覆盖图来描述。 在计算模块上，连接到Bank0和Bank1 GPIOs的所有硬件都应在覆盖文件中进行描述。您不必遵循这些约定:您可以将所有信息整合到一个dtb文件中，如前所述，替换 `bcm2708-rpi-cm.dtb` 。但是，遵循这些约定意味着您可以使用 '标准' Raspberry Pi OS版本，其标准基础dtb和所有特定于产品的信息都包含在一个单独的覆盖层中。有时，基本dtb可能会改变——通常不会破坏覆盖——这就是建议使用覆盖的原因。
+这包括使用的GPIO引脚及其功能，以及连接的设备，以便加载正确的驱动程序。惯例是，在Raspberry Pi上，所有连接到Bank 0 GPIO(GPIO接头)的硬件都应该用覆盖来描述。 在处理器模块（CM）上，连接到Bank0和Bank1 GPIOs的所有硬件都应在覆盖文件中进行描述。您不必遵循这些约定:您可以将所有信息整合到一个dtb文件中，如前所述，替换 `bcm2708-rpi-cm.dtb` 。但是，遵循这些约定意味着您可以使用 '标准' Raspberry Pi OS版本，其标准基础dtb和所有特定于产品的信息都包含在一个单独的覆盖中。有时，基本dtb可能会改变——通常不会破坏覆盖——这就是建议使用覆盖的原因。
 
 [[dt-blob-bin]]
 === dt-blob.bin
 
-当 `start.elf` 运行时, 首先读取名为 `dt-blob.bin` 的东西。这是一种特殊形式的设备树blob，它告诉GPU如何(最初)设置GPIO引脚状态，以及关于由GPU控制(拥有)的GPIO/外设的任何信息，而不是通过ARM上的Linux使用。例如，Raspberry Pi相机外设由GPU管理，GPU需要独占访问I2C接口才能与之对话，还需要几个控制引脚。大多数Raspberry Pi板和计算模块上的I2C0名义上是专供GPU使用的。 有关GPU应该为I2C0使用哪些GPIO引脚以及控制相机功能的信息来自 `dt-blob.bin` 。
+当 `start.elf` 运行时, 首先读取名为 `dt-blob.bin` 的东西。这是一种特殊形式的设备树blob，它告诉GPU如何(最初)设置GPIO引脚状态，以及关于由GPU控制(拥有)的GPIO/外设的任何信息，而不是通过Linux在ARM上的使用。例如，Raspberry Pi相机外设由GPU管理，GPU需要独占访问I2C接口才能与之通信，还需要几个控制引脚。大多数Raspberry Pi板和处理器模块（CM）上的I2C0名义上是专供GPU使用的。 有关GPU应该将哪些GPIO引脚用于I2C0以及控制相机功能的信息来自 `dt-blob.bin` 。
 
-NOTE: `start.elf` 固件有一个 xref:configuration.adoc#changing-the-default-pin-configuration['内置的' 默认] `dt-blob.bin` ，如果在第一个FAT分区的根上没有找到 `dt-blob.bin` ，就会使用这个默认 `dt-blob.bin` 。大多数计算模块项目都希望提供自己的自定义 `dt-blob.bin` 。请注意 `dt-blob.bin` 指定哪个引脚用于HDMI热插拔检测，尽管这在计算模块上不应改变。它还可以用来将GPIO设置为GPCLK输出，并指定GPU在启动时可以使用的ACT LED。将来可能会添加其他功能。
+NOTE: `start.elf` 固件有一个 xref:configuration.adoc#changing-the-default-pin-configuration['内置的' 默认] `dt-blob.bin` ，如果在第一个FAT分区的根上未找到 `dt-blob.bin` ，则会使用这个默认 `dt-blob.bin` 。大多数处理器模块（CM）项目都希望提供自己的自定义 `dt-blob.bin` 。请注意 `dt-blob.bin` 指定哪个引脚用于HDMI热插拔检测，尽管这在处理器模块（CM）上不会改变。它还可以用来将GPIO设置为GPCLK输出，并指定GPU在启动时可以使用的ACT LED。将来可能会添加其他功能。
 
 https://datasheets.raspberrypi.com/cm/minimal-cm-dt-blob.dts[minimal-cm-dt-blob.dts] 是一个示例 `.dts` 设备树文件，用于设置HDMI热插拔检测和 ACT LED，并将所有其他 GPIO 设置为具有默认拉取的输入。
 
@@ -125,27 +124,29 @@ dtc -I dts -O dtb -o dt-blob.bin minimal-cm-dt-blob.dts
 
 `start.elf` 读取 `dt-blob.bin` 并设置初始引脚状态和时钟后，它会读取 xref:config_txt.adoc[`config.txt`]， 其中包含许多其他系统设置选项。
 
-读取 `config.txt` 后，将读取另一个特定于硬件运行板的设备树文件: 对于计算模块1，这是 `bcm2708-rpi-cm.dtb`, 对于计算模块3，这是 `bcm2710-rpi-cm.dtb` 。 这个文件是一个标准的ARM Linux设备树文件，它详细描述了硬件是如何连接到处理器的: SoC中存在哪些外围设备以及在哪里，使用了哪些gpio，那些gpio有什么功能，连接了哪些物理设备。该文件将适当地设置GPIOs，如果不同，将覆盖 `dt-blob.bin` 中设置的pin状态。它还会尝试加载特定设备的驱动程序。 
+读取 `config.txt` 后，将读取另一个特定于硬件运行板的设备树文件: 对于CM1是 `bcm2708-rpi-cm.dtb`, 对于CM3是 `bcm2710-rpi-cm.dtb` 。 这个设备树文件是一个标准的ARM Linux设备树文件，它详细描述了硬件是如何连接到处理器的: SoC中存在哪些外围设备以及外围设备的位置，具体使用了哪些GPIO，且这些GPIO有什么功能和分别连接了哪些物理设备。该文件将适当地设置GPIO，如果pin状态与 `dt-blob.bin` 中的不同，将覆盖 `dt-blob.bin` 中设置的pin状态。它还会尝试加载特定设备的驱动程序。 
 
-虽然 `bcm2708-rpi-cm.dtb` 文件可用于加载所有连接的设备，但建议计算模块用户不要使用该文件。 相反，使用标准Raspberry Pi操作系统软件映像中提供的文件，并使用自定义 'overlay' 文件添加设备，如前所述。 `bcm2708-rpi-cm.dtb` 文件包含各种外设(I2C、SPI、I2S等)的(禁用)条目和没有GPIO引脚定义，除了eMMC/SD卡外设有GPIO定义并被启用，因为它总是在相同的引脚上。 这个想法是，单独的覆盖文件将启用所需的接口，描述所使用的引脚，还描述所需的驱动程序。 `start.elf` 固件将读取 `bcm2708-rpi-cm.dtb` 并将其与覆盖数据合并，然后在Linux内核启动时将合并的设备树提供给Linux内核。
+虽然 `bcm2708-rpi-cm.dtb` 文件可用于加载所有连接的设备，但建议处理器模块（CM）用户不要使用该文件。 相反，使用标准Raspberry Pi操作系统软件镜像中提供的文件，并使用自定义 'overlay' 文件添加设备，如前所述。 `bcm2708-rpi-cm.dtb` 文件包含各种外设(I2C、SPI、I2S等)的(禁用)条目并且缺少GPIO引脚定义，除了eMMC/SD卡外设有GPIO定义并被启用，因为它总是在相同的引脚上。 这个想法是，单独的覆盖文件将启用所需的接口，描述所使用的引脚，还描述所需的驱动程序。 `start.elf` 固件将读取 `bcm2708-rpi-cm.dtb` 并将其与覆盖数据合并，然后在Linux内核启动时将合并的设备树提供给Linux内核。
 
 [[device-tree-source-and-compilation]]
 === 设备树源和编译
 
-Raspberry Pi OS镜像提供编译的dtb文件, 但源dts文件在哪里？? 他们位于 https://github.com/raspberrypi/linux[GitHub] 上的Raspberry Pi Linux内核分支中。.查看 `arch/arm/boot/dts` 文件夹。
+Raspberry Pi OS镜像提供编译的dtb文件, 但源dts文件在哪里？ 他们位于 https://github.com/raspberrypi/linux[GitHub] 上的Raspberry Pi Linux内核分支中。可查看 `arch/arm/boot/dts` 文件夹。
 
-一些默认的覆盖dts文件位于 `arch/arm/boot/dts/overlays` 中。可以附加到Raspberry Pi操作系统镜像中的 *Raspberry Pi* 的标准硬件的相应覆盖位于 `/overlays` 目录中的FAT分区上。注意，这些假设BANK0上有某些引脚，因为它们用于Raspberry Pi。 一般来说，使用这些标准覆盖的来源作为创建自己的覆盖的指南，除非您使用的GPIO引脚与硬件插入Raspberry Pi的GPIO头时使用的相同。将这些dts文件编译为dtb文件需要最新版本的 xref:configuration.adoc#device-trees-overlays-and-parameters[设备树编译器] dtc。在Raspberry Pi上安装适当版本的方法是运行：
+一些默认的覆盖dts文件位于 `arch/arm/boot/dts/overlays` 中。可连接到Raspberry Pi操作系统镜像中的 *Raspberry Pi* 的标准硬件的相应覆盖，其位于 `/overlays` 目录中的FAT分区上。注意：假设BANK0上有某些引脚用于Raspberry Pi。一般来说，使用这些标准覆盖的源代码作为创建自己的覆盖的指南，除非您将要使用的GPIO引脚与硬件使用的Raspberry Pi的GPIO引脚相同。
+
+将这些dts文件编译为dtb文件需要最新版本的 xref:configuration.adoc#device-trees-overlays-and-parameters[设备树编译器] dtc。在Raspberry Pi上安装适当版本的方法是运行：
 
 ----
 sudo apt install device-tree-compiler
 ----
 
-如果您正在构建自己的内核，那么构建主机也会在 `scripts/dtc` 中获得一个版本。您可以通过将覆盖图添加到 `arch/arm/boot/dts/overlays` 中的 `Makefile` 中，并使用 'dtbs' 制作目标来安排自动构建覆盖图。
+如果您正在构建自己的内核，那么构建主机也会在 `scripts/dtc` 中获得一个版本。您可以通过将覆盖层添加到 `arch/arm/boot/dts/overlays` 中的 `Makefile` 中，并使用 'dtbs' 目标来安排自动构建覆盖层。
 
 [[device-tree-debugging]]
 === 设备树调试
 
-当 Linux 内核在 ARM 内核上启动时，GPU 会为其提供一个完全组装的设备树，该树由基本 dts 和任何覆盖网络组装而成。此完整树可通过 `/proc/device-tree` 中的 Linux proc 接口获得，其中节点变为目录，属性变为文件。
+当 Linux 内核在 ARM 内核上启动时，GPU 会为其提供一个完全组装的设备树，该设备树由基本 dts 和任何覆盖层组装而成。这个完整的设备树可通过 `/proc/device-tree` 中的 Linux proc 接口获得，其中节点变为目录，属性变为文件。
 
 您可以使用 `dtc` 将其写出为人类可读的 dts 文件以进行调试。您可以看到完全组装的设备树，这通常非常有用：
 
@@ -153,7 +154,7 @@ sudo apt install device-tree-compiler
 dtc -I fs -O dts -o proc-dt.dts /proc/device-tree
 ----
 
-如前面在 GPIO 部分所述，使用 `raspi-gpio` 查看 GPIO 引脚的设置以检查它们是否符合预期也非常有用：
+如前面在 GPIO 部分所述，使用 `raspi-gpio` 查看 GPIO 引脚的设置以检查它们是否符合需求也非常有用：
 
 ----
 raspi-gpio get
@@ -172,22 +173,22 @@ sudo vcdbg log msg
 
 NOTE: 请使用Raspberry Pi论坛上的 https://forums.raspberrypi.com/viewforum.php?f=107[设备树子论坛] 询问与设备树相关的问题。
 
-对于这些简单的例子，我使用了CMIO板，其外围设备通过跳线连接。
+对于这些简单的例子，我使用了CMIO板，其通过跳线连接外围设备。
 
-对于每个示例，我们假设CM1 + CMIO或CM3 + CMIO3板在计算模块上全新安装了最新的Raspberry Pi OS Lite版本。 
+对于每个示例，我们假设CM1 + CMIO或CM3 + CMIO3板在处理器模块（CM）上安装了最新的Raspberry Pi OS Lite版本。 
 
-此处的示例需要互联网连接，因此建议使用 USB 集线器加键盘以及插入 CMIO USB 端口的无线 LAN 或以太网加密狗。
+此处的示例需要互联网连接，因此建议使用 USB HUB+键盘+无线网络或者插入 CMIO USB 端口的以太网。
 
 请在Raspberry Pi https://forums.raspberrypi.com/viewforum.php?f=107[设备树子论坛] 上发布任何问题、错误或疑问。
 
 [discrete]
 === 示例 1 - 将 I2C RTC 连接到 BANK1 引脚
 
-在这个简单的示例中，我们将恩智浦PCF8523实时时钟（RTC）连接到CMIO板BANK1 GPIO引脚：GPIO3上的3V2、GND、I1C44_SDA和GPIO2上的I1C45_SCL。
+在这个简单的示例中，我们将NXP PCF8523实时时钟（RTC）连接到CMIO板BANK1 GPIO引脚：3V3、GND、GPIO44上的I2C1_SDA和GPIO45上的I2C1_SCL 。
 
-下载 https://datasheets.raspberrypi.com/cm/minimal-cm-dt-blob.dts[minimal-cm-dt-blob.dts] 并将其复制到 SD 卡 FAT 分区，该分区位于/boot计算模块启动时。
+下载 https://datasheets.raspberrypi.com/cm/minimal-cm-dt-blob.dts[minimal-cm-dt-blob.dts] 并将其复制到 SD 卡 FAT 分区，当处理器模块（CM）启动时该分区位于/boot。
 
-编辑 `minimal-cm-dt-blob.dts` GPIO44 和 45 的引脚状态并将其更改为带上拉的 I2C1:
+编辑 `minimal-cm-dt-blob.dts` 并将GPIO44 和 GPIO45 的引脚状态更改为带上拉的 I2C1:
 
 ----
 sudo nano /boot/minimal-cm-dt-blob.dts
@@ -200,14 +201,14 @@ pin@p44 { function = "input"; termination = "pull_down"; }; // DEFAULT STATE WAS
 pin@p45 { function = "input"; termination = "pull_down"; }; // DEFAULT STATE WAS INPUT NO PULL
 ----
 
-to:
+为:
 
 ----
 pin@p44 { function = "i2c1"; termination = "pull_up"; }; // SDA1
 pin@p45 { function = "i2c1"; termination = "pull_up"; }; // SCL1
 ----
 
-NOTE: 我们可以使用这个 `dt-blob.dts` ，不做任何更改。当加载特定驱动程序时，Linux设备树将在Linux内核引导期间(重新)配置这些引脚，因此您可以决定是否修改 `dt-blob.dts` 。我喜欢将 `dt-blob.dts` 配置为我期望的最终GPIOs，因为它们会在GPU引导阶段尽快设置为最终状态，但这并不是绝对必要的。您可能会发现，在某些情况下，您确实需要在GPU启动时配置引脚，因此当加载Linux驱动程序时，它们处于特定的状态。例如，复位线可能需要保持在正确的方向。
+NOTE: 我们可以使用默认的 `dt-blob.dts` ，当加载特定驱动程序时，Linux设备树将在Linux内核启动时(重新)配置这些引脚，故你可以根据需要修改 `dt-blob.dts` 。推荐将将 `dt-blob.dts` 配置为为需求的GPIO，因为其会在GPU启动时阶段被快速设置为最终状态，但此操作不是必须的。你可能会发现，在某些情况下，需要在GPU启动时配置引脚，因此当加载Linux驱动程序时，它们处于特定的状态。例如，复位线可能需要保持在正确的方向。
  
 编译 `dt-blob.bin`:
 
@@ -221,7 +222,7 @@ sudo dtc -I dts -O dtb -o /boot/dt-blob.bin /boot/minimal-cm-dt-blob.dts
 sudo dtc -@ -I dts -O dtb -o /boot/overlays/example1.dtbo /boot/example1-overlay.dts
 ----
 
-NOTE: `dtc` 命令行中的 '-@' 。如果您使用外部引用编译 dts 文件，这是必需的，因为叠加往往是。
+NOTE: 如果你要使用外部引用编译 dts 文件，则`dtc` 命令行中的 '-@' 是必需的。
 
 编辑 `/boot/config.txt` 并添加行:
 
@@ -231,20 +232,20 @@ dtoverlay=example1
 
 现在保存并重新启动。
 
-重新启动后，您应该在 /dev 中看到一个 rtc0 条目。运行：
+重新启动后，您会在 /dev 中看到一个 rtc0 条目。运行：
 
 ----
 sudo hwclock
 ----
 
-将返回硬件时钟时间，而不是错误。
+将返回硬件时钟时间，而不是错误信息。
 
 [discrete]
 === 示例 2 - 在 BANK28 上连接 ENC60J0 SPI 以太网控制器
 
-在此示例中，我们使用 /boot/overlays 中已有的覆盖网络之一将 ENC28J60 SPI 以太网控制器添加到 BANK0。以太网控制器连接到SPI引脚CE0，MISO，MOSI和SCLK（分别为GPIO8-11），以及用于下降沿中断的GPIO25，当然还有GND和3V3。
+在此示例中，我们使用 /boot/overlays 中已有的覆盖之一将 ENC28J60 SPI 以太网控制器添加到 BANK0。以太网控制器连接到SPI引脚CE0、MISO、MOSI和SCLK（分别为GPIO8-11），以及用于下降沿中断的GPIO25、GND和3V3。
 
-在这个例子中，我们不会改变 `dt-blob.bin` ，尽管如果您愿意，当然可以。我们应该看到 Linux 设备树正确设置了引脚。
+在这个例子中，我们不建议更改 `dt-blob.bin` ，但如果你想修改也是支持的。我们可以学习到Linux 设备树设置引脚的方法。
 
 编辑 `/boot/config.txt` 并添加行:
 
@@ -254,7 +255,7 @@ dtoverlay=enc28j60
 
 现在保存并重新启动。
 
-重新启动后，您应该像以前一样在 /dev 中看到一个 rtc0 条目。运行：
+重新启动后，你会在/dev中看到一个 rtc0 条目。运行如下命令：
 
 ----
 sudo hwclock
@@ -262,15 +263,16 @@ sudo hwclock
 
 将返回硬件时钟时间，而不是错误。
 
-您还应该具有以太网连接：
+你还需要检测以太网连接状态：
 
 ----
 ping 8.8.8.8
 ----
 
-应该工作。
+连接正常。
 
-终于运行：
+最后运行：
+
 
 ----
 sudo raspi-gpio get

@@ -1,31 +1,33 @@
 [[spi-overview]]
-== Serial Peripheral Interface (SPI)
+== 串行外设接口 (SPI)
 
-Raspberry Pi computers are equipped with a number of https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus[SPI] buses. SPI can be used to connect a wide variety of peripherals - displays, network controllers (Ethernet, CAN bus), UARTs, etc. These devices are best supported by kernel device drivers, but the `spidev` API allows userspace drivers to be written in a wide array of languages.
+Raspberry Pi计算机配备了较多的 https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus[SPI] 总线。SPI可用于连接各种外设 - 显示器、网络控制器（以太网，CAN总线）、UART等。这些外设需要由内核设备驱动程序支持，但 `spidev` API 允许用户空间驱动程序以多种语言编写。
 
 [[spi-hardware]]
-=== SPI Hardware
+=== SPI 硬件
 
-Raspberry Pi Zero, 1, 2 and 3 have three SPI controllers:
+Raspberry Pi Zero 1、Raspberry Pi Zero 2和Raspberry Pi Zero 3分别包含3个SPI控制器：
 
-* SPI0, with two hardware chip selects, is available on the header of all Raspberry Pis; there is also an alternate mapping that is only available on Compute Modules.
-* SPI1, with three hardware chip selects, is available on all Raspberry Pi models except the original Raspberry Pi 1 Model A and Model B.
-* SPI2, also with three hardware chip selects, is only available on Compute Module 1, 3 and 3+.
+* SPI0具有两个硬件芯片选择，其支持在所有Raspberry Pi的接头上使用;还具有一个仅支持在CM上使用的备用映射。
+* SPI1具有3个硬件芯片选择，适用于除原始Raspberry Pi 1 Model A和Model B之外的所有Raspberry Pi型号。
+* SPI2具有三个硬件芯片选择，仅适用于CM1、CM3和CM3+。
 
-On the Raspberry Pi 4, 400 and Compute Module 4 there are four additional SPI buses: SPI3 to SPI6, each with 2 hardware chip selects. These extra SPI buses are available via alternate function assignments on certain GPIO pins - see the https://datasheets.raspberrypi.com/bcm2711/bcm2711-peripherals.pdf[BCM2711 ARM Peripherals] datasheet.
+Raspberry Pi 4、Raspberry Pi 400和CM4分别具有4个额外的SPI总线：SPI3~SPI6，每个总线均具有2个硬件芯片选择。这些额外的 SPI 总线可通过一些 GPIO 引脚上的替代功能分配来适用 - 请参见 https://datasheets.raspberrypi.com/bcm2711/bcm2711-peripherals.pdf[BCM2711 ARM 外设] datasheet。
 
-Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[BCM2835 ARM Peripherals] datasheet describes the main controller.  Chapter 2.3 describes the auxiliary controller.
+Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[BCM2835 ARM 外设] datasheet 中的第10章介绍了主控制器，第 2.3 章介绍了辅助控制器。
 
-==== Pin/GPIO mappings
+[[pingpio-mappings]]
+==== 引脚/GPIO 映射
 
+[[spi0]]
 ===== SPI0
 
 [cols="1,1,1,1"]
 |===
-| SPI Function
-| Header Pin
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| 引脚
+| Broadcom 引脚名称
+| Broadcom 引脚功能
 
 | MOSI
 | 19
@@ -53,13 +55,14 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI0_CE1_N
 |===
 
-===== SPI0 alternate mapping (Compute Modules only, except CM4)
+[[spi0-alternate-mapping-compute-modules-only-except-cm4]]
+===== SPI0 备用映射（仅限处理器模块（CM）系列其中CM4除外）
 
 [cols="1,1,1"]
 |===
-| SPI Function
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| Broadcom 引脚名称
+| Broadcom 引脚功能
 
 | MOSI
 | GPIO38
@@ -82,14 +85,15 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI0_CE1_N
 |===
 
+[[spi1]]
 ===== SPI1
 
 [cols="1,1,1,1"]
 |===
-| SPI Function
-| Header Pin
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| 针脚
+| Broadcom 引脚名称
+| Broadcom 引脚功能
 
 | MOSI
 | 38
@@ -122,13 +126,14 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI1_CE2_N
 |===
 
-===== SPI2 (Compute Modules only, except CM4)
+[[spi2-compute-modules-only-except-cm4]]
+===== SPI2 (仅限处理器模块（CM）系列其中CM4除外)
 
 [cols="1,1,1"]
 |===
-| SPI Function
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| Broadcom 引脚名称
+| Broadcom 引脚功能
 
 | MOSI
 | GPIO41
@@ -155,14 +160,15 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI2_CE2_N
 |===
 
-===== SPI3 (BCM2711 only)
+[[spi3-bcm2711-only]]
+===== SPI3 (仅限 BCM2711)
 
 [cols="1,1,1,1"]
 |===
-| SPI Function
-| Header Pin
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| 引脚
+| Broadcom 引脚名称
+| Broadcom 引脚功能
 
 | MOSI
 | 03
@@ -190,14 +196,15 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI3_CE1_N
 |===
 
-===== SPI4 (BCM2711 only)
+[[spi4-bcm2711-only]]
+===== SPI4 (仅限BCM2711)
 
 [cols="1,1,1,1"]
 |===
-| SPI Function
-| Header Pin
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| 引脚
+| Broadcom 引脚名称
+| Broadcom 引脚定义
 
 | MOSI
 | 31
@@ -225,14 +232,15 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI4_CE1_N
 |===
 
-===== SPI5 (BCM2711 only)
+[[spi5-bcm2711-only]]
+===== SPI5 (仅限 BCM2711)
 
 [cols="1,1,1,1"]
 |===
-| SPI Function
-| Header Pin
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| 引脚
+| Broadcom 引脚名称
+| Broadcom 引脚功能
 
 | MOSI
 | 08
@@ -260,14 +268,15 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI5_CE1_N
 |===
 
-===== SPI6 (BCM2711 only)
+[[spi6-bcm2711-only]]
+===== SPI6 (仅限 BCM2711)
 
 [cols="1,1,1,1"]
 |===
-| SPI Function
-| Header Pin
-| Broadcom Pin Name
-| Broadcom Pin Function
+| SPI 功能
+| 引脚
+| Broadcom 引脚名称
+| Broadcom 引脚功能
 
 | MOSI
 | 38
@@ -295,9 +304,10 @@ Chapter 10 in the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals
 | SPI6_CE1_N
 |===
 
-==== Master modes
+[[master-modes]]
+==== 主模式
 
-Signal name abbreviations
+信号名称缩写
 
 ----
 SCLK - Serial CLocK
@@ -307,56 +317,63 @@ MISO - Master In Slave Out
 MOMI - Master Out Master In
 ----
 
-===== Standard mode
+[[standard-mode]]
+===== 标准模式
 
-In Standard SPI mode the peripheral implements the standard 3 wire serial protocol (SCLK, MOSI and MISO).
+在标准SPI模式下，外设执行标准3线串行协议（SCLK、MOSI和MISO）。
 
-===== Bidirectional mode
 
-In bidirectional SPI mode the same SPI standard is implemented, except that a single wire is used for data (MOMI) instead of the two used in standard mode (MISO and MOSI). In this mode, the MOSI pin serves as MOMI pin.
+[[bidirectional-mode]]
+===== 双向模式
 
-===== LoSSI mode (Low Speed Serial Interface)
+在双向SPI模式下，实现相同的SPI标准，仅适用单线传输数据（MOMI）而非标准模式下使用双线（MISO和MOSI）。在这种模式下，MOSI引脚用作MOMI引脚。
 
-The LoSSI standard allows issuing of commands to peripherals (LCD) and to transfer data to and from them. LoSSI commands and parameters are 8 bits long, but an extra bit is used to indicate whether the byte is a command or parameter/data. This extra bit is set high for a data and low for a command. The resulting 9-bit value is serialized to the output. LoSSI is commonly used with http://mipi.org/specifications/display-interface[MIPI DBI] type C compatible LCD controllers.
+[[lossi-mode-low-speed-serial-interface]]
+===== LoSSI 模式 (低速串口)
 
-NOTE: Some commands trigger an automatic read by the SPI controller, so this mode cannot be used as a multipurpose 9-bit SPI.
+LoSSI 标准允许向外围设备 （LCD） 发出命令并在外围设备之间传输数据。LoSSI 命令和参数的长度为 8 位，但使用一个额外的来表示字节是命令还是参数/数据。该额外位对于数据设置为高电平，对于命令设置为低位。生成的 9 位值将序列化为输出。LoSSI通常与兼容LCD控制器的type C接口的 http://mipi.org/specifications/display-interface[MIPI DBI] 一起使用。
 
-==== Transfer modes
+NOTE: 一些命令会触发SPI控制器的自动读取，因此该模式不能用作多用途的9位SPI。
+
+[[transfer-modes]]
+==== 传输模式
 
 * Polled
 * Interrupt
 * DMA
 
-==== Speed
+[[speed]]
+==== 速度
 
-The CDIV (Clock Divider) field of the CLK register sets the SPI clock speed:
+CLK寄存器的CDIV（时钟分频器）字段设置SPI时钟速度：
 
 ----
 SCLK = Core Clock / CDIV
 ----
 
-If CDIV is set to 0, the divisor is 65536. The divisor must be a multiple of 2, with odd numbers rounded down. Note that not all possible clock rates are usable because of analogue electrical issues (rise times, drive strengths, etc).
+如果 CDIV 设置为 0，则除数为 65536。除数必须是 2 的倍数，奇数向下舍入。请注意，由于模拟电气问题（上升时间、驱动强度等），并非所有可能的时钟速率都可用。
 
-See the <<driver,Linux driver>> section for more info.
+有关详细信息，请参见 <<driver,Linux 驱动程序>> 部分。
 
-==== Chip Selects
+[[chip-selects]]
+==== 芯片选择
 
-Setup and hold times related to the automatic assertion and de-assertion of the CS lines when operating in *DMA* mode are as follows:
+在 *DMA* 模式下运行时，与 CS 线路的自动断言和反断言相关的设置和保持时间如下：
 
-* The CS line will be asserted at least 3 core clock cycles before the msb of the first byte of the transfer.
-* The CS line will be de-asserted no earlier than 1 core clock cycle after the trailing edge of the final clock pulse.
+* CS 线将在传输的第一个字节的 msb 之前至少3 个核心时钟周期被断言。
+* CS 线将在最终时钟脉冲的后沿之后不早于 1 个核心时钟周期内取消断言。
 
 [[software]]
-=== SPI Software
+=== SPI 软件
 
 [[driver]]
-==== Linux driver
+==== Linux 驱动程序
 
-The default Linux driver is `spi-bcm2835`.
+默认的 Linux 驱动程序是 `spi-bcm2835`。
 
-SPI0 is disabled by default. To enable it, use xref:configuration.adoc#raspi-config[raspi-config], or ensure the line `dtparam=spi=on` is not commented out in `/boot/config.txt`. By default it uses 2 chip select lines, but this can be reduced to 1 using `dtoverlay=spi0-1cs`. `dtoverlay=spi0-2cs` also exists, and without any parameters it is equivalent to `dtparam=spi=on`.
+SPI0默认禁用。如果要启用SPIO，则使用 xref:configuration.adoc#raspi-config[raspi-config] 或者确保  `/boot/config.txt` 中的 `dtparam=spi=on` 行未被注释掉。默认情况下，它使用2条片选线，但使用 `dtoverlay=spi0-1cs` 将其减少到1条。 `dtoverlay=spi0-2cs` 也存在，不加任何参数等效于 `dtparam=spi=on`。
 
-To enable SPI1, you can use 1, 2 or 3 chip select lines, adding in each case:
+如果要启用 SPI1，则可以使用 1、2 或 3 条片选线，并在片选线下添加：
 
 ----
 dtoverlay=spi1-1cs  #1 chip select
@@ -364,15 +381,17 @@ dtoverlay=spi1-2cs  #2 chip select
 dtoverlay=spi1-3cs  #3 chip select
 ----
 
-to the `/boot/config.txt` file. Similar overlays exist for SPI2, SPI3, SPI4, SPI5 and SPI6.
+到 `/boot/config.txt` 文件。SPI2、SPI3、SPI4、SPI5 和 SPI6 也存在类似的覆盖。
 
-The driver does not make use of the hardware chip select lines because of some limitations - instead it can use an arbitrary number of GPIOs as software/GPIO chip selects. This means you are free to choose any spare GPIO as a CS line, and all of these SPI overlays include that control - see `/boot/overlays/README` for details, or run (for example) `dtoverlay -h spi0-2cs` (`dtoverlay -a | grep spi` might be helpful to list them all).
+由于某些限制，驱动程序不使用硬件芯片选择线，而是可以使用任意数量的GPIO作为软件/GPIO片选。所以你可以自由地选择任何备用GPIO作为CS线，并且这些SPI覆盖都包括该控制——有关详细信息，请参见 `/boot/overlays/README` ，或者运行(例如) `dtoverlay -h spi0-2cs` (`dtoverlay -a | grep spi` 可能有助于列出这些)。
 
-===== Speed
+[[speed-2]]
+===== S速度
 
-The driver supports all speeds which are even integer divisors of the core clock, although as said above not all of these speeds will support data transfer due to limits in the GPIOs and in the devices attached. As a rule of thumb, anything over 50MHz is unlikely to work, but your mileage may vary.
+该驱动程序支持所有的速度，甚至是核心时钟的整数除数。尽管如上所述，由于 GPIO 和连接设备的限制，并非所有这些速度都支持数据传输。一般来说超过 50MHz 的速率不支持数据传输，也许会遇到不同的情况。
 
-===== Supported Mode bits
+[[supported-mode-bits]]
+===== 支持的模式位
 
 ----
 SPI_CPOL    - Clock polarity
@@ -382,34 +401,41 @@ SPI_NO_CS   - 1 device per bus, no Chip Select
 SPI_3WIRE   - Bidirectional mode, data in and out pin shared
 ----
 
-Bidirectional or "3-wire" mode is supported by the `spi-bcm2835` kernel module. Please note that in this mode, either the tx or rx field of the spi_transfer struct must be a NULL pointer, since only half-duplex communication is possible. Otherwise, the transfer will fail. The spidev_test.c source code does not consider this correctly, and therefore does not work at all in 3-wire mode.
+ `spi-bcm2835` 内核模块支持双向或 "3线" 模式。请注意，在此模式下，spi_transfer结构的 tx 或 rx 字段必须是 NULL 指针，因为只能进行半双工通信。否则，数据传输会失败。spidev_test.c源代码未考虑这一点，因此在3线模式下根本无法工作。
 
-===== Supported bits per word
+[[supported-bits-per-word]]
+===== 每字支持的位数
 
-* 8 - Normal
-* 9 - This is supported using LoSSI mode.
+* 8 - 正常
+* 9 - 使用 LoSSI 模式支持此功能。
 
-===== Transfer modes
+[[transfer-modes-2]]
+===== 传输模式
 
-Interrupt mode is supported on all SPI buses. SPI0, and SPI3-6 also support DMA transfers.
+所有SPI总线都支持interrupt模式。SPI0 和 SPI3-6 也支持 DMA 传输。
 
-===== SPI driver latency
+[[spi-driver-latency]]
+===== SPI 驱动程序延迟
 
-This https://forums.raspberrypi.com/viewtopic.php?f=44&t=19489[thread] discusses latency problems.
+此 https://forums.raspberrypi.com/viewtopic.php?f=44&t=19489[线程] 讨论延迟问题。
 
+[[spidev]]
 ==== spidev
 
-`spidev` presents an ioctl-based userspace interface to individual SPI CS lines. Device Tree is used to indicate whether a CS line is going to be driven by a kernel driver module or managed by spidev on behalf of the user; it is not possible to do both at the same time. Note that Raspberry Pi's own kernels are more relaxed about the use of Device Tree to enable `spidev` - the upstream kernels print warnings about such usage, and ultimately may prevent it altogether.
+`spidev` 为各个 SPI CS 线路提供基于 ioctl 的用户空间接口。设备树用于指示CS线是由内核驱动程序模块驱动还是由spidev代表用户管理;不可能同时执行这两个操作。请注意，Raspberry Pi内核在使用设备树启用spidev方面更简单- 上行内核会打印有关此类使用的告警，最终可能会完全阻止它。
 
-===== Using spidev from C
+[[using-spidev-from-c]]
+===== 使用C语言中的 spidev
 
-There is a loopback test program in the Linux documentation that can be used as a starting point. See the <<troubleshooting,Troubleshooting>> section.
+Linux 文档中有一个环回测试程序可以用作起点。请参见 <<troubleshooting,Troubleshooting>> 部分。
 
-===== Using spidev from Python
+[[using-spidev-from-python]]
+===== 使用 Python 中的 spidev
 
-There are several Python libraries that provide access to `spidev`, including `spidev` (`pip install spidev` - see https://pypi.org/project/spidev/) and `SPI-Py` (https://github.com/lthiery/SPI-Py).
+有几个Python库提供了对 `spidev`的访问，包括 `spidev` (`pip install spidev` - 参见 https://pypi.org/project/spidev/) 和 `SPI-Py` (https://github.com/lthiery/SPI-Py) 。
 
-===== Using spidev from a shell such as bash
+[[using-spidev-from-a-shell-such-as-bash]]
+===== 使用shell(例如bash)中的spidev
 
 [,bash]
 ----
@@ -417,16 +443,18 @@ There are several Python libraries that provide access to `spidev`, including `s
 echo -ne "\x01\x02\x03" > /dev/spidev0.0
 ----
 
-==== Other SPI libraries
+[[other-spi-libraries]]
+==== 其他SPI库
 
-There are other userspace libraries that provide SPI control by directly manipulating the hardware: this is not recommended.
+有些用户空间库通过直接操作硬件来提供 SPI 控制(不推荐这种做法)。
 
 [[troubleshooting-spi-hardware]]
-=== Troubleshooting
+=== 故障排除
 
-==== Loopback test
+[[loopback-test]]
+==== 环回测试
 
-This can be used to test SPI send and receive. Put a wire between MOSI and MISO. It does not test CE0 and CE1.
+环回测试用于测试SPI发送和接收。在MOSI和MISO之间放置一根电线。换回测试不测试CE0和CE1。
 
 [,bash]
 ----
@@ -446,4 +474,4 @@ DE AD BE EF BA AD
 F0 0D
 ----
 
-Some of the content above has been copied from https://elinux.org/RPi_SPI[the elinux SPI page], which also borrows from here. Both are covered by the CC-SA license.
+上面的一些内容是从 https://elinux.org/RPi_SPI[elinux SPI 页面] 复制而来的，该页面也借用了这里。两者均受CC-SA 许可证保护。

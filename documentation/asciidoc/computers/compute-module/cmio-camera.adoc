@@ -1,21 +1,21 @@
 [[attaching-a-raspberry-pi-camera-module]]
-== 连接Raspberry Pi Camera模块
+== 连接Raspberry Pi 相机模块
 
 [NOTE]
 ====
-这些说明适用于高级用户，如果有任何不清楚的地方，请使用 https://forums.raspberrypi.com/viewforum.php?f=43[Raspberry Pi Camera 论坛] 寻求技术支持。
+本章使用说明适用于高级用户，如果有任何不清楚的地方，请使用 https://forums.raspberrypi.com/viewforum.php?f=43[Raspberry Pi 相机论坛] 寻求技术支持。
 
-除非另有明确说明，否则这些说明在连接到计算模块 IO 板的计算模块 1 和计算模块 3 上的工作方式相同。计算模块4略有不同，因此请参阅相应的部分。
+除非另有明确说明，否则本章使用说明适用于连接至CMIO 板的CM1和CM3。CM4的操作不同，请参见对应的部分。
 ====
 
-计算模块有两个 CSI-2 相机接口。CAM0 有两个 CSI-2 数据通道，而 CAM1 有四个数据通道。计算模块 IO 板公开这两个接口。请注意，标准的树莓派设备使用 CAM1，但只公开两条数据通道。
+处理器模块（CM）包含两个 CSI-2 相机接口，分别为CAM0和CAM1。其中CAM0有2个数据通道，而 CAM1有4个数据通道。CM IO 板免费提供这两个接口。请注意，标准的Raspberry Pi设备使用 CAM1，但仅公开2个数据通道。
 
-请注意，相机模块 *并非* 设计为可热插拔。它们应始终在电源关闭时连接或断开。
+请注意，相机模块 *不支持* 支持热插拔，需要在电源关闭时才能进行连接或断开的操作。
 
 [[updating-your-system]]
 === 更新系统
 
-相机软件正在不断发展中。在使用这些说明之前，请确保您的系统是最新的。
+相机软件正在不断开发中，在使用这些说明之前，请确保你的系统是最新版本的。
 
 ----
 sudo apt update
@@ -25,36 +25,36 @@ sudo apt full-upgrade
 [[crypto-chip]]
 === 加密芯片
 
-使用计算模块驱动相机时，将OM5647、IMX219或HQ相机模块直接连接到计算模块载板时，无需集成Raspberry Pi设计的相机板上使用的加密芯片。树莓派固件将自动检测计算模块，并允许在不存在加密芯片的情况下与相机模块进行通信。
+使用处理器模块（CM）驱动相机时，将OM5647、IMX219或HQ相机模块直接连接到CM载板时，无需合成Raspberry Pi设计的相机板上使用的加密芯片。Raspberry Pi固件将自动检测处理器模块（CM），并允许在没有加密芯片的情况下与相机模块进行通信。
 
 [[quickstart-guide]]
 === 快速入门指南
 
-连接单个摄像头:
+连接单个相机：
 
-. 关闭计算模块的电源。
-. 在计算机模块上运行 `sudo raspi-config` 并启用相机。
-. 将 RPI-相机板和相机模块连接到 CAM1 端口。作为替代方案，可以使用Raspberry Pi Zero相机电缆。
+. 关闭计处理器模块（CM）的电源。
+. 在处理器模块（CM）上运行 `sudo raspi-config` 并启用相机。
+. 通过使用Raspberry Pi Zero相机线缆，将 RPI-CAMERA板和相机模块连接到 CAM1 端口。
 +
 image::images/CMIO-Cam-Adapter.jpg[Connecting the adapter board]
 
-. 仅限CM1和CM3）将 GPIO 引脚连接在一起，如下图所示。
+. （仅适用于CM1和CM3）将 GPIO 引脚连接在一起，如下图所示。
 +
 image::images/CMIO-Cam-GPIO.jpg[GPIO connection for a single camera]
 
-. 启动并运行计算模块 `+sudo wget https://datasheets.raspberrypi.com/cmio/dt-blob-cam1.bin -O /boot/dt-blob.bin+`
+. 给处理器模块（CM）上电并运行 `+sudo wget https://datasheets.raspberrypi.com/cmio/dt-blob-cam1.bin -O /boot/dt-blob.bin+`
 . 最后，重新启动以读取 dt-blob.bin 文件。
 
-要连接两个摄像头，请按照与单个摄像头相同的步骤操作，然后：
+连接2个相机，请参照连接单个相机相同的步骤操作，再增加如下步骤：
 
-. 断电时, 对CAM0重复步骤3.
-. (仅限 CM1 和 CM3) 连接第二个相机的 GPIO 引脚。
+. 关闭电源后，对 CAM0 重复步骤3(连接单个相机的步骤)。
+. （仅适用于 CM1 和 CM3）连接第2个相机的 GPIO 引脚。
  image:images/CMIO-Cam-GPIO2.jpg[GPIO connection with additional camera]
 . (仅限CM4) 将跳线添加到 J6。
 . 通电并运行 `+sudo wget https://datasheets.raspberrypi.com/cmio/dt-blob-dualcam.bin -O /boot/dt-blob.bin+`
 . 重启以读取 dt-blob.bin 文件。
 
-NOTE: 默认接线使用 GPIO 2 和 3 来控制主摄像头。这些 GPIO 也可用于 I2C，但这样做会导致冲突，并且相机不太可能工作。*如果您希望使用默认接线的相机，请不要通过 `dtparam=i2c_arm=on` 使能I2C。*
+NOTE: 默认接线使用GPIO2和GPIO3来控制主相机。这些 GPIO 也可用于I2C，但这样做会导致冲突，相机可能无法正常工作。*如果您希望使用默认接线的相机，请不要通过 `dtparam=i2c_arm=on` 使能I2C。*
 
 
 [[software-support]]
@@ -72,36 +72,37 @@ status = mmal_port_parameter_set(camera->control, &camera_num.hdr);
 [[advanced-issues]]
 === 高级问题
 
-计算模块 IO 板的每个摄像头端口都有一个 22 路 0.5mm FFC，CAM0 是双通道接口，CAM1 是全四通道接口。标准Raspberry Pi使用15路1mm FFC电缆，因此您需要适配器（部件#RPI-CAMERA）或Raspberry Pi Zero相机电缆。
+CMIO板的每一个相机接口采用22-Pin 0.5mm间距的FFC连接器，其中CAM0 是2通道接口，CAM1 是4通道接口。标准Raspberry Pi使用15-Pin 1mm间距的FFC连接线，因此需要一个适配器（部件号为RPI-CAMERA）或Raspberry Pi Zero相机连接线。
 
-计算模块 1 和 3 的 CMIO 板与计算模块 4 的 CMIO 板略有不同。它们将单独考虑。
+CM1和CM3 的 CMIO 板与CM4 的 CMIO 板连接相机的方法不同，下文进行单独说明。
 
 [[compute-module-1-3]]
-==== 计算模块1和3
+==== CM1 和 CM3
 
-在计算模块 IO 板上，需要将树莓派操作系统所需的 GPIO 和 I2C 接口桥接到 CAM1 连接器。这是通过使用跳线将 GPIO 从 J6 GPIO 连接器连接到 J1 连接器上的 CD1_SDA/SCL 和 CAM0_IO1/5 引脚来完成的。
+在CMIO 板上，需要将Raspberry Pi操作系统所需的 GPIO 和 I2C 接口桥接到 CAM1 连接器。
+通过使用跳线将 GPIO 从 J6 GPIO 连接器连接到 J1 连接器上的 CD1_SDA/SCL 和 CAM0_IO1/5 引脚来实现的。
 
-NOTE: 以下引脚编号仅作为示例提供。如果需要，LED 和关断引脚可由两个摄像机共享。
+NOTE: 如下提供的引脚编号仅作为示例。如果需要，两个相机可以共享LED 和SHUTDOWN引脚。
 
-SDA 和 SCL 引脚必须是 GPIO 0 和 1、GPIO 28 和 29 或 GPIO 44 和 45，并且对于每个摄像机必须是单独的。
+SDA 和 SCL 引脚必须是 GPIO 0 和 1、GPIO 28 和 29 或 GPIO 44 和 45，并且每个相机必须是单独的。
 
 [[steps-to-attach-a-raspberry-pi-camera-to-cam1]]
-===== 连接Raspberry Pi相机的步骤 (to CAM1)
+===== 连接Raspberry Pi相机 (到 CAM1)的步骤
 
-. 将 0.5mm 22W FFC 柔性连接器（包含在 RPI-相机板中）连接到 CAM1 连接器（柔性触点面朝下）。作为替代方案，可以使用Raspberry Pi Zero相机电缆。
-. 将 RPI-CAMERA 适配器板连接到 0.5mm 柔性的另一端（柔性触点面朝下）。
-. 将Raspberry Pi 相机连接到RPI-CAMERA适配器板上另一个更大的15W 1mm FFC (*Raspberry Pi相机柔性上的触点必须朝上*) 。
+. 将0.5mm间距22-Pin FFC连接器（包含在RPI-CAMERA板中）连接到 CAM1 连接器（柔性触点面朝下），也可以使用Raspberry Pi Zero相机连接线来连接。
+. 将 RPI-CAMERA 适配器板连接到 0.5mm间距22-Pin FFC连接器的另一端（柔性触点面朝下）。
+. 将Raspberry Pi相机连接到RPI-CAMERA适配器板上另一个更大的15-Pin 1mm间距 FFC连接器 (*Raspberry Pi相机柔性上的触点必须朝上*) 。
 . 将CD1_SDA（J6 针脚 37）连接到 GPIO0（J5 针脚 1）。
 . 将CD1_SCL（J6 针脚 39）连接到 GPIO1（J5 针脚 3）。
 . 将CAM1_IO1（J6 针脚 41）连接到 GPIO2（J5 针脚 5）。
 . 将CAM1_IO0（J6 针脚 43）连接到 GPIO3（J5 针脚 7）。
 
-请注意，括号中的数字是常规的物理引脚编号，从左到右，从上到下编号。丝网印刷上的数字对应于Broadcom SoC GPIO数字。
+请注意，括号中的数字是常规的物理引脚编号，从左到右和从上到下的编号。丝印上的数字对应于Broadcom SoC GPIO编号。
 
 [[steps-to-attach-a-second-raspberry-pi-camera-to-cam0]]
-===== 连接第二个Raspberry Pi相机的步骤 (to CAM0)
+===== 连接第二个Raspberry Pi相机相机（到 CAM0）的步骤
 
-像以前一样将第二个摄像头连接到 (CAM0) 。
+参考以上连接到CAM1的步骤将第2个相机连接到CAM0。
 
 连接 I2C 和 GPIO 线路。
 
@@ -111,27 +112,27 @@ SDA 和 SCL 引脚必须是 GPIO 0 和 1、GPIO 28 和 29 或 GPIO 44 和 45，�
 . 将CAM0_IO0（J6 针脚 51）连接到 GPIO31（J6 针脚 7）。
 
 [[compute-module-4-3]]
-==== 计算模块4
+==== CM4
 
-在计算模块 4 IO 板上，CAM1 连接器已连接到 GPIO 2 和 44 上的 I45C，关断线已连接到 GPIO 扩展器上的 GPIO 5。没有 LED 信号通过接线。除了将 1 针 FFC 连接到 CAM22 连接器（柔性触点面朝下）外，使用 CAM1 无需更改硬件。
+在CM4 IO板上，CAM1连接器已连接到GPIO44和GPIO45 上的I2C，shutdown线已连接到 GPIO 扩展器上的GPIO5，且未连接LED信号。除了将22-Pin FFC连接器连接到 CAM1 连接器（柔性触点面朝下）外，使用 CAM1 无需更改硬件。
 
-要连接第二个Raspberry Pi相机（到 CAM0），必须在 J6 上以垂直方向添加两个跳线。CAM0 连接器与 CAM1 共享关断线。
+连接第2个Raspberry Pi相机（到 CAM0），必须在 J6 上以垂直方向添加两个跳线。CAM0 连接器与 CAM1连接器共用shutdown线。
 
 [[configuring-default-pin-states-all-cm-variants]]
-==== 配置默认引脚状态 (所有CM变体)
+==== 配置默认引脚状态 (所有处理器模块（CM）变体)
 
-我们用于摄像机的GPIOs默认为计算模块上的输入模式。要 xref:configuration.adoc#changing-the-default-pin-configuration[覆盖这些默认设置] 并告诉系统这些是摄像机要使用的引脚，我们需要创建一个 `dt-blob.bin` ，在系统启动时由固件加载。该文件是从包含所需设置的源dts文件构建的，放在boot partition上 。
+们用于相机的GPIO在CM上默认为输入模式，为了覆盖默认设置并告诉系统这些是相机要使用的引脚，我们需要创建一个 `dt-blob.bin` 文件(在系统启动时由固件加载)。该文件是根据包含所需设置的源dts文件构建的，并放置在启动分区上。
 
-本文档底部提供了 << 示例设备树源文件 >>。 这些使用默认接线，如本页所述。
+后文提供了 << 示例设备树源文件 >>，这些使用本章节描述的默认接线。
 
-源dts的 `pins_cm { }` (计算模块1)、`pins_cm3 { }` (计算模块3) 或 `pins_cm4 { }` (计算模块4) 部分中的 `pin_config` 部分需要将摄像机的LED和电源使能引脚设置为输出:
+源dts的 `pins_cm { }` (CM1)、`pins_cm3 { }` (CM3) 或 `pins_cm4 { }` (CM4) 部分中的 `pin_config` 部分需要将摄像机的LED和电源使能引脚设置为输出:
 
 ----
 pin@p2  { function = "output"; termination = "no_pulling"; };
 pin@p3  { function = "output"; termination = "no_pulling"; };
 ----
 
-要告诉固件要使用哪些引脚以及要查找多少个相机，请将以下内容添加到该 `pin_defines` 部分：
+如果需要告诉固件使用哪些引脚以及要查找多少个相机，请将以下内容添加到该 `pin_defines` 部分：
 
 ----
 pin_define@CAMERA_0_LED { type = "internal"; number = <2>; };
@@ -144,14 +145,14 @@ pin_define@CAMERA_0_SCL_PIN { type = "internal"; number = <1>; };
 
 缩进和换行符并不重要，因此示例文件扩展了这些块以提高可读性。
 
-计算模块的 *pin_config* 部分需要配置第二个摄像头的 LED 和电源使能引脚：
+处理器模块（CM）的 *pin_config* 部分需要配置第2个相机的 LED 和电源使能引脚：
 
 ----
 pin@p30 { function = "output"; termination = "no_pulling"; };
 pin@p31 { function = "output"; termination = "no_pulling"; };
 ----
 
-在 dts 文件的计算模块 *pin_defines* 部分中，将 *NUM_CAMERAS* 参数更改为 2 并添加以下内容：
+在 dts 文件的处理器模块（CM） *pin_defines* 部分中，将 *NUM_CAMERAS* 参数更改为 2 并添加以下内容：
 
 ----
 pin_define@CAMERA_1_LED { type = "internal"; number = <30>; };
@@ -172,6 +173,6 @@ https://datasheets.raspberrypi.com/cmio/dt-blob-dualcam.dts[仅启用CAM1和CAM0
 [[compiling-a-dts-file-to-a-device-tree-blob]]
 ==== 将DTS文件编译为设备树blob
 
-对 `dts` 文件进行所有必需的更改后，需要对其进行编译并将其放置在设备的引导分区上。
+对 `dts` 文件进行所有必需的更改后，需要对其进行编译并将其放置在设备的启动分区上。
 
-有关执行此操作的说明请参阅 xref:configuration.adoc#changing-the-default-pin-configuration[引脚配置] 页面。
+有关执行此操作的说明请参见 xref:configuration.adoc#changing-the-default-pin-configuration[引脚配置] 页面。

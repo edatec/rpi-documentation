@@ -1,11 +1,12 @@
-== Power Supply
+[[power-supply]]
+== 电源
 
-The power supply requirements differ by Raspberry Pi model. All models require a 5.1V supply, but the current required generally increases according to model. All models up to the Raspberry Pi 3 require a micro USB power connector, whilst the Raspberry Pi 4 and Raspberry Pi 400 use a USB-C connector.
+电源要求因Raspberry Pi型号而异。所有型号都需要 5.1V 电源，但所需电流通常会根据型号而增加。Raspberry Pi 3之前的所有型号都需要micro USB电源连接器，而Raspberry Pi 4和Raspberry Pi 400则使用USB-C连接器。
 
-Exactly how much current (mA) the Raspberry Pi requires is dependent on what you connect to it. The following table gives various current requirements.
+Raspberry Pi需要多大电流 （mA） 取决于你连接到的设备。下表给出了各种电流要求。
 
 |===
-| Product | Recommended PSU current capacity | Maximum total USB peripheral current draw | Typical bare-board active current consumption
+| 产品 | 推荐的电源电流容量 | USB外设最大总电流消耗 | 典型裸板电流消耗
 
 | Raspberry Pi 1 Model A
 | 700mA
@@ -39,7 +40,7 @@ Exactly how much current (mA) the Raspberry Pi requires is dependent on what you
 
 | Raspberry Pi 3 Model A+
 | 2.5A
-| Limited by PSU, board, and connector ratings only.
+| 仅受 PSU、主板和连接器额定值的限制。
 | 350mA
 
 | Raspberry Pi 3 Model B+
@@ -59,32 +60,33 @@ Exactly how much current (mA) the Raspberry Pi requires is dependent on what you
 
 | Raspberry Pi Zero
 | 1.2A
-| Limited by PSU, board, and connector ratings only
+| 仅受 PSU、主板和连接器额定值的限制。
 | 100mA
 
 | Raspberry Pi Zero W
 | 1.2A
-| Limited by PSU, board, and connector ratings only.
+| 仅受 PSU、主板和连接器额定值的限制。
 | 150mA
 
 | Raspberry Pi Zero 2 W
 | 2A
-| Limited by PSU, board, and connector ratings only.
+| 仅受 PSU、主板和连接器额定值的限制。
 | 350mA
 |===
 
-Raspberry Pi have developed their own power supplies for use with all models. These are reliable, use heavy gauge wires and are reasonably priced.
+Raspberry Pi开发了自己的电源，适用于所有型号。这些是可靠的，使用粗规格电线并且价格合理。
 
-For Raspberry Pi 0-3, we recommend our https://www.raspberrypi.com/products/micro-usb-power-supply/[2.5A micro USB Supply]. For Raspberry Pi 4 and Raspberry Pi 400, we recommend our https://www.raspberrypi.com/products/type-c-power-supply/[3A USB-C Supply].
+对于Raspberry Pi 0-3，我们推荐 https://www.raspberrypi.com/products/micro-usb-power-supply/[2.5A micro USB 电源]。对于Raspberry Pi 4 和Raspberry Pi 400，我们推荐 https://www.raspberrypi.com/products/type-c-power-supply/[3A USB-C 电源].
 
-If you need to connect a USB device that will take the power requirements above the values specified in the table above, then you must connect it using an externally-powered USB hub. 
+如果需要连接的 USB 设备将使电源要求高于上表中指定的值，则必须使用外部供电的 USB HUB进行连接。
 
-=== Typical Power Requirements
+[[typical-power-requirements]]
+=== 典型电源要求
 
-The specific power requirements of each model are shown below.
+每个型号的具体电源要求如下所示。
 
 |===
-| Product | Recommended PSU current capacity | Maximum total USB peripheral current draw | Typical bare-board active current consumption 
+| 产品 | 推荐的电源电流容量 | USB最大外设总电流消耗 | 典型裸板电流消耗
 
 |Raspberry Pi 1 Model A | 700mA | 500mA | 200mA 
 | Raspberry Pi 1 Model B |1.2A | 500mA | 500mA 
@@ -92,43 +94,45 @@ The specific power requirements of each model are shown below.
 | Raspberry Pi 1 Model B+ | 1.8A | 1.2A | 330mA 
 | Raspberry Pi 2 Model B | 1.8A | 1.2A | 350mA 
 | Raspberry Pi 3 Model B | 2.5A | 1.2A | 400mA 
-| Raspberry Pi 3 Model A+ | 2.5A | Limited by PSU, board, and connector ratings only. | 350mA 
+| Raspberry Pi 3 Model A+ | 2.5A | 仅受 PSU、主板和连接器额定值的限制。 | 350mA 
 | Raspberry Pi 3 Model B+ | 2.5A | 1.2A | 500mA 
 | Raspberry Pi 4 Model B | 3.0A | 1.2A | 600mA 
 | Raspberry Pi 400       | 3.0A | 1.2A | 800mA 
-| Raspberry Pi Zero | 1.2A | Limited by PSU, board, and connector ratings only | 100mA 
-| Raspberry Pi Zero W | 1.2A | Limited by PSU, board, and connector ratings only.| 150mA 
-| Raspberry Pi Zero 2 W | 2A | Limited by PSU, board, and connector ratings only | 350mA
+| Raspberry Pi Zero | 1.2A | 仅受 PSU、主板和连接器额定值的限制。 | 100mA 
+| Raspberry Pi Zero W | 1.2A | 仅受 PSU、主板和连接器额定值的限制。.| 150mA 
+| Raspberry Pi Zero 2 W | 2A | 仅受 PSU、主板和连接器额定值的限制。 | 350mA
 |===
 
-From the Raspberry Pi B+ onwards, 1.2A is supplied to downstream USB peripherals. This allows the vast majority of USB devices to be connected directly to these models, assuming the upstream power supply has sufficient available current.
+从Raspberry Pi B+开始，为下行USB外设提供1.2A电流。假设上行电源有足够的可用电流，则大多数USB设备可以直接连接到这些型号。
 
-Very high-current devices, or devices which can draw a surge current such as certain modems and USB hard disks, will still require an external powered USB hub. The power requirements of the Raspberry Pi increase as you make use of the various interfaces on the Raspberry Pi. The GPIO pins can draw 50mA safely (note that that means 50mA distributed across all the pins: an individual GPIO pin can only safely draw 16mA), the HDMI port uses 50mA, the Camera Module requires 250mA, and keyboards and mice can take as little as 100mA or as much as 1000mA! Check the power rating of the devices you plan to connect to the Raspberry Pi and purchase a power supply accordingly. If you're not sure, we would advise you to buy a powered USB hub.
+高电流的设备或可能吸收浪涌电流的设备(如一些调制解调器和USB硬盘)仍然需要外部供电的USB HUB。当你使用Raspberry Pi上的各种接口时，Raspberry Pi的功率要求会增加。GPIO引脚可以安全地消耗50mA（请注意，这表示50mA分布在所有引脚上：单个GPIO引脚只能安全地消耗16mA），HDMI端口需要50mA，相机模块需要250mA，键盘和鼠标可以占用低至100mA或高达1000mA！检查你计划连接到Raspberry Pi的设备的额定功率并相应地购买电源。如果你不确定，我们建议你购买有源的USB HUB。
 
-This is the typical amount of power (in Ampere) drawn by different Raspberry Pi models during standard processes:
+下表描述不同Raspberry Pi产品在标准使用中消耗的典型功率（以A为单位）：
 
 |===
 | | | Raspberry Pi 1B+ | Raspberry Pi 2B | Raspberry Pi 3B | Raspberry Pi Zero | Raspberry Pi 4B 
-| Boot | Max |0.26 | 0.40| 0.75| 0.20 | 0.85 
-| | Avg | 0.22 | 0.22 | 0.35 | 0.15 | 0.7 
-| Idle |Avg | 0.20 | 0.22 | 0.30 | 0.10 | 0.6 
-| Video playback (H.264) | Max | 0.30 | 0.36 |0.55 |0.23 | 0.85 
-| | Avg | 0.22 | 0.28 | 0.33 | 0.16 | 0.78 
-| Stress | Max | 0.35 | 0.82 | 1.34 | 0.35 | 1.25 
-| | Avg | 0.32 | 0.75 | 0.85 | 0.23 | 1.2 
-| Halt current | | | | 0.10 | 0.055 | 0.023 
+| Boot | 最大值 |0.26 | 0.40| 0.75| 0.20 | 0.85 
+| | 平均值 | 0.22 | 0.22 | 0.35 | 0.15 | 0.7 
+| Idle |平均值 | 0.20 | 0.22 | 0.30 | 0.10 | 0.6 
+| 视频回放 (H.264) | Max | 0.30 | 0.36 |0.55 |0.23 | 0.85 
+| | 平均值 | 0.22 | 0.28 | 0.33 | 0.16 | 0.78 
+| Stress | 最大值 | 0.35 | 0.82 | 1.34 | 0.35 | 1.25 
+| | 平均值 | 0.32 | 0.75 | 0.85 | 0.23 | 1.2 
+| 停止电流 | | | | 0.10 | 0.055 | 0.023 
 |===
 
-NOTE: For these measurements we used a standard Raspberry Pi OS image (current as of 26 Feb 2016, or June 2019 for the Raspberry Pi 4), at room temperature, with the Raspberry Pi connected to a HDMI monitor, USB keyboard, and USB mouse. The Raspberry Pi 3 Model B was connected to a wireless LAN access point, the Raspberry Pi 4 was connected to Ethernet. All these power measurements are approximate and do not take into account power consumption from additional USB devices; power consumption can easily exceed these measurements if multiple additional USB devices or a HAT are connected to the Raspberry Pi.
+NOTE: 对于这些测量，我们在室温下使用了标准的Raspberry Pi操作系统镜像(截至2016年2月26日，或对于Raspberry Pi 4为2019年6月)，并将Raspberry Pi连接到HDMI显示器、USB键盘和USB鼠标。Raspberry Pi 3Model B连接到无线LAN接入点，Raspberry Pi 4连接到以太网。所有这些功率测量值均为近似值，并未考虑额外USB设备的功耗；如果多个额外的USB设备或HAT连接到Raspberry Pi，功耗很容易超过这些测量值。
 
-=== Power Supply Warnings
+[[power-supply-warnings]]
+=== 电源告警
 
-On all models of Raspberry Pi since the Raspberry Pi B+ (2014) except the Zero range, there is low-voltage detection circuitry that will detect if the supply voltage drops below 4.63V (+/- 5%). This will result in a xref:configuration.adoc#firmware-warning-icons[warning icon] being displayed on all attached displays and an entry being added to the kernel log.
+自Raspberry Pi B+（2014）以来的所有的产品型号上，除Zero系列外都有低压检测电路，可以检测电源电压是否降至 4.63V (+/- 5%)以下。这将导致在所有连接的显示器上显示一个 xref:configuration.adoc#firmware-warning-icons[告警图标] ，并将一个条目添加到内核日志中。
 
-If you are seeing warnings, you should improve the power supply and/or cable, as low power can cause problems with corruption of SD cards, or erratic behaviour of the Raspberry Pi itself; for example, unexplained crashes.
+如果你看到告警，则应改进电源和电缆，因为低功耗可能会导致SD卡损坏或Raspberry Pi本身行为不稳定的问题;例如，无法解释的崩溃。
 
-Voltages can drop for a variety of reasons, for example if the power supply itself is inadequate, the power supply cable is made of too thin wires, or you have plugged in high demand USB devices.
+电压可能会因各种原因而下降，例如电源本身不足、电源线太细或者插入了高需求的USB设备。
 
-=== Back-powering
+[[back-powering]]
+=== 反向电流
 
-The USB specification requires that USB devices must not supply current to upstream devices. If a USB device does supply current to an upstream device then this is called back-powering. Often this happens when a badly-made powered USB hub is connected, and will result in the powered USB hub supplying power to the host Raspberry Pi. This is not recommended since the power being supplied to the Raspberry Pi via the hub will bypass the protection circuitry built into the Raspberry Pi, leaving it vulnerable to damage in the event of a power surge.
+USB 规范要求 USB 设备不得向上行设备提供电流。如果USB设备确实向上行设备提供电流，则称为反向供电。当连接了制作不良的通电 USB HUB时，通常会发生这种情况，并且会导致通电的 USB HUB为主机 Raspberry Pi 供电。不建议这样做，因为通过HUB提供给Raspberry Pi的电源将绕过Raspberry Pi内置的保护电路，使其在发生电涌时容易损坏。

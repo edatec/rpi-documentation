@@ -1,9 +1,9 @@
 [[bcm2836]]
 == BCM2836
 
-Raspberry Pi 2 Model B中使用的是Broadcom芯片。BCM2836中的底层架构与BCM2835相同。唯一显著的区别是删除了ARM1176JZF-S处理器并替换为四核Cortex-A7集群.
+BCM2836是一款用在Raspberry Pi 2 Model B中的Broadcom芯片。BCM2836的底层架构与 BCM2835相同，两者唯一的显著区别是使用的处理器不同，其中BCM2836使用的是四核Cortex-A7集群处理器，BCM2835使用的是单核ARM1176JZF-S处理器。
 
-您应该参考:
+你可以查看如下文档了解等多信息：
 
 * https://datasheets.raspberrypi.com/bcm2836/bcm2836-peripherals.pdf[BCM2836 ARM本地外设]
 * http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0464f/index.html[Cortex-A7 MPcore处理器参考手册]

@@ -1,41 +1,44 @@
-== Raspberry Pi Boot Modes
+[[raspberry-pi-boot-modes]]
+== Raspberry Pi 启动模式
 
-The Raspberry Pi has a number of different stages of booting. This document explains how the boot modes work, and which ones are supported for Linux booting.
+Raspberry Pi包含多个启动阶段。本文档介绍启动模式的工作原理以及 Linux启动支持哪些模式。
 
-=== Special `bootcode.bin`-only boot mode
+[[special-bootcode-bin-only-boot-mode]]
+=== 特定的 `bootcode.bin`-only 启动模式
 
-USB host and Ethernet boot can be performed by BCM2837-based Raspberry Pis - that is, Raspberry Pi 2B version 1.2, Raspberry Pi 3B, and Raspberry Pi 3B+ (Raspberry Pi 3A+ cannot net boot since it does not have a built-in Ethernet interface). In addition, all Raspberry Pi models *except Raspberry Pi 4B* can use a new `bootcode.bin`-only method to enable USB host boot.
+基于 BCM2837 的Raspberry Pi可执行USB 主机和以太网启动- 即Raspberry Pi 2B 版本 1.2、Raspberry Pi 3B 和Raspberry Pi 3B+（Raspberry Pi 3A+ 无法通过网络启动，因为其无内置以太网接口）。此外， *除Raspberry Pi 4B之外* 的所有Raspberry Pi型号都可以使用新的 `bootcode.bin`-only 方法来启用USB主机。
 
-NOTE: The Raspberry Pi 4B does not use the bootcode.bin file - instead the bootloader is located in an on-board EEPROM chip. See xref:raspberry-pi.adoc#raspberry-pi-4-boot-flow[Raspberry Pi 4 Bootflow] and  xref:raspberry-pi.adoc#raspberry-pi-4-boot-eeprom[SPI Boot EEPROM].
+NOTE: Raspberry Pi 4B不使用bootcode.bin文件 - 相反其启动加载程序位于板载EEPROM芯片中。参见 xref:raspberry-pi.adoc#raspberry-pi-4-boot-flow[Raspberry Pi 4 启动流程] 和  xref:raspberry-pi.adoc#raspberry-pi-4-boot-eeprom[SPI 启动 EEPROM].
 
-Format an SD card as FAT32 and copy on the latest https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin[`bootcode.bin`]. The SD card must be present in the Raspberry Pi for it to boot. Once bootcode.bin is loaded from the SD card, the Raspberry Pi continues booting using USB host mode.
+将SD卡格式化为FAT32并复制最新的 https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin[`bootcode.bin`] 。SD卡必须存在于Raspberry Pi中才能用于启动。从SD卡加载bootcode.bin后，Raspberry Pi继续使用USB主机模式启动。
 
-This is useful for the Raspberry Pi 1, 2, and Zero models, which are based on the BCM2835 and BCM2836 chips, and in situations where a Raspberry Pi 3 fails to boot (the latest bootcode.bin includes additional bugfixes for the Raspberry Pi 3B, compared to the boot code burned into the BCM2837A0).
+对于采用 BCM2835 和 BCM2836 芯片的 Raspberry Pi 1、Raspberry Pi 2 和 Raspberry Pi Zero 以及Raspberry Pi 3 无法启动的场景均非常有用的（与烧录到 BCM2837A0 中的启动代码相比，最新的bootcode.bin包括 Raspberry Pi 3B 的错误修复）。
 
-If you have a problem with a mass storage device still not working, even with this bootcode.bin, then please add a new file 'timeout' to the SD card. This will extend to six seconds the time for which it waits for the mass storage device to initialise.
+如果你遇到大容量存储设备无法正常工作的问题，即使使用bootcode.bin，请向SD卡中添加一个新文件 'timeout' 。这个操作会使等待大容量存储设备初始化的时间延长到 6 秒。
 
-=== `bootcode.bin` UART Enable
+[[bootcode-bin-uart-enable]]
+=== `bootcode.bin` UART 使能
 
-NOTE: For boards pre-Raspberry Pi 4 Model B.
+NOTE: 适用于Raspberry Pi 4 Model B之前的电路板。
 
-For information on enabling the UART on the Raspberry Pi 4 bootloader, please see xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[this page].
+有关在Raspberry Pi 4启动加载程序上启用 UART 的信息，请参见 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[本页面] 。
 
-It is possible to enable an early stage UART to debug booting issues (useful with the above bootcode.bin only boot mode).  To do this, make sure you've got a recent version of the firmware (including bootcode.bin).  To check if UART is supported in your current firmware:
+可以启用早期阶段的UART来调试引导问题（对上述bootcode.bin-only启动模式有帮助）。所以请确保你拥有最新版本的固件（包括bootcode.bin），同时需要检查当前固件是否支持 UART，请执行以下命令：
 
 [,bash]
 ----
  strings bootcode.bin | grep BOOT_UART
 ----
  
-To enable UART from bootcode.bin use:
+从bootcode.bin启用 UART，请执行如下命令：
 
 [,bash]
 ----
 sed -i -e "s/BOOT_UART=0/BOOT_UART=1/" bootcode.bin
 ----
 
-Next, connect a suitable USB serial cable to your host computer (a Raspberry Pi will work, although I find the easiest path is to use a USB serial cable since it'll work out the box without any pesky config.txt settings).  Use the standard pins 6, 8 and 10 (GND, GPIO14, GPIO15) on a Raspberry Pi or Compute Module board.
+现在将USB串口线连接到主机（Raspberry Pi 可以工作，最简单的方法是使用 USB串口线，因为它无需配置config.txt即可使用）。使用 Raspberry Pi 或CM板上的标准引脚 6、8 和 10（GND、GPIO14、GPIO15）。
 
-Then use `screen` on linux or a Mac or `putty` on windows to connect to the serial.
+然后使用linux上的 `screen` 或Mac或windows上的 `putty` 连接到串口。
 
-Setup your serial to receive at 115200-8-N-1, and then boot your Raspberry Pi / Compute Module.  You should get an immediate serial output from the device as bootcode.bin runs.
+将串口设置在 115200-8-N-1接收，然后启动Raspberry Pi/CM。当运行bootcode.bin时，你可以立即从设备获得串行输出。

@@ -1,56 +1,57 @@
-== Boot sequence
+[[boot-sequence]]
+== 启动顺序
 
-IMPORTANT: The following boot sequence applies to the BCM2837 and BCM2837B0 based models of Raspberry Pi only. On models prior to this, the Raspberry Pi will try SD card boot, followed by xref:raspberry-pi.adoc#usb-device-boot-mode[USB device mode boot]. For the Raspberry Pi 4 boot sequence please see the xref:raspberry-pi.adoc#raspberry-pi-4-boot-flow[Raspberry Pi 4 boot flow] section.
+IMPORTANT: 以下启动顺序仅适用于基于 BCM2837 和 BCM2837B0 的Raspberry Pi型号。在这之前的Raspberry Pi型号可以尝试SD卡启动和 xref:raspberry-pi.adoc#usb-device-boot-mode[USB设备启动模式] 。有关Raspberry Pi 4 启动顺序，请参见 xref:raspberry-pi.adoc#raspberry-pi-4-boot-flow[Raspberry Pi 4 启动流程] 章节。
 
-USB boot defaults on the Raspberry Pi 3 will depend on which version is being used. See this xref:raspberry-pi.adoc#usb-mass-storage-boot[page] for information on enabling USB boot modes when not enabled by default.
+Raspberry Pi 3上的USB启动默认设置取决于所使用的版本。有关启用 USB 启动模式的跟多信息信息(默认情况下未启用)，请参见 xref:raspberry-pi.adoc#usb-mass-storage-boot[本页] 。
 
-When the BCM2837 boots, it uses two different sources to determine which boot modes to enable. Firstly, the OTP (one-time programmable) memory block is checked to see which boot modes are enabled. If the GPIO boot mode setting is enabled, then the relevant GPIO lines are tested to select which of the OTP-enabled boot modes should be attempted. Note that GPIO boot mode can only be used to select boot modes that are already enabled in the OTP. See xref:raspberry-pi.adoc#gpio-boot-mode[GPIO boot mode] for details on configuring GPIO boot mode. GPIO boot mode is disabled by default.
+当启动BCM2837时，它使用两个不同的源来确定要启用的启动模式。首先，检查OTP（一次性可编程）内存块以查看启用了哪些启动模式。如果启用了 GPIO 启动模式，则会测试相关的 GPIO线路，以选择应尝试哪种启用了 OTP 的启动模式。请注意，GPIO 启动模式只能用于选择 OTP 中已启用的启动模式。有关配置 GPIO 启动模式的详细信息，请参见 xref:raspberry-pi.adoc#gpio-boot-mode[GPIO 启动模式] 。默认情况下，GPIO 启动模式处于禁用状态。
 
-Next, the boot ROM checks each of the boot sources for a file called bootcode.bin; if it is successful it will load the code into the local 128K cache and jump to it. The overall boot mode process is as follows:
+下一步是启动 ROM 检测每个启动源中是否存在一个名为 bootcode.bin文件;如果检测成功，其会将代码加载到本地 128K 缓存中并跳转到该处。整体启动流程如下：
 
-* BCM2837 boots
-* Read OTP to determine which boot modes to enable
-* If GPIO boot mode enabled, use GPIO boot mode to refine list of enabled boot modes
-* If enabled: check primary SD for bootcode.bin on GPIO 48-53
- ** Success - Boot
- ** Fail - timeout (five seconds)
-* If enabled: check secondary SD
- ** Success - Boot
- ** Fail - timeout (five seconds)
-* If enabled: check NAND
-* If enabled: check SPI
-* If enabled: check USB
- ** If OTG pin == 0
-  *** Enable USB, wait for valid USB 2.0 devices (two seconds)
-   **** Device found:
-    ***** If device type == hub
-     ****** Recurse for each port
-    ***** If device type == (mass storage or LAN951x)
-     ****** Store in list of devices
-  *** Recurse through each MSD
-   **** If bootcode.bin found boot
-  *** Recurse through each LAN951x
-   **** DHCP / TFTP boot
- ** else (Device mode boot)
-  *** Enable device mode and wait for host PC to enumerate
-  *** We reply to PC with VID: 0a5c PID: 0x2763 (Raspberry Pi 1 or Raspberry Pi 2) or 0x2764 (Raspberry Pi 3)
+* 启动BCM2837
+* 读取 OTP以确定要启用的启动模式
+* 如果启用了 GPIO 启动模式，请使用 GPIO 启动模式来优化已启用的启动模式的列表
+* 如果启用：检查主SD GPIO 48-53 上的 bootcode.bin
+ ** 成功 - 启动
+ ** 失败 - 超时 (5秒)
+* 如果启用: 检查从SD
+ ** 成功 - 启动
+ ** 失败 - 超时 (5秒)
+* 如果启用: 检查 NAND
+* 如果启用: 检查 SPI
+* 如果启用: 检查 USB
+ ** 如果 OTG pin == 0
+  *** 启动 USB, 等待有效的 USB 2.0 设备（两秒钟）
+   **** 发现设备:
+    ***** 如果 device type == hub
+     ****** 对每个端口进行递归
+    ***** 如果 device type == (mass storage or LAN951x)
+     ****** 存储在设备列表中
+  *** 多每个MSD进行递归
+   **** 如果 bootcode.bin 发现 boot
+  *** 多每个LAN951x进行递归
+   **** DHCP / TFTP 启动
+ ** 否则 (设备模式启动)
+  *** 启用设备模式并等待主机 PC反馈
+  *** 	我们使用VID回复PC: 0a5c PID: 0x2763 (Raspberry Pi 1 or Raspberry Pi 2) 或0x2764 (Raspberry Pi 3)
 
 
 [NOTE]
 ====
-* If there is no SD card inserted, the SD boot mode takes five seconds to fail. To reduce this and fall back to USB more quickly, you can either insert an SD card with nothing on it or use the GPIO bootmode OTP setting described above to only enable USB.
-* The default pull for the GPIOs is defined on page 102 of the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[ARM Peripherals datasheet]. If the value at boot time does not equal the default pull, then that boot mode is enabled.
-* USB enumeration is a means of enabling power to the downstream devices on a hub, then waiting for the device to pull the D+ and D- lines to indicate if it is either USB 1 or USB 2. This can take time: on some devices it can take up to three seconds for a hard disk drive to spin up and start the enumeration process. Because this is the only way of detecting that the hardware is attached, we have to wait for a minimum amount of time (two seconds). If the device fails to respond after this maximum timeout, it is possible to increase the timeout to five seconds using `program_usb_boot_timeout=1` in `config.txt`.
-* MSD boot takes precedence over Ethernet boot.
-* It is no longer necessary for the first partition to be the FAT partition, as the MSD boot will continue to search for a FAT partition beyond the first one.
-* The boot ROM also now supports GUID partitioning and has been tested with hard drives partitioned using Mac, Windows, and Linux.
-* The LAN951x is detected using the Vendor ID 0x0424 and Product ID 0xec00: this is different to the standalone LAN9500 device, which has a product ID of 0x9500 or 0x9e00.  To use the standalone LAN9500, an I2C EEPROM would need to be added to change these IDs to match the LAN951x.
+* 如果未插入 SD 卡，5秒后SD启动才会显示失败。若要减少这种情况并更快地切换到USB，可以插入无内容的 SD 卡，或使用上述 GPIO 启动模式 中的OTP 设置仅启用 USB。
+* GPIO 的默认拉取值在 https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[ARM 外设 datasheet]的第 102 页上进行了说明。如果启动时的值不等于默认拉取值，则启用该启动模式。
+* USB枚举是一种为hub上的下游设备供电的方法，然后等待设备拉动D+和D-线以指确定其是USB 1 或USB 2。在某些设备上硬盘驱动器启动并开始枚举的过程可能需要3秒钟。因为这是检测硬件连接的唯一方法，我们必须等待最少2秒钟。如果器件在最大超时后无响应，可以使用 `config.txt` 中的 `program_usb_boot_timeout=1` 将超时时间增加到5秒。
+* MSD启动优先于以太网启动
+* 第一个分区不再需要是 FAT 分区，因为 MSD 启动将继续搜索第一个分区之外的 FAT 分区。
+* 启动ROM并支持GUID分区，且已使用Mac、Windows和Linux分区的硬盘驱动器进行了测试。
+* LAN951x 使用供应商 ID 0x0424和产品 ID 0xec00进行检测：这与产品 ID 为 9500x0 或 9500x0e9 的独立 LAN9500 设备不同。如果需要使用独立 LAN9500 设备，需要添加I2C EEPROM来更改这些ID以匹配LAN951x。
 ====
 
-The primary SD card boot mode is, as standard, set to be GPIOs 49-53. It is possible to boot from the secondary SD card on a second set of pins, i.e. to add a secondary SD card to the GPIO pins. However, we have not yet enabled this ability.
+按照标准主SD卡启动模式设置为GPIO 49-53。可以从第二组引脚上的从SD卡启动，即将从SD 卡添加到GPIO引脚。但是我们暂未启用此功能。
 
-NAND boot and SPI boot modes do work, although they do not yet have full GPU support.
+NAND启动和SPI启动模式确实有效，尽管其还没有完整的GPU支持。
 
-The USB device boot mode is enabled by default at the time of manufacture, but the USB host boot mode is only enabled with `program_usb_boot_mode=1`. Once enabled, the processor will use the value of the OTGID pin on the processor to decide between the two modes. On any Raspberry Pi Model B / B+, the OTGID pin is driven to '0' and therefore will only boot via host mode once enabled (it is not possible to boot through device mode because the LAN951x device is in the way).
+USB设备启动模式在生产时默认开启，但USB主机启动模式仅在 `program_usb_boot_mode=1` 时启用。启用后，处理器将通过OTGID引脚的值来选择两种模式。在Raspberry Pi ModelB / B+上，OTGID引脚被设置为“0 ”, 因此只能通过主机模式启动(不能通过设备模式启动，因为被LAN951x设备挡住了)。
 
-The USB will boot as a USB device on the Raspberry Pi Zero or Compute Module if the OTGID pin is left floating (when plugged into a PC for example), so you can 'squirt' the bootcode.bin into the device. The `usbboot` code for doing this is https://github.com/raspberrypi/usbboot[available on Github].
+如果将OTGID引脚设置为空(例如插入PC时)，USB将作为Raspberry Pi Zero或CM上的USB设备启动，因此你可以将 bootcode.bin '写入' 到设备中。在 https://github.com/raspberrypi/usbboot[available on Github] 上可以找到实现此操作的 `usbboot` 代码。

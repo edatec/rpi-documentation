@@ -1,47 +1,51 @@
-== Setting up an Apache Web Server
+[[setting-up-an-apache-web-server]]
+== 设置 Apache Web 服务器
 
-Apache is a popular web server application you can install on the Raspberry Pi to allow it to serve web pages.
+Apache是一个流行的Web服务器应用程序，你可以安装在Raspberry Pi上，允许它为网页提供服务。
 
-On its own, Apache can serve HTML files over HTTP, and with additional modules can serve dynamic web pages using scripting languages such as PHP.
+就其本身而言，Apache可以通过HTTP提供HTML文件，并且使用其他模块可以使用PHP等脚本语言提供动态网页。
 
-=== Installing Apache
+[[setting-up-an-apache-web-server]]
+=== 安装 Apache
 
-First, update the available packages by typing the following command into the Terminal:
+首先，通过在终端中键入以下命令来更新可用软件包：
 
 [,bash]
 ----
 sudo apt update
 ----
 
-Then, install the `apache2` package with this command:
+然后，使用以下 `apache2` 命令安装软件包：
 
 [,bash]
 ----
 sudo apt install apache2 -y
 ----
 
-=== Test the Web Server
+[[test-the-web-server]]
+=== 测试 Web 服务器
 
-By default, Apache puts a test HTML file in the web folder. This default web page is served when you browse to `+http://localhost/+` on the Raspberry Pi itself, or `+http://192.168.1.10+` (whatever the Raspberry Pi's IP address is) from another computer on the network. To find the Raspberry Pi's IP address, type `hostname -I` at the command line (or read more about finding your xref:remote-access.adoc#ip-address[IP address]).
+默认情况下，Apache将一个测试HTML文件放在web文件夹中。当您在Raspberry Pi本身上浏览到 `+http://localhost/+` 时，或者从网络上的另一台计算机浏览到 `+http://192.168.1.10+` (无论Raspberry Pi的IP地址是什么)时，将提供此默认网页。要查找Raspberry Pi的IP地址，请在命令行中键入 `hostname -I` (xref:remote-access.adoc#ip-address[IP 地址信息])。
 
-Browse to the default web page either on the Raspberry Pi or from another computer on the network and you should see the following:
+浏览到 Raspberry Pi 上的默认网页或网络上的另一台计算机，您应该看到以下内容：
 
 image::images/apache-it-works.png[Apache success message]
 
-This means you have Apache working!
+这意味着你有 Apache 工作！
 
-==== Changing the Default Web Page
+[[changing-the-default-web-page]]
+==== 更改默认网页
 
-This default web page is just an HTML file on the filesystem. It is located at `/var/www/html/index.html`.
+此默认网页只是文件系统上的一个 HTML 文件。它位于 `/var/www/html/index.html`。
 
-Navigate to this directory in a terminal window and have a look at what's inside:
+在终端窗口中导航到此目录，并查看其中的内容：
 
 ----
 cd /var/www/html
 ls -al
 ----
 
-This will show you:
+这将向您展示：
 
 [,bash]
 ----
@@ -51,48 +55,49 @@ drwxr-xr-x 12 root root 4096 Jan  8 01:28 ..
 -rw-r--r--  1 root root  177 Jan  8 01:29 index.html
 ----
 
-This shows that by default there is one file in `/var/www/html/` called `index.html` and it is owned by the `root` user (as is the enclosing folder). In order to edit the file, you need to change its ownership to your own username. Change the owner of the file (the default `pi` user is assumed here) using `sudo chown pi: index.html`.
+这表明，默认情况下，在 `/var/www/html/` 中有一个名为 `index.html` 的文件，它由 `root` 用户拥有(包含的文件夹也是如此)。为了编辑该文件，您需要将其所有权更改为您自己的用户名。使用 `sudo chown pi: index.html` 更改文件的所有者 （这里假设默认的`pi` 用户）。
 
-You can now try editing this file and then refreshing the browser to see the web page change. If you know HTML you can put your own HTML files and other assets in this directory and serve them as a website on your local network.
+您现在可以尝试编辑此文件，然后刷新浏览器以查看网页更改。如果您了解 HTML，您可以将自己的 HTML 文件和其他资产放在此目录中，并将它们作为本地网络上的网站提供。
 
-=== Installing PHP for Apache
+[[installing-php-for-apache]]
+=== 为Apache安装PHP
 
-To allow your Apache server to process PHP files, you'll need to install the latest version of PHP and the PHP module for Apache. Type the following command to install these:
+要允许你的Apache服务器处理PHP文件，你需要安装最新版本的PHP和Apache的PHP模块。键入以下命令以安装这些：
 
 [,bash]
 ----
 sudo apt install php libapache2-mod-php -y
 ----
 
-Now remove the `index.html` file:
+现在删除该 `index.html` 文件:
 
 [,bash]
 ----
 sudo rm index.html
 ----
 
-and create the file `index.php`:
+并创建文件 `index.php`:
 
 [,bash]
 ----
 sudo nano index.php
 ----
 
-Put some PHP content in it:
+把一些PHP内容放进去：
 
 [,php]
 ----
 <?php echo "hello world"; ?>
 ----
 
-Now save and refresh your browser. You should see "hello world". This is not dynamic but still served by PHP. Try something dynamic:
+现在保存并刷新您的浏览器。您应该看到 "hello world"。这不是动态的，但仍由 PHP 提供。尝试一些动态的东西：
 
 [,php]
 ----
 <?php echo date('Y-m-d H:i:s'); ?>
 ----
 
-or show your PHP info:
+或显示您的 PHP 信息：
 
 [,php]
 ----

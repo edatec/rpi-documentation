@@ -1,36 +1,38 @@
 [[ssh]]
-== Setting up an SSH Server
+== 设置SSH 服务器
 
-You can access the command line of a Raspberry Pi remotely from another computer or device on the same network using the Secure Shell (SSH) protocol.
+您可以使用安全shell(SSH)协议从同一网络上的另一台计算机或设备远程访问Raspberry Pi的命令行。
 
-You will only have access to the command line, not the full desktop environment. For a full remote desktop, see xref:remote-access.adoc#vnc[VNC].
+您只能访问命令行，而不能访问整个桌面环境。如需完整的远程桌面，请参见 xref:remote-access.adoc#vnc[VNC]。
 
-=== Set up your Local Network
+[[set-up-your-local-network]]
+=== 设置本地网络
 
-Make sure your Raspberry Pi is properly set up and connected. If you are using wireless networking, this can be enabled via the desktop user interface, or using from the command line. If you are not using wireless connectivity, plug your Raspberry Pi directly into the router.
+确定您的Raspberry Pi已正确设置和连接。如果您使用无线网络，可以通过桌面用户界面或从命令行使用来启用。如果您不使用无线连接，请将您的Raspberry Pi直接插入路由器。
 
-NOTE: You will need to note down the IP address of your Raspberry Pi in order to connect to it later. Using the `ifconfig` command will display information about the current network status, including the IP address, or you can use `hostname -I` to display the IP addresses associated with the device.
+NOTE: 您需要记下您的Raspberry Pi的IP地址，以便以后连接到它。使用 `ifconfig` 命令将显示有关当前网络状态的信息，包括IP地址，或者您可以使用 `hostname -I` 来显示与设备相关联的IP地址。
 
-=== Enabling the Server
+[[enabling-the-server]]
+=== 启用服务器Server
 
-Raspberry Pi OS has the SSH server disabled by default. It can be enabled manually from the desktop:
+Raspberry Pi OS默认禁用SSH服务器。可以从桌面手动启用它:
 
-. Launch `Raspberry Pi Configuration` from the `Preferences` menu
-. Navigate to the `Interfaces` tab
-. Select `Enabled` next to `SSH`
-. Click `OK`
+. 从 `Preferences` 菜单启动 `Raspberry Pi Configuration` 
+. 导航至 `Interfaces` 选项卡
+. 选择 `Enabled` 旁边的 `SSH`
+. 单击 `OK`
 
-Alternatively you can enable it from the terminal using the xref:configuration.adoc#raspi-config[raspi-config] application,
+或者，您可以使用 xref:configuration.adoc#raspi-config[raspi-config] 应用程序从终端启用它，
 
-. Enter `sudo raspi-config` in a terminal window
-. Select `Interfacing Options`
-. Navigate to and select `SSH`
-. Choose `Yes`
-. Select `Ok`
-. Choose `Finish`
+. 在终端窗口输入 `sudo raspi-config` 
+. 选择 `Interfacing Options`
+. 导航并选择 `SSH`
+. 选择 `Yes`
+. 选择 `Ok`
+. 选择 `Finish`
 
-NOTE: For headless setup, SSH can be enabled by placing a file named `ssh`, without any extension, onto the boot partition of the SD Card. When the Raspberry Pi boots, it looks for the `ssh` file. If it is found, SSH is enabled and the file is deleted. The content of the file does not matter; it could contain text, or nothing at all.
+NOTE: 对于无头设置，可以通过将名为 `ssh`的文件(没有任何扩展名)放在SD卡的启动分区上来启动SSH。 当Raspberry Pi启动时，它会寻找 `ssh` 文件。 如果找到了，SSH将被启用，文件将被删除。文件的内容无关紧要；它可以包含文本，也可以什么都不包含。
 
-NOTE: For headless setup in addition to the `ssh` file you need a `userconf.txt` file, which contains a string `username:encryptedpassword`. Please refer to the section on xref:configuration.adoc#configuring-a-user[configuring a user] in the discussions around headless setup of a Raspberry Pi.
+NOTE: 对于除 `ssh` 外的无头设置，你还需要一个 `userconf.txt` 文件, 其中包含一个字符串 `username:encryptedpassword`。 请参考Raspberry Pi的无头设置的讨论中关于 xref:configuration.adoc#configuring-a-user[配置用户r] 的部分。
 
-WARNING: When enabling SSH on a Raspberry Pi that may be connected to the internet, you should ensure that your password is not easily brute forced.
+WARNING: 当在可能连接到互联网的Raspberry Pi上启用SSH时，您应该确保您的密码不会被轻易破解。

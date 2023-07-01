@@ -2,22 +2,22 @@
 == CMIO板的设计文件
 
 [discrete]
-=== 用于CM4的处理器模块IO板
+=== 用于CM4的CMIO板
 
-处理器模块4 IO板的设计数据可在其datasheet中找到:
+CM4 IO板的datasheet中介绍了其设计数据。
 
-* https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf[处理器模块 4 IO板datasheet]
+* https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf[CM4 IO板datasheet]
 
 还有一个 KiCad PCB 设计套件可用:
 
-* https://datasheets.raspberrypi.com/cm4io/CM4IO-KiCAD.zip[处理器模块 4 IO板 KiCad 文件]
+* https://datasheets.raspberrypi.com/cm4io/CM4IO-KiCAD.zip[CM4 IO板 KiCad 文件]
 
 [discrete]
 === 老产品
 
-* https://datasheets.raspberrypi.com/cmio/RPi-CMIO-R1P2.zip[CMIO Rev 1.2]
-* https://datasheets.raspberrypi.com/cmio/RPi-CMIO-R3P0.zip[CMIO Rev 3.0]
+* https://datasheets.raspberrypi.com/cmio/RPi-CMIO-R1P2.zip[CMIO 修订版 1.2]
+* https://datasheets.raspberrypi.com/cmio/RPi-CMIO-R3P0.zip[CMIO 修订版 3.0]
 
-处理器模块相机/显示适配器板 （CMCDA） 的设计数据:
+CMCDA(Compute Module camera/display adapter 板)设计数据：
 
-* https://datasheets.raspberrypi.com/cmcda/RPi-CMCDA-1P1.zip[CMCDA Rev 1.1]
+* https://datasheets.raspberrypi.com/cmcda/RPi-CMCDA-1P1.zip[CMCDA 修订版 1.1]

@@ -1,13 +1,14 @@
-== Raspberry Pi revision codes
+[[raspberry-pi-revision-codes]]
+== Raspberry Pi 修订代码
 
-Each distinct Raspberry Pi model revision has a unique revision code. You can look up a Raspberry Pi's revision code by running:
+每个不同的Raspberry Pi型号修订版都有一个唯一的修订代码。你可以通过运行以下命令查找Raspberry Pi的修订代码：
 
 [,bash]
 ----
 cat /proc/cpuinfo
 ----
 
-The last three lines show the hardware type, the revision code, and the Raspberry Pi's unique serial number. For example:
+最后三行显示硬件类型、修订代码和 Raspberry Pi 的唯一序列号。例如：
 
 ----
 Hardware    : BCM2835
@@ -15,14 +16,15 @@ Revision    : a02082
 Serial      : 00000000765fc593
 ----
 
-NOTE: As of the 4.9 kernel, all Raspberry Pi computers report `BCM2835`, even those with BCM2836, BCM2837 and BCM2711 processors. You should not use this string to detect the processor. Decode the revision code using the information below, or `cat /sys/firmware/devicetree/base/model`.
+NOTE: 从4.9版本内核开始，所有的Raspberry Pi计算机都报告 `BCM2835`，即使是BCM2836、BCM2837、BCM2711处理器的计算机。你不应该使用此字符串来检测处理器。使用以下信息或 `cat /sys/firmware/devicetree/base/model` 对修订代码进行解码。
 
-=== Old-style revision codes
+[[old-style-revision-codes]]
+=== 旧式修订代码
 
-The first set of Raspberry Pi models were given sequential hex revision codes from `0002` to `0015`:
+第一组Raspberry Pi型号顺序的十六进制修订代码为 `0002` ~ `0015`:
 
 |===
-| Code | Model | Revision | RAM | Manufacturer
+| 代码 | 型号 | 修订 | RAM | 制造者
 
 | 0002
 | B
@@ -127,67 +129,68 @@ The first set of Raspberry Pi models were given sequential hex revision codes fr
 | Embest
 |===
 
-=== New-style revision codes
+[[new-style-revision-codes]]
+=== 新型修订代码
 
-With the launch of the Raspberry Pi 2, new-style revision codes were introduced. Rather than being sequential, each bit of the hex code represents a piece of information about the revision:
+随着Raspberry Pi 2的推出，引入了新的修订代码。十六进制代码的每一位不是连续的，而是代表有关修订的一条信息：
 
 ----
 NOQuuuWuFMMMCCCCPPPPTTTTTTTTRRRR
 ----
 
 |===
-| Part | Represents | Options
+| 部件 | 含义 | 选项
 
 | N (bit 31)
-| Overvoltage
-| 0: Overvoltage allowed
+| 过压
+| 0: 允许过压
 
 |
 |
-| 1: Overvoltage disallowed
+| 1: 不允许过压
 
 | O (bit 30)
-| OTP Program^1^
-| 0: OTP programming allowed
+| OTP编程^1^
+| 0: 允许 OTP 编程
 
 |
 |
-| 1: OTP programming disallowed
+| 1: 不允许 OTP 编程
 
 | Q (bit 29)
-| OTP Read^1^
-| 0: OTP reading allowed
+| OTP 读取^1^
+| 0: 允许 OTP 读取
 
 |
 |
-| 1: OTP reading disallowed
+| 1: 不允许 OTP 读取
 
 | uuu (bits 26-28)
-| Unused
-| Unused
+| 闲置
+| 闲置
 
 | W (bit 25)
-| Warranty bit^2^
-| 0: Warranty is intact
+| 保修位^2^
+| 0: 保修完好无损
 
 |
 |
-| 1: Warranty has been voided by xref:config_txt.adoc#overclocking-options[overclocking]
+| 1: 保修因 xref:config_txt.adoc#overclocking-options[超频] 而失效
 
 | u (bit 24)
-| Unused
-| Unused
+| 闲置
+| 闲置
 
 | F (bit 23)
-| New flag
-| 1: new-style revision
+| 新标志
+| 1: 新型修订
 
 |
 |
-| 0: old-style revision
+| 0: 旧式修订
 
 | MMM (bits 20-22)
-| Memory size
+| 内存大小
 | 0: 256MB
 
 |
@@ -211,7 +214,7 @@ NOQuuuWuFMMMCCCCPPPPTTTTTTTTRRRR
 | 5: 8GB
 
 | CCCC (bits 16-19)
-| Manufacturer
+| 制造者
 | 0: Sony UK
 
 |
@@ -235,7 +238,7 @@ NOQuuuWuFMMMCCCCPPPPTTTTTTTTRRRR
 | 5: Stadium
 
 | PPPP (bits 12-15)
-| Processor
+| 处理器
 | 0: BCM2835
 
 |
@@ -251,7 +254,7 @@ NOQuuuWuFMMMCCCCPPPPTTTTTTTTRRRR
 | 3: BCM2711
 
 | TTTTTTTT (bits 4-11)
-| Type
+| 类型
 | 0: A
 
 |
@@ -304,7 +307,7 @@ NOQuuuWuFMMMCCCCPPPPTTTTTTTTRRRR
 
 |
 |
-| f: Internal use only
+| f: 仅限内部使用
 
 |
 |
@@ -331,20 +334,21 @@ NOQuuuWuFMMMCCCCPPPPTTTTTTTTRRRR
 | 15: CM4S
 
 | RRRR (bits 0-3)
-| Revision
-| 0, 1, 2, etc.
+| 修订
+| 0、1和2 等
 |===
 
-^1^ Information on xref:raspberry-pi.adoc#otp-register-and-bit-definitions[programming the OTP bits].
+^1^ 有关 xref:raspberry-pi.adoc#otp-register-and-bit-definitions[OTP位编程]的信息。
 
-^2^ The warranty bit is never set on Raspberry Pi 4.
+^2^ 保修位永远不会在Raspberry Pi 4上设置。
 
-=== New-style revision codes in use
+[[new-style-revision-codes-in-use]]
+=== 正在使用的新型修订代码
 
-NOTE: This list is not exhaustive - there may be codes in use that are not in this table. Please see the next section for best practices on using revision codes to identify boards.
+NOTE: 此列表并不详尽 - 可能有一些正在使用的代码不在此表中。有关使用修订代码识别主板的最佳实践，请参见下一节。
 
 |===
-| Code | Model | Revision | RAM | Manufacturer
+| 代码 | 型号 | 修订 | RAM | 制造者
 
 | 900021
 | A+
@@ -587,9 +591,10 @@ NOTE: This list is not exhaustive - there may be codes in use that are not in th
 | Sony UK
 |===
 
-=== Using revision codes for board identification
+[[using-revision-codes-for-board-identification]]
+=== 使用修订代码进行电路板识别
 
-From the command line we can use the following to get the revision code of the board:
+通过命令行我们可以使用以下命令来获取电路板的修订代码：
 
 [source, bash]
 ----
@@ -597,13 +602,14 @@ $cat /proc/cpuinfo | grep Revision
 Revision      : c03111
 ----
 
-In this example above, we have a hexadecimal revision code of `c03111`. Converting this to binary, we get `0 0 0 000 0 0 1 100 0000 0011 00010001 0001`. Spaces have been inserted to show the borders between each section of the revision code, according to the above table.
+在上面的示例中，我们有1个十六进制版本代码 `c03111`。将其转换为二进制，我们得到 `0 0 0 000 0 0 1 100 0000 0011 00010001 0001`。根据上表，通过插入空格以显示修订代码各部分之间的边界。
 
-Starting from the lowest order bits, the bottom four (0-3) are the board revision number, so this board has a revision of 1. The next eight bits (4-11) are the board type, in this case binary `00010001`, hex `11`, so this is a Raspberry Pi 4B. Using the same process, we can determine that the processor is a BCM2711, the board was manufactured by Sony UK, and it has 4GB of RAM.
+从最低位开始，底部四位 (0-3) 是主板的修订号，因此该板的修订号为 1。接下来的8位 (4-11) 是主板类型，本例中为二进制 `00010001`，十六进制 `11`，因此这是一个Raspberry Pi 4B。使用相同的操作，我们可以确定处理器是BCM2711，主板是由Sony UK制造的，并且具有4GB的RAM。
 
-==== Getting the revision code in your program
+[[getting-the-revision-code-in-your-program]]
+==== 获取程序中的修订代码
 
-Obviously there are so many programming languages out there it's not possible to give examples for all of them, but here are two quick examples for `C` and `Python`. Both these examples use a system call to run a bash command that gets the `cpuinfo` and pipes the result to `awk` to recover the required revision code. They then use bit operations to extract the `New`, `Model`, and `Memory` fields from the code.
+由于编程语言太多无法展示所有语言的示例，但是这里有2个 `C` 语言和 `Python`的简单例子。这2个示例都使用一个系统调用来运行一个bash命令，该命令获取 `cpuinfo` 并将结果通过管道传递给 `awk` ，以恢复所需的修订代码。然后，他们使用位操作从代码中提取 `New`、 `Model`、 和 `Memory` 字段。
 
 
 [source, c, linenums]
@@ -634,7 +640,7 @@ int main( int argc, char *argv[] )
 }
 ----
 
-And the same in Python:
+在 Python 中也是如此：
 
 [source, python, linenums]
 ----
@@ -652,14 +658,15 @@ if new and model == 0x11 and mem >= 3 : # Note, 3 in the mem field is 2GB
     print("We are a 4B with at least 2GB RAM!")
 ----
 
-==== Best practice for revision code usage
+[[best-practice-for-revision-code-usage]]
+==== 修订代码使用的最佳实践
 
-Raspberry Pi advises against using the revision code as a whole (`c03111`) to avoid problems when new board revisions are created. For example, you might consider having a list of supported revision codes in your program, and comparing the detected code with your list to determine if your program is allowed to run. However, this mechanism will break when a new board revision comes out, or if the production location changes, each of which would create a new revision code that's not in your program's list. Your program would now reject the unrecognised code, and perhaps abort, even though revisions of the same board type are always backwards-compatible. You would need to release a new version of your program with the specific revision added to the list, which can be a maintenance burden.
+Raspberry Pi 建议不要将修订代码作为一个整体 (`c03111`) 使用，以避免在创建新的板修订版时出现问题。例如，可以考虑在程序中列出受支持的修订代码，并将检测到的代码与列表进行比较，以确定是否允许程序运行。但是当新的主板版本出现或生产地点发生变化时时，则这种机制就会被打破，每个修订版都会创建一个不在程序列表中的新修订代码。你的程序现在将拒绝无法识别的代码，并且可能会中止，即使相同板类型的修订始终向后兼容。你需要发布程序的新版本，并将特定修订版添加到列表中，这可能会造成维护负担。
 
-Similarly, using revision codes to indicate which model your program supports can create issues. If your program is only intended to work on devices with 2GB of RAM or more, a naive approach would be to look at the list of revision codes for models that have 2GB of RAM or more, and build that list in to your program. But of course, this breaks as soon as a new board revision is released, or if boards are manufactured at a different location.
+同样，使用修订代码来指示程序支持的模型可能会产生问题。如果你的程序只计划在具有 2GB 或更多 RAM 的设备上运行，则一种简单的方法是查看具有 2GB 或更多 RAM 的型号的修订代码列表，并将该列表构建到你的程序中。但是一旦发布新的主板修订版，或者如果主板在不同的地点制造，这种情况就会中断。
 
-A better mechanism is to just use the board-type field (3A, 4B, etc.) to determine which model your program supports; or perhaps just the amount-of-memory field. So you might say you will support any Raspberry Pi 4Bs, whatever their board revision code, because that should always work. Or you might want to restrict your program to 4B devices with 2GB of RAM or more. Simply look at those two fields to determine whether you are going to allow your program to run.
+更好的机制是仅使用板类型字段（3A、4B 等）来确定程序支持的模型;或者可能只是内存量字段。所以将支持任何Raspberry Pi 4B，无论其主板版本代码如何，因为这始终有效。或者你可能希望将程序限制为具有 2GB 或更多 RAM 的设备。只需查看这两个字段即可确定是否允许程序运行。
 
-The examples in the previous section use the recommended approach. They pull out the board type and memory size from the revision code, and use them to determine whether or not they are a Raspberry Pi 4B with 2GB or more of RAM.
+上一节中的示例使用建议的方法。他们从修订代码中提取主板类型和内存大小，并使用它们来确定其是否是具有 2GB 或更多 RAM 的 Raspberry Pi 4B。
 
-NOTE: You should always check bit 23, the 'New' flag, to ensure that the revision code is the new version before checking any other fields. The examples here also do this.
+NOTE: 在检查任何其他字段之前，你应该始终检查位 23（即 'New' 标志） ，以确保修订代码是新版本。

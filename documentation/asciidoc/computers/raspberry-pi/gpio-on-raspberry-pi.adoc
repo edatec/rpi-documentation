@@ -1,53 +1,58 @@
 [[gpio]]
-== General Purpose I/O (GPIO)
+== 通用 I/O (GPIO)
 
-General Purpose I/O (GPIO) pins can be configured as either general-purpose input, general-purpose output, or as one of up to six special alternate settings, the functions of which are pin-dependent.
+通用 I/O (GPIO) 引脚可配置为通用输入、通用输出或多达六种特殊备用设置之一，其功能取决于引脚。
 
-There are three GPIO banks on BCM2835. Each of the three banks has its own VDD input pin. On Raspberry Pi, all GPIO banks are supplied from 3.3V. 
+BCM2835 上有3个 GPIO组。3个组都有自己的VDD输入引脚。在Raspberry Pi上，所有GPIO组均使用3.3V供电。
 
-WARNING: Connection of a GPIO to a voltage higher than 3.3V will likely destroy the GPIO block within the SoC.
+WARNING: 将 GPIO 连接到高于 3.3V 的电压可能会破坏 SoC 内的 GPIO 模块。
 
-A selection of pins from Bank 0 is available on the P1 header on Raspberry Pi.
+Raspberry Pi的 P1 接头上提供了 Bank 0 中引脚选择。
 
-=== GPIO Pads
+[[gpio-pads]]
+=== GPIO 焊盘
 
-The GPIO connections on the BCM2835 package are sometimes referred to in the peripherals data sheet as "pads" -- a semiconductor design term meaning 'chip connection to outside world'.
+BCM2835封装上的GPIO连接有时在外设数据手册中称为 "焊盘" ，这是一个半导体设计术语，意思是 '芯片与外界的连接'。
 
-The pads are configurable CMOS push-pull output drivers/input buffers. Register-based control settings are available for:
+焊盘是可配置的CMOS输出驱动器/输入缓冲器。基于寄存器的控制设置可用于：
 
-* Internal pull-up / pull-down enable/disable
-* Output xref:raspberry-pi.adoc#gpio-pads-control[drive strength]
-* Input Schmitt-trigger filtering
+* 内部上拉/下拉使能/禁用
+* 输出 xref:raspberry-pi.adoc#gpio-pads-control[驱动强度]
+* 输入施密特触发器滤波
 
-==== Power-on states
+[[power-on-states]]
+==== 开机状态
 
-All GPIO pins revert to general-purpose inputs on power-on reset. The default pull states are also applied, which are detailed in the alternate function table in the ARM peripherals datasheet. Most GPIOs have a default pull applied.
+所有 GPIO 引脚在上电复位时恢复为通用输入，且应用默认拉取状态，ARM 外设datasheet中的备用功能表对此进行了详细说明。大多数 GPIO 都应用了默认拉取。
 
-=== Interrupts
+[[interrupts]]
+=== 中断
 
-Each GPIO pin, when configured as a general-purpose input, can be configured as an interrupt source to the ARM. Several interrupt generation sources are configurable:
+每个 GPIO 引脚在配置为通用输入时，都可以配置为 ARM 的中断源。可配置多个中断生成源：
 
-* Level-sensitive (high/low)
-* Rising/falling edge
-* Asynchronous rising/falling edge
+* 电平敏感 (高/低)
+* 上升沿/下降沿
+* 异步上升沿/下降沿
 
-Level interrupts maintain the interrupt status until the level has been cleared by system software (e.g. by servicing the attached peripheral generating the interrupt).
+电平中断保持中断状态，直到系统软件清除电平 (例如，通过为生成中断的附加外设提供服务)。
 
-The normal rising/falling edge detection has a small amount of synchronisation built into the detection. At the system clock frequency, the pin is sampled with the criteria for generation of an interrupt being a stable transition within a three-cycle window, i.e. a record of '1 0 0' or '0 1 1'. Asynchronous detection bypasses this synchronisation to enable the detection of very narrow events.
+正常的上升沿/下降沿检测在检测中内置了少量同步。在系统时钟频率下，对引脚进行采样，产生中断的标准是3周期窗口内的稳定转换，即记录 '1 0 0' 或 '0 1 1'。异步检测绕过此同步，以便能够检测非常窄的事件。
 
-=== Alternative Functions
+[[alternative-functions]]
+=== 替代功能
 
-Almost all of the GPIO pins have alternative functions. Peripheral blocks internal to the SoC can be selected to appear on one or more of a set of GPIO pins, for example the I2C buses can be configured to at least 3 separate locations. xref:raspberry-pi.adoc#gpio-pads-control[Pad control], such as drive strength or Schmitt filtering, still applies when the pin is configured as an alternate function.
+几乎所有的GPIO引脚都有替代功能。 可以配置 SoC 内部的外设模块出现在1组 GPIO 引脚中的一个或多个上，例如，I2C 总线可以配置为至少3个独立的位置。当引脚配置为备用功能时， xref:raspberry-pi.adoc#gpio-pads-control[焊盘控制]（ 如驱动强度或施密特滤波）仍然适用。
 
-=== Voltage Specifications
+[[voltage-specifications]]
+=== 电压规格
 
-The table below gives the various voltage specifications for the GPIO pins for BCM2835, BCM2836, BCM2837 and RP3A0-based products (e.g. Raspberry Pi Zero or Raspberry Pi 3+). For information about Compute Modules you should see the xref:compute-module.adoc#datasheets-and-schematics[relevant datasheets].
+下表给出了基于 BCM2835、BCM2836、BCM2837 和RP3A0 的产品（例如 Raspberry Pi Zero 或 Raspberry Pi 3+）的 GPIO 引脚的各种电压规格。有关CM的信息，请参见  xref:compute-module.adoc#datasheets-and-schematics[相关的datasheet]。
 
 |===
-| Symbol | Parameter | Conditions &emsp; | Min | Typical | Max | Unit
+| 符号 | 参数 | 条件 | 最小值 | 典型值 | 最大值 | 单位
 
 | V~IL~
-| Input Low Voltage
+| 输入低电压
 | -
 | -
 | -
@@ -55,7 +60,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | V~IH~
-| Input high voltage^a^
+| 输入高电压^a^
 | -
 | 1.6
 | -
@@ -63,7 +68,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | I~IL~
-| Input leakage current
+| 输入漏电流
 | TA = +85◦C
 | -
 | -
@@ -71,7 +76,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | µA
 
 | C~IN~
-| Input capacitance
+| 输入电容
 | -
 | -
 | 5
@@ -79,7 +84,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | pF
 
 | V~OL~
-| Output low voltage^b^
+| 输出低压^b^
 | IOL = -2mA
 | -
 | -
@@ -87,7 +92,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | V~OH~
-| Output high voltage^b^
+| 输出高压^b^
 | IOH = 2mA
 | 3.0
 | -
@@ -95,7 +100,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | I~OL~
-| Output low current^c^
+| 输出低电流^c^
 | VO = 0.4V
 | 18
 | -
@@ -103,7 +108,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | mA
 
 | I~OH~
-| Output high current^c^
+| 输出高电流^c^
 | VO = 2.3V
 | 17
 | -
@@ -111,7 +116,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | mA
 
 | R~PU~
-| Pullup resistor
+| 上拉电阻
 | -
 | 50
 | -
@@ -119,7 +124,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | kΩ
 
 | R~PD~
-| Pulldown resistor
+| 下拉电阻
 | -
 | 50
 | -
@@ -127,17 +132,17 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | kΩ
 |===
 
-^a^ Hysteresis enabled +
-^b^ Default drive strength (8mA) +
-^c^ Maximum drive strength (16mA)
+^a^ 滞后启用 +
+^b^ 默认驱动强度 (8mA) +
+^c^ 最大驱动强度 (16mA)
 
-The table below gives the various voltage specifications for the GPIO pins for BCM2711-based products (e.g. Raspberry Pi 4 and Raspberry Pi 400). For information about Compute Modules you should see the xref:compute-module.adoc#datasheets-and-schematics[relevant datasheets].
+下表给出了基于 BCM2711 的产品 (例如Raspberry Pi 4 和Raspberry Pi 400)的 GPIO 引脚的各种电压规格。有关处理器模块（CM）的信息，请参见 xref:compute-module.adoc#datasheets-and-schematics[相关的datasheet]。
 
 |===
-| Symbol | Parameter | Conditions &emsp; | Min | Typical | Max | Unit
+| 符号 | 参数 | 条件 | 最小值 | 典型值 | 最大值 | 单位
 
 | V~IL~
-| Input Low Voltage
+| 输入低电压
 | -
 | -
 | -
@@ -145,7 +150,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | V~IH~
-| Input high voltage^a^
+| 输入高电压^a^
 | -
 | 2.0
 | -
@@ -153,7 +158,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | I~IL~
-| Input leakage current
+| 输入漏电流
 | TA = +85◦C
 | -
 | -
@@ -161,7 +166,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | µA
 
 | V~OL~
-| Output low voltage^b^
+| 输出低电压^b^
 | IOL = -4mA
 | -
 | -
@@ -169,7 +174,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | V~OH~
-| Output high voltage^b^
+| 输出高电压^b^
 | IOH = 4mA
 | 2.6
 | -
@@ -177,7 +182,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | V
 
 | I~OL~
-| Output low current^c^
+| 输出低电流^c^
 | VO = 0.4V
 | 7
 | -
@@ -185,7 +190,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | mA
 
 | I~OH~
-| Output high current^c^
+| 输出高电流^c^
 | VO = 2.6V
 | 7
 | -
@@ -193,7 +198,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | mA
 
 | R~PU~
-| Pullup resistor
+| 上拉电阻
 | -
 | 33
 | -
@@ -201,7 +206,7 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | kΩ
 
 | R~PD~
-| Pulldown resistor
+| 下拉电阻
 | -
 | 33
 | -
@@ -209,6 +214,6 @@ The table below gives the various voltage specifications for the GPIO pins for B
 | kΩ
 |===
 
-^a^ Hysteresis enabled +
-^b^ Default drive strength (4mA) +
-^c^ Maximum drive strength (8mA)
+^a^ 滞后启用 +
+^b^ 默认驱动强度 (4mA) +
+^c^ 最大驱动强度 (8mA)

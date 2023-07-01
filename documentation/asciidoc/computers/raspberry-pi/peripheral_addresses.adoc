@@ -1,31 +1,32 @@
-== Peripheral Addresses
+[[peripheral-addresses]]
+== 外设地址
 
-If there is no kernel driver available, and a program needs to access a peripheral address directly with mmap, it needs to know where in the virtual memory map the peripheral bus segment has been placed. This varies according to which model of Raspberry Pi is being used, so there are three helper functions in https://github.com/raspberrypi/userland/blob/3fd8527eefd8790b4e8393458efc5f94eb21a615/host_applications/linux/libs/bcm_host/bcm_host.c[bcm_host.c] to help provide platform independence.
+如果没有可用的内核驱动程序，并且程序需要使用 mmap 直接访问外设地址，则需要明确外设总线段在虚拟内存映射中的位置。这因使用的 Raspberry Pi 型号而异，因此 https://github.com/raspberrypi/userland/blob/3fd8527eefd8790b4e8393458efc5f94eb21a615/host_applications/linux/libs/bcm_host/bcm_host.c[bcm_host.c] 中有三个辅助函数来帮助提供平台独立性。
 
-NOTE: You should use these functions rather than hardcoded values, as this will ensure future compatibility.
+NOTE: 应使用这些函数而不是硬编码值，因为这将确保将来的兼容性。
 
 ----
 unsigned bcm_host_get_peripheral_address()
 ----
 
-This returns the ARM-side physical address where peripherals are mapped.
+这将返回映射外设的 ARM 端物理地址。
 
 ----
 unsigned bcm_host_get_peripheral_size()
 ----
 
-This returns the size of the peripheral's space.
+这将返回外设空间的大小。
 
 ----
 unsigned bcm_host_get_sdram_address()
 ----
 
-This returns the bus address of the SDRAM.
+这将返回 SDRAM 的总线地址。
 
-Here are the current values as of this writing, in table form:
+以下是为写作本文时的当前值，以表格形式表示：
 
 |===
-| SoC | Peripheral Address | Peripheral Size | SDRAM Address | Source
+| SoC | 外设地址 | 外设大小 | SDRAM 地址 | 源
 
 | BCM2835
 | 0x20000000
@@ -53,16 +54,16 @@ Here are the current values as of this writing, in table form:
 |===
 
 [discrete]
-=== Building a C program using these functions
+=== 使用这些函数构建 C 程序
 
-The include file and library are installed by default on a Raspberry Pi OS system. Just add the following line to your C program:
+默认情况下，包含文件和库安装在Raspberry Pi操作系统上。只需将以下行添加到 C 程序中：
 
 [source,C]
 ----
 #include <bcm_host.h>
 ----
 
-Example:
+例:
 
 [source,C]
 ----
@@ -78,13 +79,13 @@ int main(void) {
 }
 ----
 
-Link with:
+链接至：:
 
 ----
 -lbcm_host
 ----
 
-So a simple command line compile might be:
+所以一个简单的命令行编译可能是：
 
 [,bash]
 ----

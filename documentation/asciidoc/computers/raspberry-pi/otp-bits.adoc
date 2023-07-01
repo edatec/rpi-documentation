@@ -1,65 +1,67 @@
-== OTP Register and Bit Definitions
+[[otp-register-and-bit-definitions]]
+== OTP 寄存器和位定义
 
-All SoCs used by the Raspberry Pi range have a inbuilt One-Time Programmable (OTP) memory block.
+Raspberry Pi系列使用的所有SoC都包含一个内置的一次性可编程（OTP）内存块。
 
-It is 66 32-bit values long, although only a few locations have factory-programmed data.
+尽管只有少数位置具有工厂编程的数据，它的长度为 66 个 32 位值。
 
-The `vcgencmd` to display the contents of the OTP is:
+显示 OTP 内容的 `vcgencmd` 为:
 
 ----
 vcgencmd otp_dump
 ----
 
-=== OTP Registers
+[[otp-registersl]]
+=== OTP 寄存器
 
-This list contains the publicly available information on the registers. If a register or bit is not defined here, then it is not public.
+该列表包含登记册上的公开信息。如果此处未定义寄存器或位，则它不是公共的。
 
-17 -- bootmode register
+17 -- 启动模式寄存器
 
-* Bit 1: sets the oscillator frequency to 19.2MHz
-* Bit 3: enables pull ups on the SDIO pins
-* Bit 19: enables GPIO bootmode
-* Bit 20: sets the bank to check for GPIO bootmode
-* Bit 21: enables booting from SD card
-* Bit 22: sets the bank to boot from
-* Bit 28: enables USB device booting
-* Bit 29: enables USB host booting (ethernet and mass storage)
+* Bit 1: 将振荡器频率设置为 19.2MHz
+* Bit 3: 使能 SDIO 引脚上的上拉
+* Bit 19: 启用 GPIO 启动模式
+* Bit 20: 设置组以检查 GPIO 启动模式
+* Bit 21: 使能从 SD 卡启动
+* Bit 22: 设置启动的组
+* Bit 28: 使能 USB 设备启动
+* Bit 29: 使能 USB 主机启动（以太网和大容量存储）
 
-NOTE: On BCM2711 the bootmode is defined by the xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[bootloader EEPROM configuration] instead of OTP.
+NOTE: 在 BCM2711 上，启动模式由 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[启动加载程序 EEPROM 配置] 而不是 OTP 定义。
 
-18 -- copy of bootmode register +
-28 -- serial number +
-29 -- ~(serial number) +
-30 -- xref:raspberry-pi.adoc#raspberry-pi-revision-codes[revision code] ^1^ +
-33 -- board revision extended - the meaning depends on the board model. +
-This is available via device-tree in `/proc/device-tree/chosen/rpi-boardrev-ext` and for testing purposes this OTP value can be temporarily overridden by setting `board_rev_ext` in `config.txt`.
+18 -- 启动模式寄存器的副本 +
+28 -- 序列号 +
+29 -- ~(序列号) +
+30 -- xref:raspberry-pi.adoc#raspberry-pi-revision-codes[修订代码] ^1^ +
+33 -- 扩展板修订 - 含义取决于主板型号。 +
+这可以通过 `/proc/device-tree/chosen/rpi-boardrev-ext` 中的设备树获得，出于测试目的，可以通过在 `config.txt` 中的 `board_rev_ext` 来临时覆盖该OTP值。
 
 * Compute Module 4
- ** Bit 30: Whether the Compute Module has a WiFi module fitted
+ ** Bit 30: 处理器模块（CM）是否安装了 WiFi 模块
   *** 0 - WiFi
-  *** 1 - No WiFi
- ** Bit 31: Whether the Compute Module has an EMMC module fitted
+  *** 1 - 无 WiFi
+ ** Bit 31: 处理器模块（CM）是否安装了 EMMC 模块
   *** 0 - EMMC
-  *** 1 - No EMMC (Lite)
+  *** 1 - 无 EMMC (Lite版)
 * Raspberry Pi 400
- ** Bits 0-7: The default keyboard country code used by https://github.com/raspberrypi-ui/piwiz[piwiz]
+ ** Bits 0-7:  https://github.com/raspberrypi-ui/piwiz[piwiz] 使用的默认键盘国家码
 
-36-43 -- xref:raspberry-pi.adoc#industrial-use-of-the-raspberry-pi[customer OTP values] +
-45 -- MPG2 decode key +
-46 -- WVC1 decode key +
-47-54 -- SHA256 of RSA public key for secure-boot +
-55    -- secure-boot flags (reserved for use by the bootloader) +
-56-63 -- 256-bit device-specific private key +
-64-65 -- MAC address; if set, system will use this in preference to the automatically generated address based on the serial number +
-66 -- advanced boot register (not BCM2711)
+36-43 -- xref:raspberry-pi.adoc#industrial-use-of-the-raspberry-pi[客户 OTP 值] +
+45 -- MPG2 解码密钥 +
+46 -- WVC1 解码密钥 +
+47-54 -- 用于安全启动的 RSA 公钥的 SHA256 +
+55    -- 安全启动标志（保留供启动加载程序使用） +
+56-63 -- 256 位设备专用私钥 +
+64-65 --  MAC 地址; 如果设置，系统将优先使用此地址，而不是基于序列号自动生成地址 +
+66 -- 高级启动寄存器 (不是 BCM2711)
 
-* Bits 0-6: GPIO for ETH_CLK output pin
-* Bit 7: enables ETH_CLK output
-* Bits 8-14: GPIO for LAN_RUN output pin
-* Bit 15: enables LAN_RUN output
-* Bit 24: extends USB HUB timeout parameter
-* Bit 25: ETH_CLK frequency:
+* Bits 0-6: ETH_CLK输出引脚的 GPIO
+* Bit 7: 启用ETH_CLK输出
+* Bits 8-14: LAN_RUN输出引脚的 GPIO
+* Bit 15: 启用LAN_RUN输出
+* Bit 24: 扩展 USB HUB超时参数
+* Bit 25: ETH_CLK频率:
  ** 0 - 25MHz
  ** 1 - 24MHz
 
-^1^Also contains bits to disable overvoltage, OTP programming, and OTP reading.
+^1^还包含用于禁用过压、OTP 编程和 OTP 读取的位。

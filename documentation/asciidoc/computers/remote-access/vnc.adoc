@@ -1,24 +1,25 @@
 [[vnc]]
-== Virtual Network Computing (VNC)
+== 虚拟网络计算 (VNC)
 :experimental:
 
-Sometimes it is not convenient to work directly on the Raspberry Pi. Maybe you would like to work on it from another device by remote control.
+有时直接在Raspberry Pi上工作并不方便。也许您想通过遥控器从另一台设备对其进行处理。
 
-VNC is a graphical desktop sharing system that allows you to remotely control the desktop interface of one computer (running VNC Server) from another computer or mobile device (running VNC Viewer). VNC Viewer transmits the keyboard and either mouse or touch events to VNC Server, and receives updates to the screen in return.
+VNC 是一种图形桌面共享系统，允许您从另一台计算机或移动设备（运行 VNC 查看器）远程控制一台计算机（运行 VNC 服务器）的桌面界面。VNC 查看器将键盘和鼠标或触摸事件传输到 VNC 服务器，并接收屏幕更新作为回报。
 
-You will see the desktop of the Raspberry Pi inside a window on your computer or mobile device. You'll be able to control it as though you were working on the Raspberry Pi itself.
+您将在计算机或移动设备的窗口中看到Raspberry Pi的桌面。您将能够控制它，就像您在处理Raspberry Pi本身一样。
 
-VNC Connect from RealVNC is included with Raspberry Pi OS. It consists of both VNC Server, which allows you to control your Raspberry Pi remotely, and VNC Viewer, which allows you to control desktop computers remotely from your Raspberry Pi should you want to.
+RealVNC 的 VNC Connect 包含在 Raspberry Pi OS 中。它由VNC服务器和VNC Viewer组成，VNC服务器允许您远程控制Raspberry Pi，后者允许您根据需要从Raspberry Pi远程控制台式计算机。
 
-You must enable VNC Server before you can use it. By default, VNC Server gives you remote access to the graphical desktop that is running on your Raspberry Pi, as though you were sitting in front of it.
+您必须先启用 VNC 服务器，然后才能使用它。默认情况下，VNC 服务器可让您远程访问在 Raspberry Pi 上运行的图形桌面，就像您坐在它前面一样。
 
-However, you can also use VNC Server to gain graphical remote access to your Raspberry Pi if it is headless or not running a graphical desktop. For more information on this, see *Creating a virtual desktop*, further below.
+但是，您也可以使用 VNC 服务器来获取对 Raspberry Pi 的图形远程访问，如果它是无头的或未运行图形桌面。有关此内容的更多信息，请参阅下面的 *创建虚拟桌面*。
 
-=== Installing VNC on Raspberry Pi
+[[installing-vnc-on-raspberry-pi]]
+=== 在 Raspberry Pi上安装VNC
 
-VNC is already installed on the full Raspberry Pi OS image, and can be installed via `Recommended Software` from the `Preferences` menu on other versions.
+VNC已经安装在完整的Raspberry Pi操作系统映像上，可以通过其他版本的首选项菜单中的 `推荐软件` 进行安装。
 
-If you are not using a desktop you can install it from the command line as follows:
+如果您不使用桌面，则可以从命令行安装它，如下所示：
 
 [,bash]
 ----
@@ -26,98 +27,107 @@ sudo apt update
 sudo apt install realvnc-vnc-server realvnc-vnc-viewer
 ----
 
-=== Enabling the VNC Server
+[[enabling-the-vnc-server]]
+=== 启用 VNC 服务器
 
-You can do this graphically or at the command line.
+您可以通过图形方式或在命令行中执行此操作。
 
-==== Enabling VNC Server graphically
+[[enabling-vnc-server-graphically]]
+==== 以图形方式启用 VNC 服务器
 
-* On your Raspberry Pi, boot into the graphical desktop.
-* Select menu:Menu[Preferences > Raspberry Pi Configuration > Interfaces].
-* Ensure *VNC* is *Enabled*.
+* 在Raspberry Pi上，启动到图形桌面。
+* 选择 menu:Menu[Preferences > Raspberry Pi Configuration > Interfaces].
+* 确保已 *启用*  *VNC*。
 
-==== Enabling VNC Server at the command line
+[[enabling-vnc-server-at-the-command-line]]
+==== 以命令行方式启用VNC服务器
 
-You can enable VNC Server at the command line using xref:configuration.adoc#raspi-config[raspi-config]:
+您可以使用 xref:configuration.adoc#raspi-config[raspi-config]在命令行启用 VNC 服务器：
 
 [,bash]
 ----
 sudo raspi-config
 ----
 
-Now, enable VNC Server by doing the following:
+现在，通过执行以下操作启用 VNC 服务器：
 
-* Navigate to *Interfacing Options*.
-* Scroll down and select menu:VNC[Yes].
+* 导航至 *Interfacing Options*。
+* 向下滚动并选择 menu:VNC[Yes]。
 
-=== Connecting to your Raspberry Pi
+[[connecting-to-your-raspberry-pi]]
+=== 连接到 Raspberry Pi
 
-There are two ways to connect to your Raspberry Pi. You can use either or both, depending on what works best for you.
+有两种方法可以连接到Raspberry Pi。您可以使用其中之一或两者，具体取决于最适合您的方法。
 
-==== Establishing a direct connection
+[[establishing-a-direct-connection]]
+==== 建立直接连接
 
-Direct connections are quick and simple providing you're joined to the same private local network as your Raspberry Pi. For example, this might be a wired or wireless network at home, at school, or in the office.
+直接连接既快速又简单，前提是您加入与Raspberry Pi相同的专用本地网络。例如，这可能是家中、学校或办公室中的有线或无线网络。
 
-* On your Raspberry Pi (using a terminal window or via SSH) use xref:remote-access.adoc#ip-address[these instructions] or run `ifconfig` to discover your private IP address.
-* On the device you'll use to take control, download VNC Viewer. For best results, use the https://www.realvnc.com/download/viewer/[compatible app] from RealVNC.
-* Enter your Raspberry Pi's private IP address into VNC Viewer:
+* 在Raspberry Pi (使用终端窗口或通过SSH)， 使用e xref:remote-access.adoc#ip-address[这些说明] 或运行 `ifconfig` 以发现你的私有IP地址。
+* 在您将用于控制的设备上，下载 VNC 查看器。 为了获得最佳效果，请使用RealVNC的 https://www.realvnc.com/download/viewer/[兼容性应用程序] 。
+* 在VNC查看器中输入Raspberry Pi的私有IP地址：
 
-==== Establishing a cloud connection
+[[establishing-a-cloud-connection]]
+==== 建立云连接
 
-You are entitled to use RealVNC's cloud service for free, provided that remote access is for educational or non-commercial purposes only.
+您有权免费使用RealVNC的云服务，前提是远程访问仅用于教育或非商业目的。
 
-Cloud connections are convenient and encrypted end-to-end. They are highly recommended for connecting to your Raspberry Pi over the internet. There's no firewall or router reconfiguration, and you don't need to know the IP address of your Raspberry Pi, or provide a static one.
+云连接方便且端到端加密。强烈建议使用它们通过互联网连接到Raspberry Pi。没有防火墙或路由器重新配置，您不需要知道Raspberry Pi的 IP 地址，也不需要提供静态地址。
 
-* Sign up for a https://www.realvnc.com/raspberrypi/#sign-up[RealVNC account] here: it's free and it only takes a few seconds.
-* On your Raspberry Pi, sign in to VNC Server using your new RealVNC account credentials:
-* On the device you'll use to take control, download VNC Viewer. You *must* use the https://www.realvnc.com/download/viewer/[compatible app] from RealVNC.
-* Sign in to VNC Viewer using the same RealVNC account credentials, and then either tap or click to connect to your Raspberry Pi:
+* 注册一个 https://www.realvnc.com/raspberrypi/#sign-up[RealVNC 账户] : 它是免费的，只需要几秒钟。
+* 在Raspberry Pi上使用新的 RealVNC 帐户凭据登录 VNC 服务器：
+* 在您将用于控制的设备上，下载 VNC 查看器。您 *必须* 使用RealVNC的 https://www.realvnc.com/download/viewer/[兼容性应用程序] 。
+* 使用相同的 RealVNC 帐户凭据登录 VNC 查看器，然后点击或单击以连接到您的Raspberry Pi：
 
-==== Authenticating to VNC Server
+[[authenticating-to-vnc-server]]
+==== 向 VNC 服务器进行身份验证
 
-To complete either a direct or cloud connection, you must authenticate to VNC Server.
+要完成直接连接或云连接，您必须向 VNC 服务器进行身份验证。
 
-If you're connecting from the https://www.realvnc.com/download/viewer/[compatible VNC Viewer app] from RealVNC, enter the user name and password you normally use to log in to your user account on the Raspberry Pi. By default, these credentials are `pi` and `raspberry`.
+如果您从 RealVNC https://www.realvnc.com/download/viewer/[兼容的VNC Viewer 应用程序] 进行连接，请输入您通常用于登录 Raspberry Pi 上的用户帐户的用户名和密码。默认情况下，这些凭据是 `pi` 和 `raspberry`。
 
-If you're connecting from a non-RealVNC Viewer app, you'll first need to downgrade VNC Server's authentication scheme, specify a password unique to VNC Server, and then enter that instead.
+如果您从非 RealVNC Viewer 应用程序进行连接，则首先需要降级 VNC 服务器的身份验证方案，指定 VNC Server 独有的密码，然后输入该密码。
 
-* If you are in front of your Raspberry Pi and can see its screen, open the VNC Server dialog on your Raspberry Pi, select menu:Menu[Options > Security], and choose *VNC password* from the *Authentication* dropdown.
-* *Or* if you're configuring your Raspberry Pi remotely from the command line, then to make the changes for Service Mode (the default configuration for the Raspberry Pi):
- ** Open the `/root/.vnc/config.d/vncserver-x11` config file.
- ** Replace `Authentication=SystemAuth` with `Authentication=VncAuth` and save the file.
- ** In the command line, run `sudo vncpasswd -service`. This  will prompt you to set a password, and will insert it for you in the right config file for VNC Server running in Service Mode.
- ** Restart VNC Server.
+* 	如果您在Raspberry Pi前面并且可以看到其屏幕，请打开Raspberry Pi上的 VNC 服务器对话框，选择 menu:Menu[Options > Security], 再从 *Authentication* 下拉列表中选择 *VNC password* 。
+* *或者* 如果您要从命令行远程配置Raspberry Pi，则要对服务模式（Raspberry Pi的默认配置）进行更改：
+ ** 打开 `/root/.vnc/config.d/vncserver-x11` 配置文件。
+ ** 替换 `Authentication=SystemAuth` 为 `Authentication=VncAuth` 并保存文件。
+ ** 在命令行中运行 `sudo vncpasswd -service`。这将提示您设置密码，并将其插入到以服务模式运行的VNC服务器的正确配置文件中。
+ ** 重启 VNC 服务器。
 
-=== Using Directly Rendered Applications
+[[using-directly-rendered-applications]]
+=== 使用直接呈现的应用程序
 
-You can remotely access apps which use a directly rendered overlay such as; the text console, the Raspberry Pi Camera Module, and others.
+您可以远程访问使用直接渲染叠加的应用程序，例如：文本控制台、Raspberry Pi相机模块等。
 
-To turn this feature on:
+要启用此功能，请执行以下操作：
 
-* On your Raspberry Pi, open the VNC Server dialog.
-* Navigate to menu:Menu[Options > Troubleshooting] and select *Enable experimental direct capture mode*.
-* On the device you'll use to take control, run VNC Viewer and connect.
+* 在Raspberry Pi上, 打开 VNC 服务器对话框。
+* 导航至 menu:Menu[Options > Troubleshooting] 并选择 *Enable experimental direct capture mode*.
+* 在您将用于控制的设备上，运行 VNC 查看器并连接。
 +
-NOTE: Existing connections must be restarted in order for these changes to take effect.
+NOTE: 必须重新启动现有连接才能使这些更改生效。
 
-Please note that direct screen capture is an experimental feature. If you're connecting from a desktop computer and mouse movements seem erratic, try pressing *F8* to open the VNC Viewer shortcut menu and selecting *Relative Pointer Motion*.
+请注意，直接屏幕捕获是一项实验性功能。 如果您从台式计算机进行连接，并且鼠标移动似乎不稳定，请尝试按 *F8* 打开 VNC 查看器快捷菜单并选择 *Relative Pointer Motion*。
 
-=== Creating a Virtual Desktop
+[[creating-a-virtual-desktop]]
+=== 创建虚拟桌面
 
-If your Raspberry Pi is headless (i.e. not plugged into a monitor) or controlling a robot, it is unlikely to be running a graphical desktop.
+如果您的Raspberry Pi是无头的（即没有插入显示器）或控制机器人，则它不太可能运行图形桌面。
 
-VNC Server can create a *virtual desktop* for you, giving you graphical remote access on demand. This virtual desktop exists only in your Raspberry Pi's memory:
+VNC 服务器可以为您创建 *虚拟桌面* ，让您按需进行图形远程访问。此虚拟桌面仅存在于Raspberry Pi的内存中：
 
-To create and connect to a virtual desktop:
+要创建并连接到虚拟桌面，请执行以下操作：
 
-* On your Raspberry Pi (using Terminal or via SSH), run `vncserver`. Make note of the IP address/display number that VNC Server will print to your Terminal (e.g. `192.167.5.149:1`).
-* On the device you'll use to take control, enter this information into https://www.realvnc.com/download/viewer/[VNC Viewer].
+* 在 Raspberry Pi上（使用终端或通过 SSH）, 运行 `vncserver`。 记下VNC服务器将打印到您的终端的IP地址/显示编号 (例如 `192.167.5.149:1`).
+* 	在您将用于控制的设备上，将此信息输入 https://www.realvnc.com/download/viewer/[VNC 查看器]。
 
-To destroy a virtual desktop, run the following command:
+要销毁虚拟桌面，请运行以下命令：
 
 [,bash]
 ----
 vncserver -kill :<display-number>
 ----
 
-This will also stop any existing connections to this virtual desktop.
+这还将停止与此虚拟桌面的任何现有连接。

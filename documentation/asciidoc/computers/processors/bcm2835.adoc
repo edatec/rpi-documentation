@@ -1,13 +1,13 @@
 [[bcm2835]]
 == BCM2835
 
-BCM2835是Raspberry Pi 1 Models A，A +，B，B +，Raspberry Pi Zero，Raspberry Pi Zero W和Raspberry Pi Compute Module 1中使用的Broadcom芯片。 芯片的一些细节可以在
- https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[外设规格文档] 中找到。它包含一个单核ARM1176JZF-S处理器。
+BCM2835是一款用在Raspberry Pi 1 Model A/A+/B/B +、Raspberry Pi Zero、Raspberry Pi Zero W和Raspberry Pi CM1中Broadcom芯片。该芯片的详细信息可以在
+ https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[外设规格文档] 中查看，其包含一个单核ARM1176JZF-S处理器。
 
 NOTE: 外设规格文档包含许多错误. 但是有一个当前已知的 https://elinux.org/BCM2835_datasheet_errata[勘误表] 的列表.
 
 有关处理器的其他信息可在以下文档中找到：
 
-* https://docs.broadcom.com/docs/12358545[GPU文档] and https://docs.broadcom.com/docs/12358546[开源驱动程序]
+* https://docs.broadcom.com/docs/12358545[GPU文档] 和 https://docs.broadcom.com/docs/12358546[开源驱动程序]
 * https://developer.arm.com/documentation/ddi0301[ARM1176JZF-S]
 

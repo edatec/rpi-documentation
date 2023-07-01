@@ -1,69 +1,73 @@
-== Using Secure Copy
+[[using-secure-copy]]
+== 使用安全拷贝
 
-Secure Copy (`scp`) is a command for sending files over SSH. This means you can copy files between computers, say from your Raspberry Pi to your desktop or laptop, or vice-versa.
+安全复制 (`scp`) 是通过SSH发送文件的命令。 这意味着你可以在电脑之间复制文件，比如从你的Raspberry Pi到你的台式机或笔记本电脑，反之亦然。
 
-First of all, you'll need to know your Raspberry Pi's xref:remote-access.adoc#ip-address[IP address].
+首先，你需要知道你的 Raspberry Pi xref:remote-access.adoc#ip-address[IP 地址] 。
 
-=== Copying Files to your Raspberry Pi
+[[copying-files-to-your-raspberry-pi]]
+=== 将文件复制到Raspberry Pi
 
-Copy the file `myfile.txt` from your computer to the `pi` user's home folder of your Raspberry Pi at the IP address `192.168.1.3` with the following command:
+使用以下命令，将 `myfile.txt` 文件从您的计算机复制到您的Raspberry Pi的 `pi` 用户主文件夹且IP地址为 `192.168.1.3`:
 
 [,bash]
 ----
 scp myfile.txt pi@192.168.1.3:
 ----
 
-Copy the file to the `/home/pi/project/` directory on your Raspberry Pi (the `project` folder must already exist):
+将文件复制到Raspberry Pi上的 `/home/pi/project/` 目录中 ( `项目` 文件夹必须已存在):
 
 [,bash]
 ----
 scp myfile.txt pi@192.168.1.3:project/
 ----
 
-=== Copying Files from your Raspberry Pi
+[[copying-files-from-your-raspberry-pi]]
+=== 从 Raspberry Pi复制文件
 
-Copy the file `myfile.txt` from your Raspberry Pi to the current directory on your other computer:
+将 `myfile.txt` 从您的Raspberry Pi复制到另一台计算机上的当前目录:
 
 [,bash]
 ----
 scp pi@192.168.1.3:myfile.txt .
 ----
 
-=== Copying Multiple Files
+[[copying-multiple-files]]
+=== 复制多个文件
 
-Copy multiple files by separating them with spaces:
+通过用空格分隔来复制多个文件:
 
 [,bash]
 ----
 scp myfile.txt myfile2.txt pi@192.168.1.3:
 ----
 
-Alternatively, use a wildcard to copy all files matching a particular search with:
+或者，使用通配符复制符合特定搜索的所有文件:
 
 [,bash]
 ----
 scp *.txt pi@192.168.1.3:
 ----
 
-(all files ending in `.txt`)
+(所有文件都以 `.txt` 结尾)
 
 [,bash]
 ----
 scp m* pi@192.168.1.3:
 ----
 
-(all files starting with `m`)
+(所有以 `m` 开头的文件)
 
 [,bash]
 ----
 scp m*.txt pi@192.168.1.3:
 ----
 
-(all files starting with `m` and ending in `.txt`)
+(所有文件以 `m` 开头和以 `.txt` 结尾)
 
 [NOTE]
 ====
-Some of the examples above will not work for file names containing spaces. Names like this need to be enclosed in quotes:
+上面的一些例子不适用于包含空格的文件名。像这样的名字需要用引号括起来:
 
 [,bash]
 ----
@@ -72,9 +76,11 @@ scp "my file.txt" pi@192.168.1.3:
 
 ====
 
-=== Copying a Whole Directory
+[[copying-a-whole-directory]]
+=== 复制整个目录
 
-Copy the directory `project/` from your computer to the `pi` user's home folder of your Raspberry Pi at the IP address `192.168.1.3` with the following command:
+使用以下命令将目录 `project/` 从你的计算机复制到位于IP地址 `192.168.1.3` 的Raspberry Pi 的
+ `pi` 用户主文件夹中：
 
 [,bash]
 ----

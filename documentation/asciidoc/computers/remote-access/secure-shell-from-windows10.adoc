@@ -1,27 +1,28 @@
-== Secure Shell from Windows 10
+[[secure-shell-from-windows-10]]
+== 来自 Windows 10的Shell
 
-You can use SSH to connect to your Raspberry Pi from a Windows 10 computer that is using _October 2018 Update_ or later without having to use third-party clients.
+您可以使用SSH从使用2018年10月更新或更高版本的Windows 10电脑连接到您的Raspberry Pi，而无需使用第三方客户端。
 
-Open a terminal window on your computer replacing `<IP>` with the IP address of the Raspberry Pi you're trying to connect to,
+在您的电脑上打开一个终端窗口，将 `<IP>` 替换为您尝试连接的Raspberry Pi的IP地址，
 
 ----
 ssh pi@<IP>
 ----
 
-When the connection works you will see a security/authenticity warning. Type `yes` to continue. You will only see this warning the first time you connect.
+当连接正常时，您会看到一个安全/真实性警告。输入 `yes` 继续。您只会在第一次连接时看到此告警。
 
-NOTE: If you receive a `connection timed out` error it is likely that you have entered the wrong IP address for the Raspberry Pi.
+NOTE: 如果你收到 `连接超时` 错误， 很可能您输入了错误的Raspberry Pi的IP地址。
 
-WARNING: In the event your Raspberry Pi has taken the IP address of a device to which your computer has connected before (even if this was on another network), you may be given a warning and asked to clear the record from your list of known devices. Following this instruction and trying the `ssh` command again should be successful.
+WARNING: 如果您的Raspberry Pi获取了您的电脑之前连接过的设备的IP地址(即使这是在另一个网络上)，您可能会收到警告，并被要求从已知设备列表中清除该记录。遵循这个指令并再次尝试ssh命令应该会成功。
 
-Next you will be prompted for the password for the `pi` login: the default password on Raspberry Pi OS is `raspberry`. 
+接下来将提示您输入 `pi` 登录的密码:Raspberry Pi操作系统上的默认密码是 `raspberry`。
 
-For security reasons it is highly recommended to change the default password on the Raspberry Pi (also, you can not login through ssh if the password is blank). You should now be able to see the Raspberry Pi prompt, which will be identical to the one found on the Raspberry Pi itself.
+出于安全原因，强烈建议在Raspberry Pi上更改默认密码(另外，如果密码为空，则不能通过ssh登录)。您现在应该能够看到Raspberry Pi提示符，它与Raspberry Pi上的提示符完全相同。
 
-If you have set up another user on the Raspberry Pi, you can connect to it in the same way, replacing the username with your own, e.g. `eben@192.168.1.5`
+如果您已经在Raspberry Pi上设置了另一个用户，您可以用同样的方式连接到它，用您自己的用户名替换用户名，例如 `eben@192.168.1.5` 。
 
 ----
 pi@raspberrypi ~ $
 ----
 
-You are now connected to the Raspberry Pi remotely, and can execute commands.
+您现在远程连接到Raspberry Pi，并且可以执行命令。

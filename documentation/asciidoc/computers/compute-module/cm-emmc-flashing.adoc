@@ -1,84 +1,84 @@
 [[flashing-the-compute-module-emmc]]
 == 烧录处理器模块eMMC
 
-处理器模块有一个连接到主SD卡接口的板载eMMC设备。本指南介绍了如何使用处理器模块IO board将数据写入eMMC存储。
+处理器模块(CM)包含一个连接到主SD卡接口的板载eMMC，本指南介绍了如何通过CMIO将数据写入eMMC存储。
 
-请参见 xref:compute-module.adoc#datasheets-and-schematics[处理器模块Datasheets]中的对应内容。
+请参见 xref:compute-module.adoc#datasheets-and-schematics[处理器模块(CM) Datasheet]中的对应内容。
 
-IMPORTANT: 对于CM3、CM3+ 和 CM4 的大规模配置，建议使用 https://github.com/raspberrypi/cmprovision[Raspberry Pi 处理器模块配置系统].
+IMPORTANT: 对于CM3、CM3+ 和 CM4 的大规模配置，建议使用 https://github.com/raspberrypi/cmprovision[Raspberry Pi 处理器模块(CM)配置系统].
 
 [[steps-to-flash-the-emmc]]
 === 烧录eMMC的步骤 
 
-烧录处理器模块eMMC时, 需要1个Linux系统 (推荐使用Raspberry Pi, 或PC端的Ubuntu) 或者1个Windows系统 (推荐Windows 10). 对于BCM2837 (CM3)，一个影响Mac的漏洞已被修复，因此也可以使用。.
+烧录处理器模块(CM) eMMC时, 需要一台Linux系统(推荐Raspberry Pi系统或者Ubuntu系统)或者Windows系统(推荐Windows 10)的电脑。对于BCM2837 (CM3)，支持使用Mac系统。
 
-NOTE: BCM2835 （CM1） 引导加载程序中存在一个漏洞，它会向主机返回错误的USB数据包. 大多数USB主机忽略了这个良性错误并且正常工作; 但是，我们确实看到一些USB端口由于此漏洞而无法正常工作。我们不太明白为什么某些端口会失败，因为它似乎与它们是USB2还是USB3无关（我们已经看到这两种类型都可以工作），但它可能特定于主机控制器和驱动程序。这个漏洞已在 BCM2837 中修复。
+NOTE: BCM2835(CM1) 启动加载程序中存在一个漏洞(向主机返回错误的USB数据包)。大多数USB主机似乎忽略了这个良性漏洞并且工作正常;但是，我们确实遇到一些USB端口由于此漏洞而无法正常工作的情况。我们不太明白为什么某些端口不能正常工作，因为似乎与接口是USB2还是USB3无关（我们已经看到这两种类型都可以工作），但可能与主机控制器和驱动程序有关。此漏洞已在 BCM2837 中修复。
 
 [[Setting up the CMIO board]]
-=== 设置CMIO Board
+=== 设置CMIO 板
 
 [[compute-module-4-2]]
-==== 处理器模块 4
+==== CM4
 
-确保处理器模块正确安装在IO board上，它应该平放在IO board上。
+确保处理器模块(CM)正确安装在IO 板上，且安装时需要平放在 IO 板上。
 
-* 确保安装了IO board上端口J2 (`disable eMMC Boot`)的 `nRPI_BOOT`跳线。
-* 使用Micro USB线将IO board的micro USB从端口J11 连接到主机设备。
-* 暂时不要上电。
+* 确保安装了IO 板跳线中J2 (`禁用eMMC启动`)的 `nRPI_BOOT`跳线。
+* 使用一根micro USB 线将 IO 板上的micro USB 从端口 J11 连接到主机设备。
+* 无需上电。
 
 [[compute-module-1-and-3]]
-==== 处理器模块1和3
+==== CM1和CM3
 
-确保处理器模块已正确安装在IO board上. 它应与电路板平行，接合夹卡入到位。
+确保处理器模块(CM)已正确安装在IO 板上，安装时应与电路板平行，且接合夹卡入到位。
 
-* 确保 J4（USB SLAVE BOOT ENABLE）设置为“EN”位置。
-* 使用Micro USB线将IO board的micro USB从端口J15 连接到主机设备.
-* 暂时不要上电。
+* 确保 J4（USB 从启动使能）设置为 `EN` 状态。
+* 	使用一根micro USB 线将 IO 板上的micro USB 从端口 J15 连接到主机设备。
+* 无需上电。
 
 [[for-windows-users]]
-==== 对于Windows用户
+==== Windows用户
 
-在 Windows下，安装程序可用于自动安装所需的驱动程序和启动工具。或者用户可以使用Cygwin编译和运行/或手动安装驱动程序。
+在 Windows系统下，安装程序可自动安装所需的驱动程序和启动工具。或者用户可以通过Cygwin编译并运行或手动安装驱动程序。
 
 [[windows-installer]]
 ==== Windows 安装程序
 
-对于那些只想在Windows下启用处理器模块eMMC作为大容量存储设备的用户，建议使用独立安装程序。此安装程序已在64位的Windows 10上进行了测试。
+对于仅仅想在Windows下启用CM eMMC作为大容量存储设备的用户，建议使用独立安装程序。本安装程序已在64位 Windows 10系统上进行了测试。
 
 请确保在安装程序运行时未写入任何USB设备。
 
-. 下载和运行 https://github.com/raspberrypi/usbboot/raw/master/win32/rpiboot_setup.exe[Windows安装程序] 以安装驱动程序和启动工具。
-. 将主机 PC USB 插入 USB SLAVE 端口，确保已按上述方式设置主板。
-. 给电路上电；Windows现在可以识别硬件并安装驱动程序。
+. 下载并运行 https://github.com/raspberrypi/usbboot/raw/master/win32/rpiboot_setup.exe[Windows安装程序] 以安装驱动程序和启动工具。
+. 将USB设备插入USB从端口，确保已按上述方式设置主板。
+. 给主板上电；Windows系统会自动检测硬件并安装驱动程序。
 . 驱动程序安装完成后，运行以前安装的 `RPiBoot.exe` 工具。
-. 几秒钟后，处理器模块eMMC将在Windows下作为磁盘（USB 大容量存储设备）弹出。
+. 几秒钟后，处理器模块（CM）eMMC将在Windows下作为磁盘（USB 大容量存储设备）弹出。
 
 [[building-rpiboot-on-your-host-system]]
 ==== 在主机上构建 `rpiboot`
 
-有关构建和运行最新版本的 `rpiboot`的说明记录在Github上 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#building[usbboot readme] 的文件中。
+有关构建和运行最新版本的 `rpiboot`的说明记录在Github上的 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#building[usbboot 自述] 文件中。
 
 [[writing-to-the-emmc-windows]]
 ==== 写入eMMC (Windows)
 
-`rpiboot` 完成后，一个新的USB大容量存储驱动器将出现在Windows中。 建议使用 https://www.raspberrypi.com/software/[Raspberry Pi Imager] 将图像写入驱动器.
+`rpiboot` 完成后，一个新的USB大容量存储驱动器将出现在Windows中。 建议使用 https://www.raspberrypi.com/software/[Raspberry Pi Imager] 将镜像写入驱动器.
 
-确保 J4（USB SLAVE BOOT ENABLE）/J2 (nRPI_BOOT) 被设置为disabled状态和and/或USB从端口未插入任何内容. 重新给IO board上电，处理器模块将从eMMC启动。
+确保 J4（USB 从启动使能）/J2 (nRPI_BOOT) 分别被设置为disabled状态和将任何内容插入USB从端口。IO 板重新上电后，处理器模块（CM）将从eMMC启动。
 
 [[writing-to-the-emmc-linux]]
 ==== 写入eMMC (Linux)
 
-`rpiboot` 完成后， 会出现一个新的设备; 在Raspberry Pi上，通常是 `/dev/sda`路径，也可能是其他位置，如  `/dev/sdb`, 所以在运行 `rpiboot` 之前检查 `/dev/` 或 运行 `lsblk` ，这样可以看到具体发生的变化.
+`rpiboot` 完成后， 会有一个新的磁盘弹出；在Raspberry Pi上，通常是 `/dev/sda`路径，也可能是其他位置，如  `/dev/sdb`, 所以在运行 `rpiboot` 之前检查 `/dev/` 或 运行 `lsblk` ，这样可以看到具体发生的变化.
 
-现在你需要将原始的操作系统镜像 (如 https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit[Raspberry Pi OS]) 写入设备. 
-注意根据镜像的大小，以下命令可能需要一些时间才能完成:(将 `/dev/sdX` 更改为适当的设备。)
+你现在需要将原始的操作系统镜像 (如 https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit[Raspberry Pi OS]) 写入设备。
+注意：镜像大小不同，执行命令所需要的时间不同:(将 `/dev/sdX` 更改为适当的设备。)
 
 [,bash]
 ----
 sudo dd if=raw_os_image_of_your_choice.img of=/dev/sdX bs=4MiB
 ----
 
-写入镜像后，拔下并重新插入USB；您应该看到两个分区（对于Raspberry Pi OS）出现在`/dev` 。总的来说，您应该看到类似于以下的内容：:
+镜像写入完成后，拔下并重新插入USB；可以看到`/dev` 中出现两个分区（对于Raspberry Pi操作系统）。总之，可以看到类似如下内容：
 
 [,bash]
 ----
@@ -89,47 +89,47 @@ sudo dd if=raw_os_image_of_your_choice.img of=/dev/sdX bs=4MiB
 
 现在可以正常挂载 `/dev/sdX1` 和 `/dev/sdX2` 分区。
 
-确保 J4（USB SLAVE BOOT ENABLE）/J2 (nRPI_BOOT) 被设置为disabled状态和and/或USB从端口未插入任何内容. 重新给IO board上电，处理器模块将从eMMC启动。
+确保 J4（USB从启动使能）/J2 (nRPI_BOOT) 分别被设置为禁用状态和未将任何内容插入USB从端口。IO 板重新上电后，处理器模块（CM）将从eMMC启动。
 
 [[cm4bootloader]]
-=== 处理器模块4 (CM4) 引导程序
+=== 处理器模块4 (CM4) 启动加载程序
 
-CM4上的默认引导程序配置旨在支持 https://www.raspberrypi.com/products/compute-module-4-io-board/[CM4 IO board] 上的启动和开发，制造时刷新的软件版本可能早于最新版本. 对于最终的产品，请注意以下几点:
+CM4上的默认启动加载程序配置旨在支持 https://www.raspberrypi.com/products/compute-module-4-io-board/[CM4 IO 板] 上的启动和开发，制造时刷新的软件版本可能不是最新版本。对于最终产品，请考虑：
 
-* 选择并验证特定的引导程序版本。`usbboot`仓库中的版本始终是最新的稳定版本。
-* 配置启动设备 (例如网络启动). 请参见 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[引导程序配置] 指南中的`BOOT_ORDER` 部分。
-* 在引导程序 EEPROM 上启用硬件写保护，以确保无法在远程/无法访问的产品上修改引导程序。
+* 选择并验证特定的启动加载程序版本。`usbboot`仓库中的版本始终是最新的稳定版本。
+* 配置启动设备 (例如网络启动). 请参见 xref:raspberry-pi.adoc#raspberry-pi-4-bootloader-configuration[启动加载程序配置] 指南中的`BOOT_ORDER` 部分的内容。
+* 在启动加载程序 EEPROM 上启用硬件写保护，以确保无法在远程/无法访问的产品上修改启动加载程序。
 
-注意 CM4 ROM 从未通过SD/EMMC运行 `recovery.bin` ，默认情况下不启用 `rpi-eeprom-update` 服务。 这是必要的，因为EMMC不可移动，且无效的 `recovery.bin` 文件会组织系统启动。 这可以被覆盖并与 `self-update` 模式一起使用，在这种模式下，可以从USB MSD或网络引导更新加载程序. 但是`self-update` 不是原子更新，因此在更新EEPROM时发生电源故障时不安全的.
+注意： CM4 ROM不会从SD/EMMC运行 `recovery.bin` ，默认情况下不启用 `rpi-eeprom-update` 服务。 EMMC是不可移动，且无效的 `recovery.bin` 文件会阻止系统启动，所以默认情况下不启动rpi-eeprom-update服务是必要的。 这可以被覆盖并与 `自更新` 模式一起使用，其中引导加载程序可以从USB MSD或网络启动进行更新。但是自更新模式不是原子更新，如果在更新EEPROM时发生电源故障，则是不安全的。
 
 [[flashing-nvme-other-storage-devices]]
 ==== 烧录NVMe / 其他存储设备.
 新的基于Linux的 https://github.com/raspberrypi/usbboot/blob/master/mass-storage-gadget/README.md[大容量存储设备] 支持烧录NVMe、EMMC和USB块设备。
-这通常比使用 `rpiboot` 固件驱动程序更快，并且还为设备提供了UART控制台，以便于调试。
+比使用 `rpiboot` 固件驱动程序更快，并且还为设备提供了UART控制台，以便于调试。
 
-另外，请参见 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#compute-module-4-extensions[CM4 rpiboot 扩展] 。  
+具体内容请参见 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#compute-module-4-extensions[CM4 rpiboot 扩展] 。  
 
 [[modifying-the-bootloader-configuration]]
-==== 修改引导程序配置
+==== 修改启动加载程序配置
 
-修改CM4 引导程序配置:-
+修改CM4 启动加载程序配置:-
 
 * cd `usbboot/recovery`
-* 如果需要特定的引导程序版本，请替换 `pieeprom.original.bin`。
-* 编辑默认的 `boot.conf` 引导程序加载文件. 通常情况下, 需要更新 BOOT_ORDER:-
- ** 对于网络启动 `BOOT_ORDER=0xf2`
- ** 对于SD/EMMC启动 `BOOT_ORDER=0xf1`
- ** 对于故障转移到EMMC的USB启动 `BOOT_ORDER=0xf15`
-* 运行 `./update-pieeprom.sh` 以更新EEPROM 镜像 `pieeprom.bin` 镜像文件.
+* 如果需要特定的启动程序版本，请替换 `pieeprom.original.bin`。
+* 编辑默认的 `boot.conf` 启动加载程序配置文件。 至少必须更新 BOOT_ORDER:-
+ ** 网络启动： `BOOT_ORDER=0xf2`
+ ** SD/EMMC启动： `BOOT_ORDER=0xf1`
+ ** USB启动失败并转移到eMMC： `BOOT_ORDER=0xf15`
+* 通过运行 `./update-pieeprom.sh` 来更新EEPROM 镜像文件 `pieeprom.bin` 。
 * 如果需要EEPROM写保护，请编辑 `config.txt` 并添加 `eeprom_write_protect=1`。硬件写保护必须通过软件启用，然后通过将 `EEPROM_nWP` 引脚拉低来锁定。
-* 运行 `../rpiboot -d .` 以使用更新的EEPROM 镜像 `pieeprom.bin`更新引导程序。
+* 运行 `../rpiboot -d .` 以使用更新的EEPROM 镜像 `pieeprom.bin`更新启动加载程序。
 
-pieeprom.bin 文件已准备好烧录到CM4.
+将pieeprom.bin 文件烧录到CM4.
 
 [[flashing-the-bootloader-eeprom-compute-module-4]]
-==== 烧录引导程序EEPROM - CM4
+==== 烧录启动加载程序EEPROM - CM4
 
-烧录引导程序EEPROM需要遵循与烧录EMMC相同的硬件设置，同时需要确保EEPROM_nWP引脚没有拉低。一旦烧录完成，EEPROM_nWP引脚可能会再次拉低。
+烧录启动加载程序EEPROM需要遵循与烧录EMMC相同的硬件设置，同时需要确保EEPROM_nWP引脚未被拉低。一旦烧录完成，EEPROM_nWP引脚可能会再次被拉低。
 
 [,bash]
 ----
@@ -140,7 +140,7 @@ pieeprom.bin 文件已准备好烧录到CM4.
 [[troubleshooting]]
 === 故障排除
 
-对于一小部分Raspberry Pi处理器模块3s，已经报告了启动问题。 们已经追溯到创建FAT32分区的方法; 我们认为该问题是由于BCM2835/6/7和较新的eMMC设备之间的时间差异造成的。 以下创建分区的方法是我们手中可靠的解决方案。
+已发现少数的CM3s 存在启动问题，已经追溯到创建FAT32分区的方法，结果表明是由于BCM2835/6/7和新版本eMMC设备之间的时间差异造成的。故推荐如下的分区方法：
 
 [,bash]
 ----

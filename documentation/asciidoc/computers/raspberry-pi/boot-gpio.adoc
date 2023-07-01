@@ -1,26 +1,29 @@
-== GPIO Boot Mode
+[[gpio-boot-mode]]
+== GPIO 启动模式
 
-NOTE: GPIO boot mode is only available on the Raspberry Pi 3A+, 3B, 3B+, Compute Module 3 and 3+.
+NOTE: GPIO 启动模式适用于 Raspberry Pi 3A+、Raspberry Pi 3A+ 3B/ Raspberry Pi 3A+ 3B+、CM3和CM3+。
 
-The Raspberry Pi can be configured to allow the boot mode to be selected at power on using hardware attached to the GPIO connector: this is GPIO boot mode. This is done by setting bits in the OTP memory of the SoC. Once the bits are set, they permanently allocate 5 GPIOs to allow this selection to be made. Once the OTP bits are set they cannot be unset so you should think carefully about enabling this, since those 5 GPIO lines will always control booting. Although you can use the GPIOs for some other function once the Raspberry Pi has booted, you must set them up so that they enable the desired boot modes when the Raspberry Pi boots.
+可以将Raspberry Pi配置为允许使用连接到 GPIO 连接器的硬件在开机时选择启动模式：即 GPIO 启动模式。这是通过设置SoC的OTP存储器中的位来完成的。设置位完成后，它们将会永久分配 5 个 GPIO 以允许进行此选择。如果设置了OTP 位，则无法取消操作；所以在设置之前需要仔细考虑启用此功能，因为这 5个GPIO线将始终控制启动。尽管在Raspberry Pi启动后可以将GPIO用于其他功能，但必须对齐进行设置，以便它们在Raspberry Pi启动时启用所需的启动模式。
 
-To enable GPIO boot mode, add the following line to the `config.txt` file:
+若要启用 GPIO 启动模式，请将以下行添加到 `config.txt` 文件中:
 
 ----
 program_gpio_bootmode=n
 ----
 
-Where n is the bank of GPIOs which you wish to use. Then reboot the Raspberry Pi once to program the OTP with this setting. Bank 1 is GPIOs 22-26, bank 2 is GPIOs 39-43. Unless you have a Compute Module, you must use bank 1: the GPIOs in bank 2 are only available on the Compute Module. Because of the way the OTP bits are arranged, if you first program GPIO boot mode for bank 1, you then have the option of selecting bank 2 later. The reverse is not true: once bank 2 has been selected for GPIO boot mode, you cannot select bank 1.
+其中n表示需要使用的 GPIO组。 添加完成后后重新启动Raspberry Pi，以使用此设置对OTP进行编程。Bank 1包含GPIO22-26，Bank2包含GPIO39-43。除非你有CM，否则必须使Bank1：Bank 2中的GPIO仅在CM上可用。由于 OTP位的排列方式，如果首先为Bank1 编程 GPIO启动模式，则后续可以选择Bank2。反之则不然：若为 GPIO 启动模式选择Bank2，则后续无法选择Bank1。
 
-Once GPIO boot mode is enabled, the Raspberry Pi will no longer boot. You must pull up at least one boot mode GPIO pin in order for the Raspberry Pi to boot.
+启用 GPIO 启动模式后，Raspberry Pi 将不再启动。你必须拉起至少一个启动模式 GPIO 引脚才能启动 Raspberry Pi。
 
-=== Pin Assignments
+[[pin-assignments]]
+=== 引脚分配
 
-==== Raspberry Pi 3B and Compute Module 3
+[[raspberry-pi-3b-and-compute-module-3]]
+==== Raspberry Pi 3B 和CM3
 
 [cols="^,^,^"]
 |===
-| Bank 1 | Bank 2 | boot type
+| Bank 1 | Bank 2 | 启动类型
 
 | 22
 | 39
@@ -32,24 +35,25 @@ Once GPIO boot mode is enabled, the Raspberry Pi will no longer boot. You must p
 
 | 24
 | 41
-| NAND (no Linux support at present)
+| NAND (目前不支持Linux)
 
 | 25
 | 42
-| SPI (no Linux support at present)
+| SPI (目前不支持Linux)
 
 | 26
 | 43
 | USB
 |===
 
-USB in the table above selects both USB device boot mode and USB host boot mode. In order to use a USB boot mode, it must be enabled in the OTP memory. For more information, see xref:raspberry-pi.adoc#usb-device-boot-mode[USB device boot] and xref:raspberry-pi.adoc#usb-host-boot-mode[USB host boot].
+上表中的 USB 同时选择 USB 设备启动模式和 USB 主机启动模式。为了使用 USB 启动模式，必须在 OTP 内存中启用它。有关详细信息，请参见 xref:raspberry-pi.adoc#usb-device-boot-mode[USB设备启动] 和 xref:raspberry-pi.adoc#usb-host-boot-mode[USB主机启动].
 
-==== Newer Raspberry Pi 3B (BCM2837B0 with the metal lid), Raspberry Pi 3A+, 3B+ and Compute Module 3+
+[[newer-raspberry-pi-3b-bcm2837b0-with-the-metal-lid-raspberry-pi-3a-3b-and-compute-module-3]]
+==== 较新的Raspberry Pi 3B（带金属盖的 BCM2837B0）、Raspberry Pi 3A+、Raspberry Pi 3B+和CM3+
 
 [cols="^,^,^"]
 |===
-| Bank 1 | Bank 2 | boot type
+| Bank 1 | Bank 2 | 启动类型
 
 | 20
 | 37
@@ -61,29 +65,32 @@ USB in the table above selects both USB device boot mode and USB host boot mode.
 
 | 22
 | 39
-| NAND (no Linux support at present)
+| NAND (目前不支持Linux)
 
 | 23
 | 40
-| SPI (no Linux support at present)
+| SPI (目前不支持Linux)
 
 | 24
 | 41
-| USB device
+| USB 设备
 
 | 25
 | 42
-| USB host - mass storage device
+| USB 主机 - 大容量存储设备
 
 | 26
 | 43
-| USB host - ethernet
+| USB 主机 - 以太网
 |===
 
-NOTE: The various boot modes are attempted in the numerical order of the GPIO lines, i.e. SD0, then SD1, then NAND and so on.
+NOTE: 按 GPIO线的数字顺序尝试各种启动模式，即先尝试SD0，再尝试SD1，然后尝试NAND 等。
 
+[[boot-flow]]
 === Boot Flow
 
-SD0 is the Broadcom SD card / MMC interface. When the boot ROM within the SoC runs, it always connects SD0 to the built-in microSD card slot. On Compute Modules with an eMMC device, SD0 is connected to that; on the Compute Module Lite SD0 is available on the edge connector and connects to the microSD card slot in the CMIO carrier board. SD1 is the Arasan SD card / MMC interface which is also capable of SDIO. All Raspberry Pi models with built-in wireless LAN use SD1 to connect to the wireless chip via SDIO.
+SD0是Broadcom SD卡/ MMC接口。当SoC内的启动ROM运行时，它始终将SD0连接到内置的microSD卡槽。在具有 eMMC 设备的CM上，SD0 连接到该模块;CM Lite SD0位于CM Lite的边缘连接器上，并连接到 CMIO 载板中的 microSD 卡槽。
 
-The default pull resistance on the GPIO lines is 50K ohm, as documented on page 102 of the https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[BCM2835 ARM peripherals datasheet]. A pull resistance of 5K ohm is recommended to pull a GPIO line up: this will allow the GPIO to function but not consume too much power.
+SD1是Arasan SD卡/ MMC接口，也支持SDIO的能力。所有内置无线网的Raspberry Pi型号都使用SD1通过 SDIO连接到无线芯片。
+
+GPIO 线路的默认拉力电阻为 50KΩ，如 https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf[BCM2835 ARM 外设 datasheet] 的第102页所述。建议使用5KΩ的拉力电阻来拉起 GPIO 线路：这将使 GPIO 正常工作，但不会消耗太多功率。

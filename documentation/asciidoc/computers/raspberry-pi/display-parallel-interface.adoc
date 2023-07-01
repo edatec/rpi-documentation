@@ -1,12 +1,14 @@
-== Parallel Display Interface (DPI)
+[[parallel-display-interface-dpi]]
+== 并行显示接口 (DPI)
 
-An up-to-24-bit parallel RGB interface is available on all Raspberry Pi boards with the 40 way header and the Compute Modules. This interface allows parallel RGB displays to be attached to the Raspberry Pi GPIO either in RGB24 (8 bits for red, green and blue) or RGB666 (6 bits per colour) or RGB565 (5 bits red, 6 green, and 5 blue).
+所有具有 24-Pin接头和CM的 Raspberry Pi 板上均提供高达24位并行 RGB 接口。该接口允许并行 RGB 显示器以 RGB24（8位红色、8位绿色和8位蓝色）或 RGB666（每种颜色 6 位）或 RGB565（5 位红色、6 位绿色和 5 位蓝色）连接到 Raspberry Pi GPIO。
 
-This interface is controlled by the GPU firmware and can be programmed by a user via special config.txt parameters and by enabling the correct Linux Device Tree overlay.
+此接口由 GPU 固件控制，用户可以通过特殊的config.txt参数并启用正确的 Linux 设备树覆盖进行编程。
 
+[[gpio-pins]]
 === GPIO Pins
 
-One of the alternate functions selectable on bank 0 of the Raspberry Pi GPIO is DPI (Display Parallel Interface) which is a simple clocked parallel interface (up to 8 bits of R, G and B; clock, enable, hsync, and vsync). This interface is available as alternate function 2 (ALT2) on GPIO bank 0:
+Raspberry Pi GPIO 的Bank0 上可选择的替代功能之一是 DPI（显示并行接口），其为一个简单的时钟并行接口（最多8位R、G和B;时钟、启用、hsync 和 vsync）。此接口可用作 GPIO Bank0 上的备用功能 2（ALT2）：
 
 [cols=2]
 |===
@@ -97,7 +99,7 @@ One of the alternate functions selectable on bank 0 of the Raspberry Pi GPIO is 
 |DPI_D23
 |===
 
-NOTE: There are various ways that the colour values can be presented on the DPI output pins in either 565, 666, or 24-bit modes (see the following table and the `output_format` part of the `dpi_output_format` parameter below):
+NOTE: 可以通过多种方式以565、666或24位模式在DPI输出引脚上呈现颜色值(参见下表和下文的  `dpi_output_format` 参数的 `output_format` 部分):
 
 [cols="1,1,^1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"]
 |===
@@ -326,18 +328,20 @@ h|*27* h|*26* h|*25* h|*24* h|*23* h|*22* h|*21* h|*20* h|*19* h|*18* h|*17* h|*
 |===
 {set:cellbgcolor:!}
 
-=== Disable Other GPIO Peripherals
+[[disable-other-gpio-peripherals]]
+=== 禁用其他GPIO外围设备
 
-Note that all other peripheral overlays that use conflicting GPIO pins must be disabled. In config.txt, take care to comment out or invert any dtparams that enable I2C or SPI:
+请注意，必须禁用使用冲突的 GPIO 引脚的所有其他外设覆盖层。在 config.txt 中，注意注释掉或反转任何支持 I2C 或 SPI 的 dtparams：
 
 ----
 dtparam=i2c_arm=off
 dtparam=spi=off
 ----
 
-=== Controlling Output Format
+[[controlling-output-format]]
+=== 控制输出格式
 
-The output format (clock, colour format, sync polarity, enable) can be controlled with a magic number (unsigned integer or hex value prefixed with 0x) passed to the `dpi_output_format` parameter in config.txt created from the following fields:
+输出格式（时钟、颜色格式、同步极性、启用）可以通过传递到从以下字段创建的config.txt中的 `dpi_output_format` 参数的幻数（无符号整数或前缀为 0x 的十六进制值）进行控制：
 
 ----
 output_format          = (dpi_output_format >>  0) & 0xf;
@@ -390,24 +394,25 @@ hsync/vsync/oe phases:
    1: DPI_PHASE_NEGEDGE
 ----
 
-NB the single bit fields all act as an "invert default behaviour".
+注意，单比特字段都充当 "反转默认行为"。
 
-=== Controlling Timings and Resolutions
+[[controlling-timings-and-resolutions]]
+=== 控制计时和分辨率
 
-In firmware dated August 2018 or later, the `hdmi_timings` config.txt entry that was previously used to set up the DPI timings has be superseded by a new `dpi_timings` parameter. If the `dpi_timings` parameter is not present, the system will fall back to using the `hdmi_timings` parameter to ensure backwards compatibility. If neither are present and a custom mode is requested, then a default set of parameters for VGAp60 is used.
+在2018年8月或更高版本的固件中，以前用于设置DPI计时的 `hdmi_timings` config.txt 条目已被新的 `dpi_timings` 参数取代。如果 `dpi_timings` 参数不存在，系统将使用 `hdmi_timings` 参数来确保向后兼容性。如果两者都不存在并且请求自定义模式，则使用VGAp60的默认参数集。
 
-The `dpi_group` and `dpi_mode` config.txt parameters are used to set either predetermined modes (DMT or CEA modes as used by HDMI) or a user can generate https://forums.raspberrypi.com/viewtopic.php?f=29&t=24679[custom modes].
+ `dpi_group` 和 `dpi_mode` config.txt 参数用于设置预定模式(HDMI使用的DMT或CEA模式)，或者用户可以生成 https://forums.raspberrypi.com/viewtopic.php?f=29&t=24679[自定义模式] 。
 
-If you set up a custom DPI mode, then in config.txt use:
+如果设置自定义 DPI 模式，则在config.txt中使用：
 
 ----
 dpi_group=2
 dpi_mode=87
 ----
 
-This will tell the driver to use the custom `dpi_timings` (older firmware uses `hdmi_timings`) timings for the DPI panel.
+这将告知驱动程序使用DPI面板的自定义 `dpi_timings` (旧固件使用 `hdmi_timings`) 计时。
 
-The `dpi_timings` parameters are specified as a space-delimited set of parameters:
+ `dpi_timings` 参数指定为一组以空格分隔的参数：
 
 ----
 dpi_timings=<h_active_pixels> <h_sync_polarity> <h_front_porch> <h_sync_pulse> <h_back_porch> <v_active_lines> <v_sync_polarity> <v_front_porch> <v_sync_pulse> <v_back_porch> <v_sync_offset_a> <v_sync_offset_b> <pixel_rep> <frame_rate> <interlaced> <pixel_freq> <aspect_ratio>
@@ -442,23 +447,26 @@ HDMI_ASPECT_21_9 = 7
 HDMI_ASPECT_64_27 = 8
 ----
 
-=== Overlays
+[[overlays]]
+=== 覆盖
 
-A Linux Device Tree overlay is used to switch the GPIO pins into the correct mode (alt function 2). As previously mentioned, the GPU is responsible for driving the DPI display. Hence there is no Linux driver; the overlay simply sets the GPIO alt functions correctly.
+Linux 设备树覆盖用于将 GPIO 引脚切换到正确的模式（alt function 2）。如前所述，GPU 负责驱动 DPI 显示器。因此无 Linux 驱动程序;覆盖只是正确设置 GPIO alt 功能。
 
-A 'full fat' DPI overlay (dpi24.dtb) is provided which sets all 28 GPIOs to ALT2 mode, providing the full 24 bits of colour bus as well as the h and v-sync, enable and pixel clock. Note this uses *all* of the bank 0 GPIO pins.
+提供 '全脂' DPI覆盖 (dpi24.dtb) ，将28 个 GPIO 设置为 ALT2 模式，提供 *完整* 的 24 位色彩总线以及水平和垂直同步、使能和像素时钟。请注意，这使用所有Bank0的 GPIO 引脚。
 
-A second overlay (vga666.dtb) is provided for driving VGA monitor signals in 666 mode which don't need the clock and DE pins (GPIO 0 and 1) and only require GPIOs 4-21 for colour (using mode 5).
+提供第二个覆盖 (vga666.dtb) 用于在666模式下驱动VGA监视器信号，该模式无需时钟和DE引脚（GPIO 0和1），只需GPIO4-21来实现颜色（使用模式5）。
 
-These overlays are fairly trivial and a user can edit them to create a custom overlay to enable just the pins required for their specific use case. For example, if one was using a DPI display using vsync, hsync, pclk, and de but in RGB565 mode (mode 2), then the dpi24.dtb overlay could be edited so that GPIOs 20-27 were not switched to DPI mode and hence could be used for other purposes.
+这些覆盖层相当琐碎的，用户可以编辑它们以创建自定义覆盖层，以启用特定用例所需的引脚。
 
-=== Example `config.txt` Settings
+[[example-config-txt-settings]]
+===  `config.txt` 设置示例
 
-==== Gert VGA666 adaptor
+[[gert-vga666-adaptor]]
+==== Gert VGA666 适配器
 
-This setup is for the https://github.com/fenlogic/vga666[Gert VGA adaptor].
+此设置适用于 https://github.com/fenlogic/vga666[Gert VGA 适配器].
 
-Note that the instructions provided in the documentation in the above GitHub link are somewhat out of date, so please use the settings below.
+请注意，上述 GitHub 链接中的文档提供的说明可能过时了，建议使用以下设置。
 
 ----
 dtoverlay=vga666
@@ -468,9 +476,10 @@ dpi_group=2
 dpi_mode=82
 ----
 
-==== 800x480 LCD panel
+[[800x480-lcd-panel]]
+==== 800x480 LCD 面板
 
-NOTE: This was tested with Adafruit's  https://www.adafruit.com/products/2453[DPI add-on board] and an 800x480 LCD panel.
+NOTE: 这是使用Adafruit的  https://www.adafruit.com/products/2453[DPI 附加板] 800x480 LCD面板进行测试的。
 
 ----
 dtoverlay=dpi24

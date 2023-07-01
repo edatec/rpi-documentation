@@ -1,23 +1,24 @@
+[[using-rsync]]
 == Using `rsync`
 
-You can use the tool `rsync` to synchronise folders between computers. You might want to transfer some files from your desktop computer or laptop to your Raspberry Pi, for example, and for them to be kept up to date, or you might want the pictures taken by your Raspberry Pi transferred to your computer automatically.
+您可以使用 `rsync` 工具在计算机之间同步文件夹。例如，您可能想要将一些文件从台式电脑或笔记本电脑传输到您的Raspberry Pi，并使它们保持最新，或者您可能想要将您的Raspberry Pi拍摄的照片自动传输到您的电脑。
 
-Using `rsync` over SSH allows you to transfer files to your computer automatically.
+通过SSH使用 `rsync` 允许您自动将文件传输到您的电脑。
 
-Here is an example of how to set up the sync of a folder of pictures on your Raspberry Pi to your computer:
+以下是如何将Raspberry Pi上的图片文件夹同步到电脑的示例:
 
-On your computer, create a folder called `camera`:
+在您的电脑上，创建一个名为 `camera` 的文件夹:
 
 ----
 mkdir camera
 ----
 
-Look up the Raspberry Pi's IP address by logging in to it and running `hostname -I`. In this example, the Raspberry Pi is creating a timelapse by capturing a photo every minute, and saving the picture with a timestamp in the local folder `camera` on its SD card.
+通过登录并运行 `hostname -I`. 来查找Raspberry Pi的IP地址。在本例中，Raspberry Pi通过每分钟捕捉一张照片来创建延时，并将带有时间戳的照片保存在其SD卡上的本地文件夹 `camera` 中。
 
-Now run the following command (substituting your own Raspberry Pi's IP address):
+现在运行以下命令(替换您自己的Raspberry Pi的IP地址):
 
 ----
 rsync -avz -e ssh pi@192.168.1.10:camera/ camera/
 ----
 
-This will copy all files from the Raspberry Pi's `camera` folder to your computer's new `camera` folder.
+这将把所有文件从Raspberry Pi的相机文件夹复制到您计算机的新 `camera` 文件夹。

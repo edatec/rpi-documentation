@@ -1,5 +1,5 @@
 [[raspberry-pi-4-bootloader-configuration]]
-== Raspberry Pi 4 引导加载程序配置
+== Raspberry Pi 4 启动加载程序配置
 
 [[editing-the-configuration]]
 === 编辑配置
@@ -7,10 +7,10 @@
 
 在编辑引导加载程序配置之前，请 xref:os.adoc#updating-and-upgrading-raspberry-pi-os[更新系统] 以获取最新版本的 `rpi-eeprom` 软件包。
 
-要查看当前的EEPROM配置: +
+查看当前的EEPROM配置: +
 `rpi-eeprom-config`
 
-要对其进行编辑并将更新应用到最新的EEPROM版本，请执行以下操作: +
+对其进行编辑并将更新应用到最新的EEPROM版本，请执行以下操作: +
 `sudo -E rpi-eeprom-config --edit`
 
 有关 EEPROM 更新过程的详细信息，请参阅 xref:raspberry-pi.adoc#raspberry-pi-4-boot-eeprom[启动 EEPROM] 界面。
@@ -18,56 +18,56 @@
 [[configuration-properties]]
 === 配置属性
 
-本节介绍引导加载程序中可用的所有配置项。语法与 xref:config_txt.adoc[config.txt] 相同，但属性是特定于引导加载程序。除 EDID 外，还支持xref:config_txt.adoc#conditional-filters[条件筛选器] 。
+本节介绍引导加载程序中可用的所有配置项。语法与 xref:config_txt.adoc[config.txt] 相同，但属性是特定于启动加载程序。除 EDID 外，还支持xref:config_txt.adoc#conditional-filters[条件筛选器] 。
 
 [[BOOT_UART]]
 ==== BOOT_UART
 
-如果 `1` 然后启用 UART 调试输出在 GPIO 14 和 15 上。将接收调试终端配置为 115200bps、8 位、无奇偶校验位、1 个停止位。
+如果设置为 `1`，则在GPIO14和GPIO15上启用 UART 调试输出，将接收调试终端配置为 115200bps、8 位、无奇偶校验位、1 个停止位。
 
 默认值: `0`
 
 [[WAKE_ON_GPIO]]
 ==== WAKE_ON_GPIO
 
-如果 `1` 然后 `sudo halt` 将在低功耗模式下运行，直到GPIO3或GLOBAL_EN短路到地。
+如果设置为 `1`， 则 `sudo halt` 将在低功耗模式下运行，直到GPIO3或GLOBAL_EN接地短路。
 
 默认值: `1`
 
 [[POWER_OFF_ON_HALT]]
 ==== POWER_OFF_ON_HALT
 
-如果 `1` 且 `WAKE_ON_GPIO=0` ，则 `sudo halt` 将关闭所有PMIC输出。这是halt可能的最低功耗状态，但可能会给某些帽子带来问题，因为5V电压仍然存在。`GLOBAL_EN` 必须对地短路才能启动。
+如果设置为 `1` 且 `WAKE_ON_GPIO=0` ，则 `sudo halt` 将关闭所有PMIC输出。这是halt可能的最低功耗状态，但可能会给一些HAT带来问题，因为5V电压仍然存在。`GLOBAL_EN` 必须接地短路才能启动。
 
-Raspberry Pi 400 有一个专用的电源按钮，即使处理器关闭也能运行。这种行为默认启用，但是，`WAKE_ON_GPIO=2`可以设置为使用外部GPIO电源按钮，而不是专用电源按钮。
+Raspberry Pi 400 具有一个专用的电源按钮，即使处理器关闭也能运行。默认启用此设置，但可以将`WAKE_ON_GPIO=2`设置为使用外部GPIO电源按钮，而非专用电源按钮。
 
 默认值: `0`
 
 [[BOOT_ORDER]]
 ==== BOOT_ORDER
 
-该 `BOOT_ORDER` 设置允许灵活配置不同引导模式的优先级。它表示为 32 位无符号整数，其中每个半字节表示一个引导模式。引导模式以最低有效半字节到最高有效半字节顺序尝试。
+该`BOOT_ORDER` 设置允许配置不同启动模式的优先级。它表示为 32 位无符号整数，其中每个半字节表示一个启动模式。按照最低有效半字节到最高有效半字节顺序尝试启动模式。
 
 
 [discrete]
 ====== `BOOT_ORDER` 领域
 
-BOOT_ORDER 属性定义不同引导模式的顺序。它从右到左读取，最多可以定义 8 位数字。
+BOOT_ORDER 定义不同启动模式的顺序，从右到左读取，最多可以定义 8 位数字。
 
 |===
-| 价值 | 模式 | 描述
+| 取值 | 模式 | 描述
 
 | 0x0
-| SD卡检测
-| 尝试 SD，然后等待卡检测指示卡已更改 - 现在0xf（重新启动）可用，因此已弃用。
+| SD CARD DETECT
+| 尝试 SD，然后等待卡检测指示卡已更改 - 现在已弃用，因为0xf（重新启动）可用。
 
 | 0x1
-| SD卡
-| SD 卡（或计算模块 4 上的 eMMC）。
+| SD CARD
+| SD 卡（或CM4上的eMMC）。
 
 | 0x2
-| 网络
-| 网络引导 - 参见 xref:remote-access.adoc#network-boot-your-raspberry-pi[网络引导服务教程]
+| NETWORK
+| 网络启动 - 参见 xref:remote-access.adoc#network-boot-your-raspberry-pi[网络启动服务教程]
 
 | 0x3
 | RPIBOOT
@@ -75,15 +75,15 @@ BOOT_ORDER 属性定义不同引导模式的顺序。它从右到左读取，最
 
 | 0x4
 | USB-MSD
-| USB 大容量存储引导 - 参见 xref:raspberry-pi.adoc#usb-mass-storage-boot[USB大容量存储引导]
+| USB 大容量存储启动 - 参见 xref:raspberry-pi.adoc#usb-mass-storage-boot[USB大容量存储启动]
 
 | 0x5
 | BCM-USB-MSD
-| USB 2.0 从 USB C 型插座启动（CM4：CM4IO 板上的 USB A 型插座）。
+| USB 2.0从USB-C端口启动（CM4：CM4IO 板上的 USB-A接口）。
 
 | 0x6
 | NVME
-| 仅限 CM4：从连接到 PCIe 接口的 NVMe 固态硬盘启动。有关更多详细信息，参见 xref:raspberry-pi.adoc#nvme-ssd-boot[NVMe boot] 。
+| 仅限 CM4：从连接到PCIe接口的NVMe固态硬盘启动。有关更多详细信息，参见 xref:raspberry-pi.adoc#nvme-ssd-boot[NVMe boot] 。
 
 | 0x7
 | HTTP
@@ -91,14 +91,14 @@ BOOT_ORDER 属性定义不同引导模式的顺序。它从右到左读取，最
 
 | 0xe
 | STOP
-| 停止并显示错误模式。需要电源重启才能退出此状态。
+| 停止并显示错误模式。需要重启电源才能退出此状态。
 
 | 0xf
 | RESTART
 | 从BOOT_ORDER字段中的第一个引导模式重新启动，即循环。
 |===
 
-`RPIBOOT` 旨在与计算模块 4 一起使用，以加载自定义调试映像（例如 Linux RAM 磁盘）而不是正常引导。这应该是最后一个引导选项，因为它当前不支持超时或重试。
+`RPIBOOT` 旨在与CM4 一起使用来加载自定义调试镜像（例如 Linux RAM 磁盘）而非正常启动后。这是最后一个启动选项，因为它当前不支持超时或重试。
 
 [discrete]
 ====== `BOOT_ORDER` 示例
@@ -110,23 +110,23 @@ BOOT_ORDER 属性定义不同引导模式的顺序。它从右到左读取，最
 | 首先尝试 SD，然后尝试 USB-MSD，然后重复（如果BOOT_ORDER为空，则默认）。
 
 | 0xf14
-| 首先尝试 USB，然后尝试 SD，然后重复。
+| 首先尝试 USB，然后尝试 SD，再重复。
 
 | 0xf21
-| 首先尝试 SD，然后尝试网络，然后重复。
+| 首先尝试 SD，然后尝试网络，再重复。
 |===
 
 [[MAX_RESTARTS]]
 ==== MAX_RESTARTS
 
-如果遇到 RESTART (`0xf`) 引导模式的次数超过 MAX_RESTARTS 次，则会触发看门狗复位。不建议将其用于常规用途，但对于需要完全重置以解决硬件或网络接口问题的测试或远程系统可能很有用。
+如果遇到 RESTART (`0xf`) 启动模式的次数超过 MAX_RESTARTS 次，则会触发看门狗复位。不建议将其用于常规用途，但对于需要完全重置以解决硬件或网络接口问题的测试或远程系统可能很有用。
 
 默认值: `-1` (无限)
 
 [[SD_BOOT_MAX_RETRIES]]
 ==== SD_BOOT_MAX_RETRIES
 
-SD引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一个引导模式。 +
+SD启动失败后在转到 `BOOT_ORDER`定义的下一个启动模式之前重试的次数。 +
 `-1` 意味着无限次重试。
 
 默认值: `0`
@@ -134,7 +134,7 @@ SD引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一�
 [[NET_BOOT_MAX_RETRIES]]
 ==== NET_BOOT_MAX_RETRIES
 
-网络引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一个引导模式。 +
+网络启动失败后在转到 `BOOT_ORDER`定义的下一个启动模式之前重试的次数。 +
 `-1` 意味着无限次重试。 +
 
 默认值: `0`
@@ -142,7 +142,7 @@ SD引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一�
 [[DHCP_TIMEOUT]]
 ==== DHCP_TIMEOUT
 
-当前迭代失败之前整个 DHCP 序列的超时（以毫秒为单位）。
+当前迭代失败之前整个 DHCP 序列的超时时间（以ms为单位）。
 
 最小值: `5000` +
 默认值: `45000`
@@ -150,7 +150,7 @@ SD引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一�
 [[DHCP_REQ_TIMEOUT]]
 ==== DHCP_REQ_TIMEOUT
 
-重试 DHCP 发现或 DHCP REQ 之前的超时（以毫秒为单位）。
+重试 DHCP 发现或 DHCP REQ 之前的超时时间（以ms为单位）。
 
 最小值: `500` +
 默认值: `4000`
@@ -158,7 +158,7 @@ SD引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一�
 [[TFTP_FILE_TIMEOUT]]
 ==== TFTP_FILE_TIMEOUT
 
-通过 TFTP 下载单个文件的超时（以毫秒为单位）。
+通过 TFTP 下载单个文件的超时时间（以ms为单位）。
 
 最小值: `5000` +
 默认值: `30000`
@@ -166,19 +166,19 @@ SD引导在失败后重试的次数，然后转到 `BOOT_ORDER`定义的下一�
 [[TFTP_IP]]
 ==== TFTP_IP
 
-TFTP 服务器的可选点分十进制 IP 地址（例如192.168.1.99），用于覆盖来自 DHCP 请求的服务器 ip。 +
-这在家庭网络上可能很有用，因为可以使用tftpd-hpa代替dnsmasq，其中宽带路由器是DHCP服务器。
+TFTP 服务器的可选点分十进制 IP地址（例如192.168.1.99），用于覆盖DHCP请求的服务器IP。 +
+这个在家庭网络上很有用，因为可以使用tftpd-hpa代替dnsmasq，其中宽带路由器是DHCP服务器。
 
 默认值: ""
 
 [[TFTP_PREFIX]]
 ==== TFTP_PREFIX
 
-为了支持每个Raspberry Pi的唯一 TFTP 引导目录，引导加载程序会在文件名前面加上设备特定的目录。如果在前缀目录中找不到 start4.elf 和 start.elf，则清除前缀。
-在早期型号上，序列号用作前缀，但是，在Raspberry Pi 4上，MAC地址不再从序列号生成，因此很难通过检查DHCPDISCOVER数据包在服务器上自动创建tftpboot目录。为了支持此功能，可以将TFTP_PREFIX自定义为 MAC 地址、固定值或序列号（默认）。
+为了支持每个Raspberry Pi的唯一 TFTP 启动目录，启动加载程序会在文件名前面加上设备特定的目录。如果在前缀目录中找不到 start4.elf 和 start.elf，则清除前缀。
+在早期型号上，序列号用作前缀，但在Raspberry Pi 4上，MAC地址不再从序列号生成，因此很难通过检查DHCPDISCOVER数据包在服务器上自动创建tftpboot目录。为了支持此功能，可以将TFTP_PREFIX自定义为 MAC 地址、固定值或序列号（默认）。
 
 |===
-| 数值 | 描述
+| 取值 | 描述
 
 | 0
 | 使用序列号，例如 `9ffefdef/`
@@ -212,7 +212,7 @@ TFTP 服务器的可选点分十进制 IP 地址（例如192.168.1.99），用�
 
 在早期版本中，客户端GUID(选项97)只是重复4次的序列号。默认情况下，新的GUID格式是 `RPi4` 的fourcc(0x 34695052-little endian)、板版本(例如0x00c03111) (4字节)、mac地址的4个最低有效字节和4字节序列号的串联。这是唯一的，但也为DHCP服务器提供结构化信息，允许Raspberry Pi 4计算机在不依赖以太网MAC OUID的情况下被识别。
 
-指定 DHCP_OPTION97=0 以还原旧行为，或指定非零十六进制值以指定自定义 4 字节前缀。
+指定 DHCP_OPTION97=0 以回复设置，或指定非零十六进制值以指定自定义 4 字节前缀。
 
 默认值: `0x34695052`
 
@@ -227,14 +227,14 @@ TFTP 服务器的可选点分十进制 IP 地址（例如192.168.1.99），用�
 ==== MAC_ADDRESS_OTP
 使用存储在 xref:raspberry-pi.adoc#write-and-read-customer-otp-values[Customer OTP] 寄存器中的值覆盖Raspberry Pi以太网 MAC 地址。
 
-例如，要使用存储在 `Customer OTP` 的行 0 和行 1 中的 MAC 地址。
+例如，要使用存储在 `Customer OTP` 的第0行 和第1行中的MAC地址。
 ----
 MAC_ADDRESS_OTP=0,1
 ----
 
 第一个值（示例中的第 0 行）包含 OUI 和 MAC 地址中最重要的 8 位。第二个值（示例中的第 1 行）存储 MAC 地址的剩余 16 位。 这与用于制造时编程的Raspberry Pi MAC地址的格式相同。
 
-可以选择任意两个客户行，并按任一顺序组合。
+可以选择任意两个客户OTP行，并按任一顺序组合。
 `Customer OTP` 行是 `vcgencmd otp_dump` 输出中的OTP寄存器36至43，因此，如果前两行编程如下，则 `MAC_ADDRESS_OTP=0,1` ，将给出 `e4:5f:01:20:24:7e` 的MAC地址。
 
 ----
@@ -280,29 +280,29 @@ MAC_ADDRESS_OTP=0,1
 [[HDMI_DELAY]]
 ==== HDMI_DELAY
 
-跳过 HDMI 诊断显示的渲染长达 N 秒（默认为 5），除非发生致命错误。默认行为旨在避免引导加载程序诊断屏幕在正常的SD / USB启动期间短暂出现。
+除非发生致命错误，否则最多可跳过HDMI诊断显示的渲染长达 N 秒（默认为 5）。默认行为旨在避免在正常的SD / USB启动期间短暂出现启动加载程序诊断屏幕。
 
 默认值: `5`
 
 [[ENABLE_SELF_UPDATE]]
 ==== ENABLE_SELF_UPDATE
 
-使引导加载程序能够从 TFTP 或 USB 大容量存储设备 （MSD） 引导文件系统更新自身。
+使启动加载程序能够从 TFTP 或 USB 大容量存储设备 （MSD） 启动文件系统更新自身。
 
-如果启用了自我更新，则引导加载程序将在引导文件系统中查找更新文件 （.sig/.upd）。如果更新映像与当前映像不同，则应用更新并重置系统。否则，如果EEPROM映像逐字节相同，则引导将继续正常进行。
+如果启用了自更新，则启动加载程序将在启动文件系统中查找更新文件 （.sig/.upd）。如果更新镜像与当前镜像不同，则应更新并重置系统。否则，如果EEPROM镜像逐字节相同，则启动将继续正常进行。
 
 注意:-
 
-* SD启动中未启用自我更新；ROM已经可以从SD卡加载recovery.bin。
-* 2021年之前的引导加载程序版本不支持 `self-update`.
-* 对于网络引导，确保TFTP `boot` 目录可以通过NFS挂载，并且 `rpi-eeprom-update` 可以写入其中。
+* SD启动中未启用自更新；ROM已经可以从SD卡加载recovery.bin。。
+* 2021年之前的启动加载程序版本不支持 `自更新`.
+* 对于网络启动，确保TFTP `boot` 目录可以通过NFS挂载，并且 `rpi-eeprom-update` 可以写入其中。
 
 默认值: `1`
 
 [[FREEZE_VERSION]]
 ==== FREEZE_VERSION
 
-以前，该属性仅由 `rpi-eeprom-update` 脚本检查. 然而，现在自更新被启用，引导装载程序也将检查这个属性。 如果设置为1，这将覆盖 `ENABLE_SELF_UPDATE` 以停止自动更新。 要禁用 `FREEZE_VERSION` 您必须使用带recovery.bin的SD卡启动。
+以前该属性仅由 `rpi-eeprom-update` 脚本检查，现在自更新被启用，启动加载程序也将检查这个属性。 如果设置为1，将覆盖 `ENABLE_SELF_UPDATE` 以停止自更新。 如果要禁用 `FREEZE_VERSION` 必须使用带recovery.bin的SD卡启动。
 
 *自定义EEPROM更新脚本也必须检查该标志。*
 
@@ -311,20 +311,20 @@ MAC_ADDRESS_OTP=0,1
 [[HTTP_HOST]]
 ==== HTTP_HOST
 
-如果启动了网络安装或HTTP引导，则从该服务器下载 `boot.img` 和 `boot.sig` 。
+如果启动了网络安装或HTTP，则会从该服务器下载 `boot.img` 和 `boot.sig` 。
 
-无效的主机名将被忽略。它们应该只包含小写字母数字字符和 `-` 或 `.` 。 如果设置了 `HTTP_HOST` ，则禁用HTTPS，而使用普通HTTP。您可以指定一个IP地址，以避免需要DNS查找。主机名中不要包含HTTP方案或任何正斜杠。
+无效的主机名将被忽略。应该只包含小写字母、数字字符和 `-` 或 `.` 。 如果设置了 `HTTP_HOST` ，则禁用HTTPS，而使用普通HTTP。您可以指定一个IP地址，以避免需要DNS查找。主机名中不要包含HTTP方案或/。
 
 默认值: `fw-download-alias1.raspberrypi.com`
 
 [[HTTP_PORT]]
 ==== HTTP_PORT
 
-您可以使用此属性来更改用于网络安装和HTTP引导的端口。使用默认主机 `fw-download-alias1.raspberrypi.com` 时，HTTPS处于启用状态。如果更改了 `HTTP_HOST` ，则会禁用HTTPS，而使用普通HTTP。
+您可以使用此属性来更改用于网络安装和HTTP启动的端口。使用默认主机 `fw-download-alias1.raspberrypi.com` 时，启用HTTPS。如果更改了 `HTTP_HOST` ，则会禁用HTTPS，而使用普通HTTP。
 
 禁用HTTPS时，即使 `HTTP_PORT`更改为 `443` ，仍将使用普通HTTP。
 
-如果启用了HTTPS，默认值为 `443` ，否则为 `80` 。
+默认值：如果启用了HTTPS，默认值为 `443` ，否则为 `80` 。
 
 [[HTTP_PATH]]
 ==== HTTP_PATH
@@ -610,54 +610,51 @@ NOTE: `flashrom` 不支持清除写保护区域，如果定义了写保护区域
 ===  `config.txt` 中的安全启动配置属性
 以下 `config.txt` 属性用于对 `secure-boot` OTP设置进行编程。这些更改是不可逆的，并且只能在刷新引导加载程序EEPROM映像时通过RPIBOOT进行编程。这确保了 `secure-boot` 不能被远程设置或通过意外插入过时的SD卡映像来设置。
 
-有关启用 `secure-boot` 的详细信息，请参见 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#secure-boot[secure-boot readme] 和   https://github.com/raspberrypi/usbboot[USBBOOT] 中的 https://github.com/raspberrypi/usbboot/blob/master/secure-boot-example/README.md[secure-boot tutorial] 。
+有关启用 `secure-boot` 的详细信息，请参见 https://github.com/raspberrypi/usbboot[USBBOOT] 中的 https://github.com/raspberrypi/usbboot/blob/master/Readme.md#secure-boot[secure-boot readme] 和    https://github.com/raspberrypi/usbboot/blob/master/secure-boot-example/README.md[secure-boot tutorial] 。
 
 [[program_pubkey]]
 ==== program_pubkey
-如果此属性设置为 `1`， 则 `recovery.bin` 将 EEPROM 映像中公钥写入 OTP。设置后，引导加载程序将拒绝使用不同 RSA 密钥签名的 EEPROM 映像或未签名映像。
+如果此属性设置为 `1`， 则 `recovery.bin` 会将 EEPROM 镜像中公钥的hash写入 OTP。设置后，启动加载程序将拒绝使用不同 RSA 密钥签名的 EEPROM 镜像或未签名镜像。
 
 默认值: `0`
 
 [[revoke_devkey]]
 ==== revoke_devkey
-如果该属性被设置为 `1` ，则 `recovery.bin` 将 向OTP写入一个值，以防止ROM加载不支持`secure-boot` 的第二阶段引导加载程序的旧版本。这可以防止通过恢复到旧版本的引导加载程序来关闭安全引导。
+如果该属性被设置为 `1` ，则 `recovery.bin` 将 向OTP写入一个值，以防止ROM加载不支持`secure-boot` 的第二阶段引导加载程序的旧版本。此操作可以防止通过恢复到旧版本的启动加载程序来关闭安全引导。
 
 默认值: `0`
 
 [[program_rpiboot_gpio]]
 ==== program_rpiboot_gpio
-Since there is no dedicated `nRPIBOOT` jumper on Raspberry Pi 4B or Raspberry Pi 400, an alternative GPIO must be used to select `RPIBOOT` mode by pulling the GPIO low. Only one GPIO may be selected and the available options are `2, 4, 5, 7, 8`. This property does not depend on `secure-boot` but please verify that this GPIO configuration does not conflict with any HATs which might pull the GPIO low during boot.
+由于Raspberry Pi 4B或Raspberry Pi 400上没有专用的 `nRPIBOOT` 跳线，因此必须使用替代GPIO，通过拉低GPIO来选择 `nRPIBOOT` 模式。而且只能选择一个GPIO，可用选项有2、4、5、7、8。此属性不依赖于 `安全启动`，但请验证此GPIO配置是否与任何可能在启动期间拉低GPIO的HAT发生冲突。
 
-Since for safety this property can only be programmed via `RPIBOOT`, the bootloader EEPROM must first be cleared using `erase_eeprom`. This causes the BCM2711 ROM to failover to `RPIBOOT` mode, which then allows this option to be set.
+出于安全考虑，该属性只能通过 `RPIBOOT` 进行编程，因此必须首先使用 `erase_eeprom` 擦除启动加载程序EEPROM。这会导致BCM2711 ROM故障切换到 `RPIBOOT` 模式，则允许设置此选项。
 
-Default: ``
+默认值: ``
 
 [[program_jtag_lock]]
 ==== program_jtag_lock
-If this property is set to `1` then `recovery.bin` will program an OTP value that prevents VideoCore JTAG from being used. This option requires that `program_pubkey` and `revoke_devkey` are also set. This option can prevent failure-analysis and should only be set after the device has been fully tested.
+如果此属性设置为 `1` ，则 `recovery.bin` 将编程一个OTP值，以防止使用VideoCore JTAG。该选项要求同时设置 `program_pubkey` 和 `revoke_devkey` 。此选项可以防止故障分析，并且只能在设备经过全面测试后设置。
 
-Default: `0`
+默认值: `0`
 
 [[bootloader_update_stable]]
-=== Updating to the LATEST / STABLE bootloader
+=== 更新到最新 / 稳定的启动加载程序
+启动加载程序的默认版本仅针对关键修复和主要版本进行更新。最新/稳定启动加载程序更新较频繁以同步最新的修复和改进。
 
-The DEFAULT version of the bootloader is only updated for CRITICAL fixes and major releases. The LATEST / STABLE bootloader is updated more often to include the latest fixes and improvements.
-
-Advanced users can switch to the LATEST / STABLE bootloader to get the latest functionality.
-Open a command prompt and start `raspi-config`.
+高级用户可以切换到最新/稳定启动加载程序以获得最新功能。 
+打开命令提示符并启动`raspi-config`。
 
 ----
 sudo raspi-config
 ----
-
-Navigate to `Advanced Options` and then `Bootloader Version`. Select `Latest` and choose `Yes` to confirm. Select `Finish` and confirm you want to reboot. After the reboot, open a command prompt again and update your system.
-
+导航至 `高级选项` ，再导航至 `启动加载程序版本` 。选择 `最新`，然后选择 `是` 进行确认。选择 `完成` 并确认你要重新启动。重新启动后，再次打开命令提示符并更新系统。
 ----
 sudo apt update
 sudo apt install rpi-eeprom  # Update rpi-eeprom to the latest version
 ----
 
-If you run `rpi-eeprom-update`, you should see that a more recent version of the bootloader is available and it's the `stable` release.
+如果运行`rpi-eeprom-update`，则会看到一个更新版本的启动加载程序可用，并且是 `稳定` 版本。
 
 ----
 *** UPDATE AVAILABLE ***
@@ -668,14 +665,14 @@ BOOTLOADER: update available
             Use raspi-config to change the release.
 ----
 
-Now you can update your bootloader.
+现在可以更新启动加载程序。
 
 ----
 sudo rpi-eeprom-update -a
 sudo reboot
 ----
 
-If you run `rpi-eeprom-update` again after your Raspberry Pi has rebooted, you should now see that the `CURRENT` date has updated to indicate that you are using the latest version of the bootloader.
+如果你在Raspberry Pi重新启动后再次运行 `rpi-eeprom-update` ，你应该会看到 `当前` 日期已更新，表明使用的是最新版本的启动加载程序。
 
 ----
 BOOTLOADER: up to date
