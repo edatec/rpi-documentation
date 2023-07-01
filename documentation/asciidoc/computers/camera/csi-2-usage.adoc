@@ -1,32 +1,37 @@
-== Camera Serial Interface 2 (CSI2) "Unicam"
+[[camera-serial-interface-2-csi2-unicam]]
+== 相机串行接口 2 （CSI2） “Unicam”
 
-The SoC's used on the Raspberry Pi range all have two camera interfaces that support either CSI-2 D-PHY 1.1 or CCP2 (Compact Camera Port 2) sources. This interface is known by the codename "Unicam". The first instance of Unicam supports 2 CSI-2 data lanes, whilst the second supports 4. Each lane can run at up to 1Gbit/s (DDR, so the max link frequency is 500MHz).
+Raspberry Pi系列上使用的SoC都有两个相机接口，支持CSI-2 D-PHY 1.1或CCP2（紧凑型相机端口2）源。该接口的代号为“Unicam”。Unicam的第一个实例支持2个CSI-2数据通道，而第二个实例支持4个。每条通道可以以高达1Gbit/s（DDR，因此最大链路频率为500MHz）运行。
 
-However, the normal variants of the Raspberry Pi only expose the second instance, and route out _only_ 2 of the data lanes to the camera connector. The Compute Module range route out all lanes from both peripherals.
+但是，Raspberry Pi的正常变体仅公开第二个实例，并且仅将2个数据通道路由到相机连接器。计算模块范围从两个外设路由出所有通道。
 
-=== Software Interfaces
+[[software-interfaces]]
+=== 软件接口
 
-There are 3 independent software interfaces available for communicating with the  Unicam peripheral:
+有 3 个独立的软件接口可用于与 Unicam 外设通信：
 
-==== Firmware
+[[firmware]]
+==== 固件
 
-NOTE: This interface is available only when using the legacy camera stack.
+NOTE: 此接口仅在使用旧版相机堆栈时可用。
 
-The closed source GPU firmware has drivers for Unicam and three camera sensors plus a bridge chip. They are the Raspberry Pi Camera v1.3 (Omnivision OV5647), Raspberry Pi Camera v2.1 (Sony IMX219), Raspberry Pi HQ camera (Sony IMX477), and an unsupported driver for the Toshiba TC358743 HDMI\->CSI2 bridge chip. There is no support for more recent cameras, such as the Camera Module 3 (Sony IMX708).
+闭源GPU固件具有Unicam驱动程序和三个摄像头传感器以及一个桥接芯片。它们是Raspberry Pi Camera v1.3（Omnivision OV5647），Raspberry Pi Camera v2.1（Sony IMX219），Raspberry Pi HQ相机（Sony IMX477），以及东芝TC358743 HDMI->CSI2桥接芯片不支持的驱动程序。不支持更新的相机，例如相机模块 3（索尼 IMX708）。
 
-This driver integrates the source driver, Unicam, ISP, and tuner control into a full camera stack delivering processed output images. It can be used via MMAL, OpenMAX IL and V4L2 using the bcm2835-v4l2 kernel module. Only Raspberry Pi cameras are supported via this interface.
+此驱动程序将源驱动程序、Unicam、ISP 和调谐器控制集成到一个完整的相机堆栈中，提供经过处理的输出图像。它可以通过MMAL，OpenMAX IL和V4L2使用bcm2835-v4l2内核模块。此接口仅支持Raspberry Pi相机。
 
-==== MMAL rawcam component
+[[software-interfaces]]
+==== MMAL rawcam 组件
 
-NOTE: This interface is available only when using the legacy camera stack.
+NOTE: 此接口仅在使用旧版相机堆栈时可用。
 
-This was an interim option before the V4L2 driver was available. The MMAL component `vc.ril.rawcam` allows receiving of the raw CSI2 data in the same way as the V4L2 driver, but all source configuration has to be done by userland over whatever interface the source requires. The raspiraw application is available on https://github.com/raspberrypi/raspiraw[github]. It uses this component and the standard I2C register sets for OV5647, IMX219, and ADV7282M to support streaming.
+这是 V4L2 驱动程序可用之前的临时选项。MMAL 组件vc.ril.rawcam允许以与 V2L4 驱动程序相同的方式接收原始 CSI2 数据，但所有源配置都必须由用户空间通过源所需的任何接口完成。raspiraw应用程序可在https://github.com/raspberrypi/raspiraw[github]上使用。它使用此组件和OV2、IMX5647和ADV219M的标准I7282C寄存器集来支持流传输。
 
+[[software-interfaces]]
 ==== V4L2
 
-NOTE: The V4L2 interface for Unicam is available only when using `libcamera`.
+NOTE: Unicam 的 V4L2 接口仅在使用libcamera 时可用。
 
-There is a fully open source kernel driver available for the Unicam block; this is a kernel module called bcm2835-unicam. This interfaces to V4L2 subdevice drivers for the source to deliver the raw frames. This bcm2835-unicam driver controls the sensor, and configures the CSI-2 receiver so that the peripheral will write the raw frames (after Debayer) to SDRAM for V4L2 to deliver to applications. Except for this ability to unpack the CSI-2 Bayer formats to 16bits/pixel, there is no image processing between the image source (e.g. camera sensor) and bcm2835-unicam placing the image data in SDRAM.
+有一个完全开源的内核驱动程序可用于Unicam块，是叫做 BCM2835-UNICAM 的内核模块。这接口到 V4L2 子设备驱动程序，为源提供原始帧。此 bcm2835-unicam 驱动程序控制传感器，并配置 CSI-2 接收器，以便外设将原始帧（在 Debayer 之后）写入 SDRAM，使 V4L2 交付给应用程序。除了能够将CSI-2拜耳格式解压缩为16位/像素之外，图像源（例如相机传感器）和将图像数据放置在SDRAM中的bcm2835-unicam之间没有图像处理。
 
 ----
 |------------------------|
@@ -47,10 +52,10 @@ ccp2  |             |
     |-----------------|
 ----
 
-Mainline Linux has a range of existing drivers. The Raspberry Pi kernel tree has some additional drivers and device tree overlays to configure them that have all been tested and confirmed to work. They include:
+Mainline Linux有一系列现有的驱动程序。Raspberry Pi内核树有一些额外的驱动程序和设备树覆盖来配置它们，这些驱动程序和设备树覆盖都已经过测试并确认可以工作。它们包括：
 
 |===
-| Device | Type | Notes
+| 设备 | 类型 | 备注
 
 | Omnivision OV5647
 | 5MP Camera
@@ -81,115 +86,121 @@ Mainline Linux has a range of existing drivers. The Raspberry Pi kernel tree has
 | Supported by a third party
 |===
 
-As the subdevice driver is also a kernel driver, with a standardised API, 3rd parties are free to write their own for any source of their choosing.
+由于子设备驱动程序也是内核驱动程序，因此具有标准化的API，因此第三方可以自由地为他们选择的任何来源编写自己的驱动程序。
 
-=== Developing Third-Party Drivers
+[[software-interfaces]]
+=== 开发第三方驱动程序
 
-This is the recommended approach to interfacing via Unicam.
+这是推荐的通过Unicam接口的方法。
 
-When developing a driver for a new device intended to be used with the bcm2835-unicam module, you need the driver and corresponding device tree overlays. Ideally the driver should be submitted to the http://vger.kernel.org/vger-lists.html#linux-media[linux-media] mailing list for code review and merging into mainline, then moved to the https://github.com/raspberrypi/linux[Raspberry Pi kernel tree], but exceptions may be made for the driver to be reviewed and merged directly to the Raspberry Pi kernel.
+为打算与 bcm2835-unicam 模块一起使用的新设备开发驱动程序时，需要驱动程序和相应的设备树覆盖。理想情况下，驱动程序应提交到  http://vger.kernel.org/vger-lists.html#linux-media[linux 媒体] 邮件列表进行代码审查并合并到主线中，然后移动到 https://github.com/raspberrypi/linux[Raspberry Pi 内核树] ，但可能会有的例外情况是驱动程序被审查并直接合并到 Raspberry Pi 内核。
 
-Please note that all kernel drivers are licensed under the GPLv2 licence, therefore source code *MUST* be available. Shipping of binary modules only is a violation of the GPLv2 licence under which the Linux kernel is licensed.
+请注意，所有内核驱动程序都是在GPLv2许可下授权的，因此源代码*必须*是可用的。只运输二进制模块违反了GPLv2许可证，Linux内核就是在GPL v2许可证下获得许可的。
 
-The bcm2835-unicam has been written to try and accommodate all types of CSI-2 source driver as are currently found in the mainline Linux kernel. Broadly these can be split into camera sensors and bridge chips. Bridge chips allow for conversion between some other format and CSI-2.
+bcm2835-unicam 旨在尝试适应当前在主线 Linux 内核中找到的所有类型的 CSI-2 源驱动程序。从广义上讲，这些可以分为相机传感器和桥接芯片。桥接芯片允许在其他格式和 CSI-2 之间进行转换。
 
-==== Camera sensors
+[[software-interfaces]]
+==== 相机传感器
 
-The sensor driver for a camera sensor is responsible for all configuration of the device, usually via I2C or SPI. Rather than writing a driver from scratch, it is often easier to take an existing driver as a basis and modify it as appropriate.
+相机传感器的驱动程序负责设备的所有配置，通常通过 I2C 或 SPI。通常，将现有驱动程序作为基础并根据需要对其进行修改通常更容易，而不是从头开始编写驱动程序。
 
-The https://github.com/raspberrypi/linux/blob/rpi-5.4.y/drivers/media/i2c/imx219.c[IMX219 driver] is a good starting point. This driver supports both 8bit and 10bit Bayer readout, so enumerating frame formats and frame sizes is slightly more involved.
+https://github.com/raspberrypi/linux/blob/rpi-5.4.y/drivers/media/i2c/imx219.c[IMX219 驱动程序]是一个很好的起点。此驱动程序支持 8 位和 10 位Bayer读出，因此枚举帧格式和帧大小稍微复杂一些。
 
-Sensors generally support https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/control.html[V4L2 user controls]. Not all these controls need to be implemented in a driver. The IMX219 driver only implements a small subset, listed below, the implementation of which is handled by the `imx219_set_ctrl` function.
 
-* `V4L2_CID_PIXEL_RATE` / `V4L2_CID_VBLANK` / `V4L2_CID_HBLANK`: allows the application to set the frame rate.
-* `V4L2_CID_EXPOSURE`: sets the exposure time in lines. The application needs to use `V4L2_CID_PIXEL_RATE`, `V4L2_CID_HBLANK`, and the frame width to compute the line time.
-* `V4L2_CID_ANALOGUE_GAIN`: analogue gain in sensor specific units.
-* `V4L2_CID_DIGITAL_GAIN`: optional digital gain in sensor specific units.
-* `V4L2_CID_HFLIP / V4L2_CID_VFLIP`: flips the image either horizontally or vertically. Note that this operation may change the Bayer order of the data in the frame, as is the case on the imx219.
-* `V4L2_CID_TEST_PATTERN` / `V4L2_CID_TEST_PATTERN_*`: Enables output of various test patterns from the sensor. Useful for debugging.
+传感器通常支持 https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/control.html[V4L2 用户控件]。并非所有这些控件都需要在驱动程序中实现。IMX219 驱动程序仅实现下面列出的一小部分，其实现由imx219_set_ctrl函数处理。
 
-In the case of the IMX219, many of these controls map directly onto register writes to the sensor itself.
+* `V4L2_CID_PIXEL_RATE` / `V4L2_CID_VBLANK` / `V4L2_CID_HBLANK`: 允许应用程序设置帧速率。
+* `V4L2_CID_EXPOSURE`: 以线条为单位设置曝光时间。应用程序需要使用 `V4L2_CID_PIXEL_RATE`, `V4L2_CID_HBLANK`,  和帧宽度来计算行时间。
+* `V4L2_CID_ANALOGUE_GAIN`: 以传感器特定单位表示的模拟增益。
+* `V4L2_CID_DIGITAL_GAIN`: 传感器特定单元中的可选数字增益。
+* `V4L2_CID_HFLIP / V4L2_CID_VFLIP`: 水平或垂直翻转图像。请注意，此操作可能会更改帧中数据的Bayer顺序，就像 imx219 上的情况一样。
+* `V4L2_CID_TEST_PATTERN` / `V4L2_CID_TEST_PATTERN_*`:支持从传感器输出各种测试模式。这对调试很有用。
+如果是 IMX219，其中许多控件直接映射到传感器本身的寄存器写入。
 
-Further guidance can be found in libcamera's https://git.linuxtv.org/libcamera.git/tree/Documentation/sensor_driver_requirements.rst[sensor driver requirements], and also in chapter 3 of the https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf[Raspberry Pi Camera Tuning Guide].
+可以在 libcamera 的https://git.linuxtv.org/libcamera.git/tree/Documentation/sensor_driver_requirements.rst[传感器驱动程序要求]以及  https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf[Raspberry Pi 相机调整指南]的第 3 章中找到进一步的指导。
 
-===== Device Tree
+[[software-interfaces]]
+===== 设备树
 
-Device tree is used to select the sensor driver and configure parameters such as number of CSI-2 lanes, continuous clock lane operation, and link frequency (often only one is supported). 
+设备树用于选择传感器驱动程序并配置参数，例如 CSI-2 通道数、连续时钟通道操作和链路频率（通常仅支持一个）。
 
-* The IMX219 https://github.com/raspberrypi/linux/blob/rpi-5.4.y/arch/arm/boot/dts/overlays/imx219-overlay.dts[device tree overlay] for the 5.4 kernel
+* 5.4内核的IMX219https://github.com/raspberrypi/linux/blob/rpi-5.4.y/arch/arm/boot/dts/overlays/imx219-overlay.dts[设备树覆盖图]
 
-==== Bridge chips
+[[software-interfaces]]
+==== 桥接芯片
 
-These are devices that convert an incoming video stream, for example HDMI or composite, into a CSI-2 stream that can be accepted by the Raspberry Pi CSI-2 receiver.
+这些设备将传入的视频流（例如HDMI或复合）转换为Raspberry Pi CSI-2接收器可以接受的CSI-2流。
 
-Handling bridge chips is more complicated, as unlike camera sensors they have to respond to the incoming signal and report that to the application.
+处理桥接芯片更为复杂，因为与相机传感器不同，它们必须响应输入信号并将其报告给应用程序。
 
-The mechanisms for handling bridge chips can be broadly split into either analogue or digital.
+处理桥接芯片的机制可以大致分为模拟或数字。
 
-When using `ioctls` in the sections below, an `_S_` in the `ioctl` name means it is a set function, whilst `_G_` is a get function and `_ENUM` enumerates a set of permitted values.
+在下面的部分中使用`ioctl`时，`ioctl`名称中的`_S_`表示它是一个set函数，而`_G_`是一个get函数，并且`_ENUM`枚举一组允许的值。
 
-===== Analogue video sources
+[[software-interfaces]]
+===== 模拟视频源
 
-Analogue video sources use the standard `ioctls` for detecting and setting video standards. https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-std.html[`VIDIOC_G_STD`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-std.html[`VIDIOC_S_STD`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-enumstd.html[`VIDIOC_ENUMSTD`], and https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-querystd.html[`VIDIOC_QUERYSTD`]
+模拟视频源使用标准`ioctls`来检测和设置视频标准。 https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-std.html[`VIDIOC_G_STD`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-std.html[`VIDIOC_S_STD`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-enumstd.html[`VIDIOC_ENUMSTD`], and https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-querystd.html[`VIDIOC_QUERYSTD`]
 
-Selecting the wrong standard will generally result in corrupt images. Setting the standard will typically also set the resolution on the V4L2 CAPTURE queue. It can not be set via `VIDIOC_S_FMT`. Generally requesting the detected standard via `VIDIOC_QUERYSTD` and then setting it with `VIDIOC_S_STD` before streaming is a good idea.
+选择错误的标准通常会导致图像损坏。设定标准通常也会设定V4L2捕获队列的分辨率。它不能通过FMT视频设置。一般来说，通过`VIDIOC_QUERYSTD`请求检测到的标准，然后在流式传输之前用`VIDIOC_S_STD`设置它是一个好主意。
 
-===== Digital video sources
+[[software-interfaces]]
+===== 数字视频源
 
-For digital video sources, such as HDMI, there is an alternate set of calls that allow specifying of all the digital timing parameters (https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-dv-timings.html[`VIDIOC_G_DV_TIMINGS`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-dv-timings.html[`VIDIOC_S_DV_TIMINGS`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-enum-dv-timings.html[`VIDIOC_ENUM_DV_TIMINGS`], and https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-query-dv-timings.html[`VIDIOC_QUERY_DV_TIMINGS`]).
+对于HDMI等数字视频源，有一组备用调用允许指定所有数字时序参数 (https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-dv-timings.html[`VIDIOC_G_DV_TIMINGS`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-g-dv-timings.html[`VIDIOC_S_DV_TIMINGS`], https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-enum-dv-timings.html[`VIDIOC_ENUM_DV_TIMINGS`], and https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-query-dv-timings.html[`VIDIOC_QUERY_DV_TIMINGS`]).。
 
-As with analogue bridges, the timings typically fix the V4L2 CAPTURE queue resolution, and calling `VIDIOC_S_DV_TIMINGS` with the result of `VIDIOC_QUERY_DV_TIMINGS` before streaming should ensure the format is correct.
+与模拟网桥一样，计时通常会固定V4L2捕获队列的分辨率，在流式传输之前调用`VIDIOC_S_DV_TIMINGS`和`VIDIOC_QUERY_DV_TIMINGS`的结果应确保格式正确。
 
-Depending on the bridge chip and the driver, it may be possible for changes in the input source to be reported to the application via `VIDIOC_SUBSCRIBE_EVENT` and `V4L2_EVENT_SOURCE_CHANGE`.
+根据桥接芯片和驱动器的不同，输入源的变化可能会通过`VIDIOC_SUBSCRIBE_EVENT`和`V4L2_EVENT_SOURCE_CHANGE`报告给应用。
 
-===== Currently supported devices
+[[software-interfaces]]
+===== 当前支持的设备
 
-There are 2 bridge chips that are currently supported by the Raspberry Pi Linux kernel, the Analog Devices ADV728x-M for analogue video sources, and the Toshiba TC358743 for HDMI sources.
+Raspberry Pi Linux内核目前支持2个桥接芯片，ADI公司ADV728x-M用于模拟视频源，东芝TC358743用于HDMI源。
 
-_Analog Devices ADV728x(A)-M Analogue video to CSI2 bridge_
+_模拟设备 ADV728x(A)-M 模拟视频转 CSI2 桥接器_
 
-These chips convert composite, S-video (Y/C), or component (YPrPb) video into a single lane CSI-2 interface, and are supported by the https://github.com/raspberrypi/linux/blob/rpi-5.4.y/drivers/media/i2c/adv7180.c[ADV7180 kernel driver].
+这些芯片将复合、S视频（Y/C）或分量（YPrPb）视频转换为单通道CSI-2接口，https://github.com/raspberrypi/linux/blob/rpi-5.4.y/drivers/media/i2c/adv7180.c[ADV7180内核驱动程序]支持这些芯片。
 
-Product details for the various versions of this chip can be found on the Analog Devices website.
+有关该芯片各种版本的产品详细信息，请访问模拟设备网页。
 
 https://www.analog.com/en/products/adv7280a.html[ADV7280A], https://www.analog.com/en/products/adv7281a.html[ADV7281A], https://www.analog.com/en/products/adv7282a.html[ADV7282A]
 
-Because of some missing code in the current core V4L2 implementation, selecting the source fails, so the Raspberry Pi kernel version adds a kernel module parameter called `dbg_input` to the ADV7180 kernel driver which sets the input source every time VIDIOC_S_STD is called. At some point mainstream will fix the underlying issue (a disjoin between the kernel API call s_routing, and the userspace call `VIDIOC_S_INPUT`) and this modification will be removed.
+由于当前内核V4L2实现中的一些缺失代码，选择源失败，因此Raspberry Pi内核版本向ADV7180内核驱动程序添加了一个名为dbg_input的内核模块参数，该驱动程序在每次调用`VIDIOC_S_STD`时设置输入源。在某个时候，主流将修复底层问题(内核API调用s_routing和用户空间调用`VIDIOC_S_INPUT`之间的分离),并且这个修改将被移除。
 
-Please note that receiving interlaced video is not supported, therefore the ADV7281(A)-M version of the chip is of limited use as it doesn't have the necessary I2P deinterlacing block. Also ensure when selecting a device to specify the -M option. Without that you will get a parallel output bus which can not be interfaced to the Raspberry Pi.
+请注意，不支持接收隔行扫描视频，因此ADV7281（A）-M版本的芯片用途有限，因为它没有必要的I2P去隔行扫描模块。还要确保在选择设备时指定 -M 选项。没有它，您将获得一个无法与Raspberry Pi接口的并行输出总线。
 
-There are no known commercially available boards using these chips, but this driver has been tested via the Analog Devices https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EVAL-ADV7282A-M.html[EVAL-ADV7282-M evaluation board]
+目前尚无使用这些芯片的商用电路板，但该驱动器已通过模拟设备的https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EVAL-ADV7282A-M.html[EVAL-ADV7282-M评估板]进行了测试
 
-This driver can be loaded using the `config.txt` dtoverlay `adv7282m` if you are using the `ADV7282-M` chip variant; or `adv728x-m` with a parameter of either `adv7280m=1`, `adv7281m=1`, or `adv7281ma=1` if you are using a different variant. e.g.
+如果您使用ADV7282-M芯片变体，可以使用config.txt dtoverlay adv7282m加载该驱动程序；或者adv728x-m，参数为adv7280m=1、adv7281m=1或adv7281ma=1(如果使用不同型号)。例如
 
 ----
 dtoverlay=adv728x-m,adv7280m=1
 ----
 
-_Toshiba TC358743 HDMI to CSI2 bridge_
+_东芝 TC358743 HDMI to CSI2 桥接器_
 
-This is a HDMI to CSI-2 bridge chip, capable of converting video data at up to 1080p60.
+这是一个HDMI到CSI-2桥接芯片，能够以高达1080p60的速度转换视频数据。
 
-Information on this bridge chip can be found on the https://toshiba.semicon-storage.com/ap-en/semiconductor/product/interface-bridge-ics-for-mobile-peripheral-devices/hdmir-interface-bridge-ics/detail.TC358743XBG.html[Toshiba Website]
+有关此桥接芯片的信息可在https://toshiba.semicon-storage.com/ap-en/semiconductor/product/interface-bridge-ics-for-mobile-peripheral-devices/hdmir-interface-bridge-ics/detail.TC358743XBG.html[东芝网站]上找到
 
-The TC358743 interfaces HDMI in to CSI-2 and I2S outputs. It is supported by the https://github.com/raspberrypi/linux/blob/rpi-5.4.y/drivers/media/i2c/tc358743.c[TC358743 kernel module].
+TC358743 将 HDMI 连接到 CSI-2 和 I2S 输出。https://github.com/raspberrypi/linux/blob/rpi-5.4.y/drivers/media/i2c/tc358743.c[TC358743内核模块]支持此功能。
 
-The chip supports incoming HDMI signals as either RGB888, YUV444, or YUV422, at up to 1080p60. It can forward RGB888, or convert it to YUV444 or YUV422, and convert either way between YUV444 and YUV422. Only RGB888 and YUV422 support has been tested. When using 2 CSI-2 lanes, the maximum rates that can be supported are 1080p30 as RGB888, or 1080p50 as YUV422. When using 4 lanes on a Compute Module, 1080p60 can be received in either format.
+该芯片支持RGB888、YUV444或YUV422等输入HDMI信号，最高可达1080p60。它可以转发RGB888，或将其转换为YUV444或YUV422，并在YUV444和YUV422之间进行任一方式转换。仅测试了RGB888和YUV422支持。使用 2 个 CSI-2 通道时，可以支持的最大速率为 RGB1080 的 30p888 或 YUV1080 的 50p422。在计算模块上使用 4 个通道时，可以以任一格式接收 1080p60。
 
-HDMI negotiates the resolution by a receiving device advertising an https://en.wikipedia.org/wiki/Extended_Display_Identification_Data[EDID] of all the modes that it can support. The kernel driver has no knowledge of the resolutions, frame rates, or formats that you wish to receive, therefore it is up to the user to provide a suitable file.
-This is done via the VIDIOC_S_EDID ioctl, or more easily using `v4l2-ctl --fix-edid-checksums --set-edid=file=filename.txt` (adding the --fix-edid-checksums option means that you don't have to get the checksum values correct in the source file). Generating the required EDID file (a textual hexdump of a binary EDID file) is not too onerous, and there are tools available to generate them, but it is beyond the scope of this page.
+HDMI通过接收设备通告它可以支持的所有模式的https://en.wikipedia.org/wiki/Extended_Display_Identification_Data[EDID]来协商分辨率。内核驱动程序不知道您希望接收的分辨率、帧速率或格式，因此需要由用户提供合适的文件。这是通过VIDIOC_S_EDID ioctl完成的，或者更容易地使用`v4l 2-CTL- fix-edid-checksums-set-edid =file=filename.txt`(添加-fix-edid-checksums选项意味着您不必在源文件中获得正确的校验和值)。生成所需的EDID文件(二进制EDID文件的文本六进制转储)并不太麻烦，也有工具可以生成它们，但这超出了本文的范围。
 
-As described above, use the `DV_TIMINGS` ioctls to configure the driver to match the incoming video. The easiest approach for this is to use the command `v4l2-ctl --set-dv-bt-timings query`. The driver does support generating the SOURCE_CHANGED events should you wish to write an application to handle a changing source. Changing the output pixel format is achieved by setting it via VIDIOC_S_FMT, however only the pixel format field will be updated as the resolution is configured by the dv timings.
+如上所述，使用`DV_TIMINGS` ioctls来配置驱动程序，以匹配传入的视频。最简单的方法是使用命令`v4l 2-CTL-set-dv-Bt-timings query`。如果您希望编写一个应用程序来处理不断变化的源，该驱动程序确实支持生成SOURCE_CHANGED事件。通过VIDIOC_S_FMT设置可以改变输出像素格式，但是只有像素格式字段会被更新，因为分辨率是由dv时序配置的。
 
-There are a couple of commercially available boards that connect this chip to the Raspberry Pi. The Auvidea B101 and B102 are the most widely obtainable, but other equivalent boards are available.
+有几个商用板将此芯片连接到Raspberry Pi。Auvidea B101 和 B102 是最广泛获得的，但也提供其他同等的电路板
 
-This driver is loaded using the `config.txt` dtoverlay `tc358743`.
+使用`config.txt` dtoverlay `tc358743`加载此驱动程序。
 
-The chip also supports capturing stereo HDMI audio via I2S. The Auvidea boards break the relevant signals out onto a header, which can be connected to the Raspberry Pi's 40-pin header. The required wiring is:
+该芯片还支持通过I2S捕获立体声HDMI音频。Auvidea 板将相关信号分解到一个接头上，该接头可以连接到 Raspberry Pi 的 40 针接头。所需的接线是：
 
 [cols=",^,^,^"]
 |===
-| Signal | B101 header | 40-pin header | BCM GPIO
+| 信号 | B101 接头 | 40-pin 接头 | BCM GPIO
 
 | LRCK/WFS
 | 7
@@ -212,5 +223,4 @@ The chip also supports capturing stereo HDMI audio via I2S. The Auvidea boards b
 | N/A
 |===
 
-The `tc358743-audio` overlay is required _in addition to_ the `tc358743` overlay. This should create an ALSA recording device for the HDMI audio.
-Please note that there is no resampling of the audio. The presence of audio is reflected in the V4L2 control TC358743_CID_AUDIO_PRESENT / "audio-present", and the sample rate of the incoming audio is reflected in the V4L2 control TC358743_CID_AUDIO_SAMPLING_RATE / "Audio sampling-frequency". Recording when no audio is present will generate warnings, as will recording at a sample rate different from that reported.
+除了`tc358743`覆盖外，还需要`TC 358743-音频`覆盖。这将为HDMI音频创建一个ALSA录音设备。请注意，没有音频重采样。音频的存在反映在V4L2控制TC 358743 _ CID _ AUDIO _ PRESENT/“AUDIO-PRESENT”中，输入音频的采样速率反映在V4L2控制TC 358743 _ CID _ AUDIO _ SAMPLING _ RATE/“AUDIO SAMPLING-frequency”中。在没有音频的情况下进行记录会产生警告，以不同于报告的采样率进行记录也会产生警告。

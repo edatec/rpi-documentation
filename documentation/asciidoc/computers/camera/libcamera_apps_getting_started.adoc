@@ -1,36 +1,39 @@
-=== Getting Started
+[[getting-started]]
+=== 开始
 
-==== Using the camera for the first time
+[[using-the-camera-for-the-first-time]]
+==== 首次使用相机
 
-NOTE: On Raspberry Pi 3 and earlier devices running _Bullseye_ you need to re-enable _Glamor_ in order to make the X-Windows hardware accelerated preview window work. To do this enter `sudo raspi-config` at a terminal window and then choose `Advanced Options`, `Glamor` and `Yes`. Finally quit `raspi-config` and let it reboot your Raspberry Pi.
+NOTE: 在Raspberry Pi 3和运行Bullseye的早期设备上，您需要重新启用Glamor以使X-Windows硬件加速预览窗口工作。为此，在终端窗口输入sudo raspi-config，然后选择高级选项、Glamor和Yes。最后退出raspi-config，让它重启你的Raspberry Pi。
 
-When running a Raspberry Pi OS based on _Bullseye_, the 5 basic `libcamera-apps` are already installed. In this case, official Raspberry Pi cameras will also be detected and enabled automatically.
+当运行基于Bullseye的Raspberry Pi操作系统时，已经安装了5个基本的libcamera应用程序。在这种情况下，官方的Raspberry Pi摄像头也会被自动检测并启用。
 
-You can check that everything is working by entering:
+您可以通过输入以下内容来检查一切是否正常：
 
 [,bash]
 ----
 libcamera-hello
 ----
 
-You should see a camera preview window for about 5 seconds.
+您应该会看到相机预览窗口约 5 秒钟。
 
-Users who are still running _Buster_ should upgrade to _Bullseye_. The new _libcamera_-based stack is no longer supported there, and anyone still using _Buster_ should stay with the legacy camera stack.
+仍在运行Buster的用户应该升级到Bullseye。那里不再支持新的基于 libcamera 的堆栈，任何仍在使用 Buster 的人都应该继续使用旧的相机堆栈。
 
-NOTE: Raspberry Pi 3 and older devices may not by default be using the correct display driver. Refer to the `/boot/config.txt` file and ensure that either `dtoverlay=vc4-fkms-v3d` or `dtoverlay=vc4-kms-v3d` is currently active. Please reboot if you needed to change this.
+NOTE: Raspberry Pi 3和更旧的设备可能默认没有使用正确的显示驱动程序。参考/boot/config.txt文件，确保dtoverlay=vc4-fkms-v3d或dtoverlay=vc4-kms-v3d当前处于活动状态。如果需要更改，请重新启动。
 
-==== If you do need to alter the configuration
+[[getting-help]]
+==== 如果确实需要更改配置
 
-You may need to alter the camera configuration in your `/boot/config.txt` file if:
+在以下情况下，您可能需要更改/boot/config.txt文件中的相机配置：
 
-* You are using a 3rd party camera (the manufacturer's instructions should explain the changes you need to make).
+* 您使用的是第三方相机（制造商的说明应说明您需要进行的更改）。
 
-* You are using an official Raspberry Pi camera but wish to use a non-standard driver/overlay.
+* 您使用的是官方的Raspberry Pi相机，但希望使用非标准的驱动程序/覆盖。
 
-If you do need to add your own `dtoverlay`, the following are currently recognised.
+如果您确实需要添加自己的dtoverlay,目前可以识别以下内容。
 
 |===
-| Camera Module | In `/boot/config.txt`
+| 相机模组 | 在 `/boot/config.txt`
 
 | V1 camera (OV5647)
 | `dtoverlay=ov5647`
@@ -57,6 +60,6 @@ If you do need to add your own `dtoverlay`, the following are currently recognis
 | `dtoverlay=ov9281`
 |===
 
-To override the automatic camera detection, _Bullseye_ users will also need to delete the entry `camera_auto_detect=1` if present in the `config.txt` file. Your Raspberry Pi will need to be rebooted after editing this file. 
+要覆盖自动摄像机检测，Bullseye 用户还需要删除条目camera_auto_detect=1(如果在config.txt文件中存在)。编辑此文件后，您的Raspberry Pi需要重新启动。
 
-NOTE: Setting `camera_auto_detect=0` disables the boot time detection completely. 
+NOTE: 设置camera_auto_detect=0将完全禁用启动时间检测。

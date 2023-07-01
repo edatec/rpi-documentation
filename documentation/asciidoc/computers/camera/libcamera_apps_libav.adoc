@@ -1,16 +1,17 @@
-=== libav integration with libcamera-vid
+[[libav-integration-with-libcamera-vid]]
+=== Libav 与 Libcamera-VID 的集成
 
-`libcamera-vid` can use the ffmpeg/libav codec backend to encode audio and video streams and either save to a local file or stream over the network. At present, video is encoded through the hardware H.264 encoder, and audio is encoded by a number of available software encoders. To list the available output formats, use the `ffmpeg -formats` command.
+libcamera-vid可以使用 FFMPEG/libav 编解码器后端对音频和视频流进行编码，并保存到本地文件或通过网络流式传输。目前，视频通过硬件H.264编码器进行编码，音频由许多可用的软件编码器进行编码。要列出可用的输出格式，请使用该ffmpeg -formats命令。
 
-To enable the libav backend, use the `--codec libav` command line option. Once enabled, the following configuration options are available:
+要启用 libav 后端，请使用--codec libav命令行选项。启用后，以下配置选项可用：
 
 ----
     --libav-format,     libav output format to be used <string>
 ----
 
-Set the libav output format to use. These output formats can be specified as containers (e.g. mkv, mp4, avi) or stream output (e.g. h264 or mpegts). If this option is not provided, libav tries to deduce the output format from the filename specified by the `-o` command line argument.
+设置要使用的 libav 输出格式。这些输出格式可以指定为容器（例如 mkv、mp4、avi）或流输出（例如 h264 或 mpegts）。如果未提供此选项，libav 将尝试从命令行参数-o指定的文件名推断输出格式。
 
-Example: To save a video in an mkv container, the following commands are equivalent:
+示例：要将视频保存在 mkv 容器中，以下命令是等效的：
 
 ----
 libcamera-vid --codec libav -o test.mkv
@@ -21,33 +22,33 @@ libcamera-vid --codec libav --libav-format mkv -o test.raw
     --libav-audio,     Enable audio recording
 ----
 
-Set this option to enable audio encoding together with the video stream. When audio encoding is enabled, an output format that supports audio (e.g. mpegts, mkv, mp4) must be used.
+设置此选项可与视频流一起启用音频编码。启用音频编码后，必须使用支持音频的输出格式（例如 mpegts、mkv、mp4）。
 
 ----
     --audio-codec,     Selects the audio codec <string>
 ----
 
-Selects which software audio codec is used for encoding. By default `aac` is used. To list the available audio codecs, use the `ffmpeg -codec` command.
+选择用于编码的软件音频编解码器。默认情况下使用。要列出可用的音频编解码器，请使用该aacffmpeg -codec命令。
 
 ----
     --audio-bitrate,     Selects the audio bitrate <number>
 ----
 
-Sets the audio encoding bitrate in bits per second.
+设置音频编码比特率（以位/秒为单位）。
 
-Example: To record audio at 16 kilobits/sec with the mp2 codec use `libcamera-vid --codec libav -o test.mp4 --audio_codec mp2 --audio-bitrate 16384`
+Example: 要使用mp2编解码器以16千位/秒的速度录制音频，请使用lib camera-vid-codec libav-o test.mp4-audio _ codec MP2-audio-bitrate 16384
 
 ----
     --audio-samplerate,     Set the audio sampling rate <number>
 ----
 
-Set the audio sampling rate in Hz for encoding. Set to 0 (default) to use the input sample rate.
+以 Hz 为单位设置音频采样率以进行编码。设置为 0（默认值）以使用输入采样率。
 
 ----
     --audio-device,     Chooses an audio recording device to use <string>
 ----
 
-Selects which ALSA input device to use for audio recording. The audio device string can be obtained with the following command:
+选择要用于音频录制的 ALSA 输入设备。可以使用以下命令获取音频设备字符串：
 
 ----
 pi@pi4:~ $ pactl list | grep -A2 'Source #' | grep 'Name: '
@@ -60,18 +61,19 @@ pi@pi4:~ $ pactl list | grep -A2 'Source #' | grep 'Name: '
 ----
     --av-sync,     Audio/Video sync control <number>
 ----
-This option can be used to shift the audio sample timestamp by a value given in microseconds relative to the video frame. Negative values may also be used.
+此选项可用于将音频样本时间戳相对于视频帧的给定值（以微秒为单位）移动。也可以使用负值。
 
-==== Network streaming with libav
+[[network-streaming-with-libav]]
+==== 使用 libav 进行网络流式传输
 
-It is possible to use the libav backend as a network streaming source for audio/video. To do this, the output filename specified by the `-o` argument must be given as a protocol url, see https://ffmpeg.org/ffmpeg-protocols.html[ffmpeg protocols] for more details on protocol usage. Some examples:
+可以使用 libav 后端作为音频/视频的网络流源。为此，-o参数指定的输出文件名必须作为协议 url 提供，有关协议使用的更多详细信息，请参阅 ffmpeg 协议。一些例子：
 
-To stream audio/video using TCP
+使用 TCP 流式传输音频/视频
 ----
 libcamera-vid -t 0 --codec libav --libav-format mpegts --libav-audio -o "tcp://0.0.0.0:1234?listen=1"
 ----
 
-To stream audio/video using UDP
+使用 UDP 流式传输音频/视频
 ----
 libcamera-vid -t 0 --codec libav --libav-format mpegts --libav-audio  -o "udp://<ip-addr>:<port>"
 ----

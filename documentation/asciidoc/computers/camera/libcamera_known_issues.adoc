@@ -1,7 +1,8 @@
-=== Known Issues
+[[known-issues]]
+=== 已知问题
 
-We are aware of the following issues in `libcamera` and `libcamera-apps`.
+我们注意到libcamera 和 libcamera-apps中的以下问题。
 
-* On Raspberry Pi 3 (and earlier devices) the graphics hardware can only support images up to 2048x2048 pixels which places a limit on the camera images that can be resized into the preview window. In practice this means that video encoding of images larger than 2048 pixels across (which would necessarily be using a codec other than h.264) will not support, or will produce corrupted, preview images. For Raspberry Pi 4 the limit is 4096 pixels. We would recommend using the `-n` (no preview) option for the time being.
+* 在Raspberry Pi 3（及更早的设备上），图形硬件只能支持最大2048x2048像素的图像，这限制了可以在预览窗口中调整大小的相机图像。实际上，这意味着大于 2048 像素的图像的视频编码（必须使用 h.264 以外的编解码器）将不支持或将生成损坏的预览图像。对于Raspberry Pi 4，限制为 4096 像素。我们建议暂时使用-n（无预览）选项。
 
-* The preview window shows some display tearing when using X windows. This is not likely to be fixable.
+* 预览窗口在使用 X 窗口时显示一些显示撕裂。这不太可能是可修复的。

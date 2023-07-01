@@ -1,20 +1,21 @@
+[[libcamera-detect]]
 === `libcamera-detect`
 
-`libcamera-detect` is not supplied by default in any Raspberry Pi OS distribution, but can be built by users who have xref:camera_software.adoc#post-processing-with-tensorflow-lite[installed TensorFlow Lite]. In this case, please refer to the xref:camera_software.adoc#building-libcamera-and-libcamera-apps[`libcamera-apps` build instructions]. You will need to run `cmake` with `-DENABLE_TFLITE=1`.
 
-This application runs a preview window and monitors the contents using a Google MobileNet v1 SSD (Single Shot Detector) neural network that has been trained to identify about 80 classes of objects using the Coco dataset. It should recognise people, cars, cats and many other objects.
+libcamera-detect在任何Raspberry Pi OS发行版中都没有默认提供，但可以由xref:camera_software.adoc#post-processing-with-tensorflow-lite[安装了TensorFlow Lite]安装了TensorFlow Lite的用户构建。在这种情况下，请参考xref:camera_software.adoc#building-libcamera-and-libcamera-apps[libcamera-apps构建说明]。您需要使用-DENABLE_TFLITE=1运行cmake。
 
-Its starts by running a preview window, and whenever the target object is detected it will perform a full resolution JPEG capture, before returning back to the preview mode to continue monitoring. It provides a couple of additional command line options that do not apply elsewhere:
+此应用程序运行预览窗口并使用Google MobileNet v1 SSD（单次检测器）神经网络监控内容，该神经网络经过训练，可以使用Coco数据集识别大约80类对象。它应该识别人，汽车，猫和许多其他物体。
+它首先运行预览窗口，每当检测到目标对象时，它都会执行全分辨率 JPEG 捕获，然后返回预览模式继续监视。它提供了几个不适用于其他地方的其他命令行选项：
 
 `--object <name>`
 
-Detect objects with the given `<name>`. The name should be taken from the model's label file.
+使用给定的<name> .该名称应取自模型的标签文件。
 
 `--gap <number>`
 
-Wait at least this many frames after a capture before performing another. This is necessary because the neural network does not run on every frame, so it is best to give it a few frames to run again before considering another capture.
+在捕获后至少等待这么多帧，然后再执行另一帧。这是必要的，因为神经网络不会在每一帧上运行，因此在考虑再次捕获之前，最好给它几帧以再次运行。
 
-Please refer to the xref:camera_software.adoc#object_detect_tf-stage[TensorFlow Lite object detector] section for more general information on how to obtain and use this model. But as an example, you might spy secretly on your cats while you are away with:
+请参阅  xref:camera_software.adoc#object_detect_tf-stage[TensorFlow Lite 对象检测器] 部分，了解有关如何获取和使用此模型的更多一般信息。但举个例子，你可能会在外出时秘密监视你的猫：
 
 [,bash]
 ----

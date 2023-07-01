@@ -1,18 +1,21 @@
-== Application Notes
+[[application-notes]]
+== 应用说明
 
-=== Creating Timelapse Video
+[[creating-timelapse-video]]
+=== 创建延时摄影视频
 
-To create a time-lapse video, you simply configure the Raspberry Pi to take a picture at a regular interval, such as once a minute, then use an application to stitch the pictures together into a video. There are a couple of ways of doing this.
+要创建延时视频，您只需将 Raspberry Pi 配置为定期拍照，例如每分钟一次，然后使用应用程序将图片拼接成视频。有几种方法可以做到这一点。
 
-==== Using `libcamera-still` or `raspistill` Timelapse Mode
+[[using-libcamera-still-or-raspistill-timelapse-mode]]
+==== 使用libcamera-still或raspistill延时摄影模式
 
-Both `libcamera-still` and `raspistill` have a built in time-lapse mode, using the `--timelapse` command line switch. The value that follows the switch is the time between shots in milliseconds:
+libcamera-still和raspistill都有内置的延时模式，使用- timelapse命令行开关。开关后的值是拍摄之间的时间，以毫秒为单位:
 
 ----
 libcamera-still -t 30000 --timelapse 2000 -o image%04d.jpg
 ----
 
-or
+或
 
 ----
 raspistill -t 30000 --timelapse 2000 -o image%04d.jpg
@@ -20,59 +23,61 @@ raspistill -t 30000 --timelapse 2000 -o image%04d.jpg
 
 [NOTE]
 ====
-The `%04d` in the output filename: this indicates the point in the filename where you want a frame count number to appear. So, for example, the command above will produce a capture every two seconds (2000ms), over a total period of 30 seconds (30000ms), named image0001.jpg, image0002.jpg, and so on, through to image0015.jpg.
+输出文件名中的%04d:这表示文件名中您希望帧数出现的位置。例如，上面的命令将每两秒钟(2000毫秒)捕获一次，总时间为30秒(30000毫秒)，被命名为image0001.jpg、image0002.jpg等等，一直到image0015.jpg。
 
-The `%04d` indicates a four-digit number, with leading zeros added to make up the required number of digits. So, for example, `%08d` would result in an eight-digit number. You can miss out the `0` if you don't want leading zeros.
+%04d表示一个四位数，添加前导零以构成所需的位数。例如，%08d会产生一个八位数。如果不想要前导零，可以省略0。
 
-If a timelapse value of 0 is entered, the application will take pictures as fast as possible. Note that there's an minimum enforced pause of approximately 30 milliseconds between captures to ensure that exposure calculations can be made.
+如果输入的延时值为0，应用程序将尽快拍照。请注意，在两次拍摄之间至少会强制暂停大约30毫秒，以确保可以进行曝光计算。
 ====
 
-==== Automating using `cron` Jobs
+[[automating-using-cron-jobs]]
+==== 使用cron实现自动化
 
-A good way to automate taking a picture at a regular interval is using `cron`. Open the cron table for editing:
+定期自动拍照的一个好方法是使用cron。打开cron表进行编辑:
 
 ----
 crontab -e
 ----
 
-This will either ask which editor you would like to use, or open in your default editor. Once you have the file open in an editor, add the following line to schedule taking a picture every minute (referring to the Bash script from the xref:camera_software.adoc#raspistill[raspistill page], though you can use `libcamera-still` in exactly the same way):
+这将询问您想要使用哪个编辑器，或者在您的默认编辑器中打开。在编辑器中打开文件后，添加下面一行来安排每分钟拍摄一张照片(参考raspistill页面中的Bash脚本，尽管您可以使用lib camera——仍然以完全相同的方式):
 
 ----
 * * * * * /home/pi/camera.sh 2>&1
 ----
 
-Save and exit and you should see the message:
+保存并退出，您应该看到以下消息：
 
 ----
 crontab: installing new crontab
 ----
 
-Make sure that you use e.g. `%04d` to ensure that each image is written to a new file: if you don't, then each new image will overwrite the previous file.
+确保您使用例如%04d来确保每个图像都被写入一个新文件:如果您不这样做，那么每个新图像都将覆盖前一个文件。
 
-==== Stitching Images Together
+[[stitching-images-together]]
+==== 将图像拼接在一起
 
-Now you'll need to stitch the photos together into a video. You can do this on the Raspberry Pi using `ffmpeg` but the processing will be slow. You may prefer to transfer the image files to your desktop computer or laptop and produce the video there.
+现在你需要把这些照片拼接成一个视频。你可以用ffmpeg在Raspberry Pi上做这个，但是处理会很慢。您可能更喜欢将图像文件传输到您的台式计算机或笔记本电脑上，并在那里制作视频。
 
-First you will need to install `ffmpeg` if it's not already installed.
+首先，如果尚未安装，则需要安装ffmpeg。
 
 ----
 sudo apt install ffmpeg
 ----
 
-Now you can use the `ffmpeg` tool to convert your JPEG files into an mp4 video:
+现在您可以使用该ffmpeg工具将 JPEG 文件转换为 mp4 视频：
 
 ----
 ffmpeg -r 10 -f image2 -pattern_type glob -i 'image*.jpg' -s 1280x720 -vcodec libx264 timelapse.mp4
 ----
 
-On a Raspberry Pi 3, this can encode a little more than two frames per second. The performance of other Raspberry Pi models will vary. The parameters used are:
+在Raspberry Pi 3上，每秒可以编码两帧多一点。其他Raspberry Pi型号的性能会有所不同。使用的参数包括：
 
-* `-r 10` Set frame rate (Hz value) to ten frames per second in the output video.
-* `-f image2` Set ffmpeg to read from a list of image files specified by a pattern.
-* `-pattern_type glob` When importing the image files, use wildcard patterns (globbing) to interpret the filename input by `-i`, in this case `image*.jpg`, where `*` would be the image number.
-* `-i 'image*.jpg'` The input file specification (to match the files produced during the capture).
-* `-s 1280x720` Scale to 720p. You can also use 1920x1080, or lower resolutions, depending on your requirements.
-* `-vcodec libx264` Use the software x264 encoder.
-* `timelapse.mp4` The name of the output video file.
+* -r 10在输出视频中将帧速率（Hz 值）设置为每秒 10 帧。
+* -f image2将 ffmpeg 设置为从模式指定的图像文件列表中读取。
+* -pattern_type glob导入图像文件时，使用通配符模式(globbing)来解释-i输入的文件名，在本例中为image*。jpg，其中*是图像编号。
+* -i 'image*.jpg'输入文件规范（以匹配捕获期间生成的文件）。
+* -s 1280x720缩放到 720p。您还可以使用 1920x1080 或更低的分辨率，具体取决于您的要求。
+* -vcodec libx264使用软件 x264 编码器。
+* timelapse.mp4输出视频文件的名称。
 
-`ffmpeg` has a comprehensive parameter set for varying encoding options and other settings. These can be listed using `ffmpeg --help`.
+ffmpeg具有用于各种编码选项和其他设置的全面参数集。可以使用ffmpeg --help 列出这些内容。

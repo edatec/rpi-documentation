@@ -1,33 +1,37 @@
-=== `libcamera` and `libcamera-apps` Packages
+[[libcamera-and-libcamera-apps-packages]]
+=== libcamera和libcamera-apps包
 
-A number of `apt` packages are provided for convenience. In order to access them, we recommend keeping your OS up to date xref:../computers/os.adoc#using-apt[in the usual way].
+为方便起见，提供了许多apt包。为了访问它们，我们建议您以 xref:../computers/os.adoc#using-apt[通常的方式]使您的操作系统保持最新状态。
 
-==== Binary Packages
+[[binary-packages]]
+==== 二进制包
 
-There are two `libcamera-apps` packages available, that contain the necessary executables:
+有两个libcamera-apps包可用，其中包含必要的可执行文件：
 
-* `libcamera-apps` contains the full applications with support for previews using X Windows. This package is pre-installed in the _Bullseye_ release of Raspberry Pi OS.
+* libcamera-apps包含支持使用 X Windows 预览的完整应用程序。此软件包预装在Raspberry Pi OS的Bullseye版本中。
 
-* `libcamera-apps-lite` omits X Windows support and only the DRM preview is available. This package is pre-installed in the _Bullseye_ release of Raspberry Pi OS Lite.
+* libcamera-apps-lite省略 X Windows 支持，只有 DRM 预览可用。此软件包预安装在Raspberry Pi OS Lite的Bullseye版本中。
 
-For _Bullseye_ users, official Raspberry Pi cameras should be detected automatically. Other users will need to xref:camera_software.adoc#if-you-do-need-to-alter-the-configuration[edit their `/boot/config.txt`] file if they have not done so previously.
+对于Bullseye用户，官方Raspberry Pi相机应该会自动检测。其他用户将需要xref:camera_software.adoc#if-you-do-need-to-alter-the-configuration[编辑他们的 /boot/config.txt] 文件，如果他们以前没有这样做过。
 
-==== Dependencies
+[[dependencies]]
+==== 依赖
 
-These applications depend on a number of library packages which are named _library-name<n>_ where _<n>_ is a version number (actually the ABI, or Application Binary Interface, version), and which stands at zero at the time of writing. Thus we have the following:
+这些应用程序依赖于许多名为 library-name<n 的库包>其中 <n> 是一个版本号（实际上是 ABI，或应用程序二进制接口，版本），在撰写本文时为零。因此，我们有以下内容：
 
-* The package `libcamera0` contains the `libcamera` libraries.
+* libcamera0包包含libcamera库
 
-* The package `libepoxy0` contains the `libepoxy` libraries.
+* libepoxy0包包含libepoxy库
 
-These will be installed automatically when needed.
+这些将在需要时自动安装。
 
-==== Dev Packages
+[[dev-packages]]
+==== 开发包
 
-`libcamera-apps` can be rebuilt on their own without installing and building `libcamera` and `libepoxy` from scratch. To enable this, the following packages should be installed:
+libcamera-apps可以自行重建，无需从头开始安装和构建libcamera和libepoxy。要实现这一点，应该安装以下软件包:
 
-* `libcamera-dev` contains the necessary `libcamera` header files and resources.
+* libcamera-dev包含必要的libcamera头文件和资源。
 
-* `libepoxy-dev` contains the necessary `libepoxy` header files and resources. You will only need this if you want support for the X11/GLES preview window.
+* libepoxy-dev包含必要的libepoxy头文件和资源。只有当你想支持X11/GLES预览窗口时，你才需要它。
 
-Subsequently `libcamera-apps` can be xref:camera_software.adoc#building-libcamera-apps-without-rebuilding-libcamera[checked out from GitHub and rebuilt].
+随后libcamera-apps可以从xref:camera_software.adoc#building-libcamera-apps-without-rebuilding-libcamera[ GitHub 签出并重建]。

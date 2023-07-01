@@ -1,13 +1,14 @@
-== Introducing the Raspberry Pi Cameras
+[[introducing-the-raspberry-pi-cameras]]
+== Raspberry Pi相机介绍
 
-There are now several official Raspberry Pi camera modules. The original 5-megapixel model was https://www.raspberrypi.com/news/camera-board-available-for-sale/[released] in 2013, it was followed by an 8-megapixel https://www.raspberrypi.com/products/camera-module-v2/[Camera Module 2] which was https://www.raspberrypi.com/news/new-8-megapixel-camera-board-sale-25/[released] in 2016. The latest camera model is the 12-megapixel https://raspberrypi.com/products/camera-module-3/[Camera Module 3] which was https://www.raspberrypi.com/news/new-autofocus-camera-modules/[released] in 2023. The original 5MP device is no longer available from Raspberry Pi. 
+现在有一些官方的Raspberry Pi相机模块。最初的500万像素型号 https://www.raspberrypi.com/news/camera-board-available-for-sale/[发布于]2013年, 随后在2016年 https://www.raspberrypi.com/news/new-8-megapixel-camera-board-sale-25/[发布]了800万像素相机 https://www.raspberrypi.com/products/camera-module-v2/[模块2]。最新的相机型号是2023年 https://www.raspberrypi.com/news/new-autofocus-camera-modules/[发布]的1200万像素相机 https://raspberrypi.com/products/camera-module-3/[模块3]。Raspberry Pi已经不再提供最初的5MP设备。
 
-Additionally a 12-megapixel https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/[High Quality Camera] with CS- or M12-mount variants for use with external lenses was https://www.raspberrypi.com/news/new-product-raspberry-pi-high-quality-camera-on-sale-now-at-50/[released in 2020] and https://www.raspberrypi.com/news/new-autofocus-camera-modules/[2023] respectively. There is no infrared version of the HQ Camera.
+此外， https://www.raspberrypi.com/news/new-product-raspberry-pi-high-quality-camera-on-sale-now-at-50/[2020年]和 https://www.raspberrypi.com/news/new-autofocus-camera-modules/[2023年]分别发布了一款1200万像素的 https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/[高品质相机],配有CS或M12支架,可与外部镜头配合使用。HQ相机没有红外版。
 
-All of these cameras come in visible light and infrared versions, while the Camera Module 3 also comes as a standard or wide FoV model for a total of four different variants.
+所有这些相机都有可见光和红外版本，而相机模块3也作为标准或宽FoV型号提供，共有四种不同的型号。
  
-Further details on the camera modules can be found in the xref:../accessories/camera.adoc#about-the-camera-modules[camera hardware] page.
+有关相机模块的更多详细信息，请参阅xref:../accessories/camera.adoc#about-the-camera-modules[相机硬件] 页面。 
 
-All Raspberry Pi cameras are capable of taking high-resolution photographs, along with full HD 1080p video, and can be fully controlled programmatically. This documentation describes how to use the camera in various scenarios, and how to use the various software tools.
+所有Raspberry Pi相机都能够拍摄高分辨率照片以及全高清1080p视频，并且可以完全编程控制。本文档介绍如何在各种场景中使用相机，以及如何使用各种软件工具。
 
-Once you've xref:../accessories/camera.adoc#installing-a-raspberry-pi-camera[installed your camera module], there are various ways the cameras can be used. The simplest option is to use one of the provided camera applications, such as `libcamera-still` or `libcamera-vid`.
+xref:../accessories/camera.adoc#installing-a-raspberry-pi-camera[安装好相机模块后]，相机有多种使用方式。最简单的选择是使用提供的相机应用程序之一，如libcamera-still或libcamera-vid。

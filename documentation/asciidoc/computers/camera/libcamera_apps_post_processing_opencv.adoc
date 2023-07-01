@@ -1,18 +1,20 @@
-=== Post-Processing with OpenCV
+[[post-processing-with-opencv]]
+=== 使用 OpenCV 进行后处理
 
-NOTE: These stages all require OpenCV to be installed on your system. You may also need to rebuild `libcamera-apps` with OpenCV support - please see the instructions for xref:camera_software.adoc#building-libcamera-and-libcamera-apps[building `libcamera-apps` for yourself].
+NOTE: 这些阶段都需要在您的系统上安装 OpenCV。您可能还需要使用 OpenCV 支持进行重建libcamera-apps - 请参阅xref:camera_software.adoc#building-libcamera-and-libcamera-apps[自己构建 libcamera-app] 的说明。
 
-==== `sobel_cv` stage
+[[sobel_cv-stage]]
+==== sobel_cv阶段
 
-The `sobel_cv` stage has the following user-configurable parameters:
+sobel_cv阶段具有以下用户可配置的参数：
 
 [cols=",^"]
 |===
-| ksize | Kernel size of the Sobel filter
+| ksize | Sobel滤波器的内核大小
 |===
 
 
-Default `sobel_cv.json` file:
+默认sobel_cv.json文件：
 
 ----
 {
@@ -27,26 +29,27 @@ Example:
 
 image::images/sobel.jpg[Image with Sobel filter]
 
-==== `face_detect_cv` stage
+[[face_detect_cv-stage]]
+==== face_detect_cv阶段
 
-This stage uses the OpenCV Haar classifier to detect faces in an image. It returns the face locations in the metadata (under the key "face_detect.results"), and optionally draws them on the image.
+此阶段使用 OpenCV Haar 分类器来检测图像中的人脸。它返回元数据中的人脸位置（在键“face_detect.results”下），并选择性地将它们绘制在图像上。
 
-The `face_detect_cv` stage has the following user-configurable parameters:
+face_detect_cv阶段具有以下用户可配置的参数：
 
 [cols=",^"]
 |===
-| cascade_name | Name of the file where the Haar cascade can be found.
-| scaling_factor | Determines range of scales at which the image is searched for faces.
-| min_neighbors | Minimum number of overlapping neighbours required to count as a face.
-| min_size | Minimum face size.
-| max_size | Maximum face size.
-| refresh_rate | How many frames to wait before trying to re-run the face detector.
-| draw_features | Whether to draw face locations on the returned image.
+| cascade_name | 可以找到 Haar 级联的文件的名称。
+| scaling_factor | 确定在图像中搜索人脸的比例范围。
+| min_neighbors | 计为面所需的最小重叠相邻要素数。
+| min_size | 最小面部尺寸。
+| max_size | 最大面部尺寸。
+| refresh_rate | 在尝试重新运行人脸检测器之前要等待多少帧。
+| draw_features | 是否在返回的图像上绘制人脸位置。
 |===
 
-The `face_detect_cv" stage runs only during preview and video capture; it ignores still image capture. It runs on the low resolution stream which would normally be configured to a resolution from about 320x240 to 640x480 pixels.
+“face_detect_cv”阶段仅在预览和视频捕获期间运行;它忽略静止图像捕获。它在低分辨率流上运行，该流通常配置为大约 320x240 到 640x480 像素的分辨率。
 
-Default `face_detect_cv.json` file:
+默认face_detect_cv.json文件：
 
 ----
 {
@@ -67,28 +70,29 @@ Example:
 
 image::images/face_detect.jpg[Image showing faces]
 
-==== `annotate_cv` stage
+[[annotate_cv-stage]]
+==== annotate_cv阶段
 
-This stage allows text to be written into the top corner of images. It allows the same `%` substitutions as the `--info-text` parameter.
+此阶段允许将文本写入图像的上角。它允许与%--info-text参数相同的替换。
 
-Additionally to the flags of xref:camera_software.adoc#preview-window-2[`--info-text`] you can provide any token that https://www.man7.org/linux/man-pages/man3/strftime.3.html[strftime] understands to display the current date / time.
-The `--info-text` tokens are interpreted first and any percentage token left is then interpreted by strftime. To achieve a datetime stamp on the video you can use e.g. `%F %T %z` (%F for the ISO-8601 date (2023-03-07), %T for 24h local time (09:57:12) and %z for the timezone difference to UTC (-0800)).
 
-The stage does not output any metadata, but if it finds metadata under the key "annotate.text" it will write this text in place of anything in the JSON configuration file. This allows other post-processing stages to pass it text strings to be written onto the top of the images.
+除了xref:camera_software.adoc#preview-window-2[`--info-text`]标志之外，您还可以提供https://www.man7.org/linux/man-pages/man3/strftime.3.html[strftime]能够理解的任何标记来显示当前日期/时间。首先解释- info-text标记，然后strftime解释剩余的任何百分比标记。要在视频上获得日期时间标记，您可以使用%F %T %z (%F表示ISO-8601日期(2023-03-07)，%T表示24小时本地时间(09:57:12)，而%z表示与UTC (-0800)的时区差异。）
 
-The `annotate_cv` stage has the following user-configurable parameters:
+该阶段不输出任何元数据，但如果它在键“annotate.text”下找到元数据，它将写入此文本来代替 JSON 配置文件中的任何内容。这允许其他后处理阶段将其传递给要写入图像顶部的文本字符串。
+
+annotate_cv阶段具有以下用户可配置的参数：
 
 [cols=",^"]
 |===
-| text | The text string to be written.
-| fg | Foreground colour.
-| bg | Background colour.
-| scale | A number proportional to the size of the text.
-| thickness | A number that determines the thickness of the text.
-| alpha | The amount of "alpha" to apply when overwriting the background pixels.
+| text | 要写入的文本字符串。
+| fg | 前景色。
+| bg | 背景颜色。
+| scale | 与文本大小成比例的数字。
+| thickness | 确定文本粗细的数字。
+| alpha | 覆盖背景像素时要应用的“alpha”量。
 |===
 
-Default `annotate_cv.json` file:
+默认annotate_cv.json文件：
 
 ----
 {

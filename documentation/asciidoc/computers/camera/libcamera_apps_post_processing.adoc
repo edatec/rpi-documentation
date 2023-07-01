@@ -1,14 +1,15 @@
-=== Post-Processing
+[[post-processing]]
+=== 后处理
 
-`libcamera-apps` share a common post-processing framework. This allows them to pass the images received from the camera system through a number of custom image processing and image analysis routines. Each such routine is known as a _post-processing stage_ and the description of exactly which stages should be run, and what configuration they may have, is supplied in a JSON file. Every stage, along with its source code, is supplied with a short example JSON file showing how to enable it.
+libcamera-apps共享一个通用的后处理框架。这允许他们通过许多自定义图像处理和图像分析例程传递从相机系统接收的图像。每个这样的例程都称为后处理阶段，JSON文件中提供了对应运行哪些阶段以及它们可能具有的配置的确切描述。每个阶段及其源代码都提供了一个简短的示例 JSON 文件，显示如何启用它。
 
-For example, the simple _negate_ stage (which "negates" all the pixels in an image, turning light pixels dark and vice versa) is supplied with a `negate.json` file that configures the post-processing pipeline to run it:
+例如，简单否定阶段（“否定”图像中的所有像素，使浅色像素变暗，反之亦然）随一个negate.json文件一起提供，该文件配置后处理管道以运行它：
 
 `libcamera-hello --post-process-file /path/to/negate.json`
 
-TIP: Example JSON files can be found in the `assets` folder of the `libcamera-apps` repository at https://github.com/raspberrypi/libcamera-apps/tree/main/assets[].
+TIP: 示例JSON文件可以在libcamera-apps资源库的assets文件夹中找到，该资源库位于https://github . com/raspberrypi/lib camera-apps/tree/main/assets。
 
-The negate stage is particularly trivial and has no configuration parameters of its own, therefore the JSON file merely has to name the stage, with no further information, and it will be run. Thus `negate.json` contains
+否定阶段特别简单，没有自己的配置参数，因此 JSON 文件只需命名阶段，无需进一步信息，它就会运行。因此negate.json包含
 
 ----
 {
@@ -18,8 +19,7 @@ The negate stage is particularly trivial and has no configuration parameters of 
 }
 ----
 
-To run multiple post-processing stages, the contents of the example JSON files merely need to be listed together, and the stages will be run in the order given. For example, to run the Sobel stage (which applies a Sobel filter to an image) followed by the negate stage we could create a custom JSON file containing
-
+要运行多个后处理阶段，只需一起列出示例 JSON 文件的内容，并且这些阶段将按给定的顺序运行。例如，要运行 Sobel 阶段（将 Sobel 过滤器应用于图像），然后运行否定阶段，我们可以创建一个自定义 JSON 文件，其中包含
 ----
 {
     "sobel_cv":
@@ -32,27 +32,28 @@ To run multiple post-processing stages, the contents of the example JSON files m
 }
 ----
 
-The Sobel stage is implemented using OpenCV, hence `cv` in its name. Observe how it has a user-configurable parameter, `ksize` that specifies the kernel size of the filter to be used. In this case, the Sobel filter will produce bright edges on a black background, and the negate stage will turn this into dark edges on a white background, as shown.
+Sobel阶段是使用OpenCV实现的，因此它的名字就叫CV。观察它如何拥有一个用户可配置的参数ksize，该参数指定要使用的过滤器的内核大小。在这种情况下，Sobel滤镜会在黑色背景上产生亮边，而“求反”阶段会将其转换为白色背景上的暗边，如图所示。
 
 image::images/sobel_negate.jpg[Image with Sobel and negate]
 
-Some stages actually alter the image in some way, and this is their primary function (such as _negate_). Others are primarily for image analysis, and while they may indicate something on the image, all they really do is generate useful information. For this reason we also have a very flexible form of _metadata_ that can be populated by the post-processing stages, and this will get passed all the way through to the application itself.
+某些阶段实际上以某种方式改变了图像，这是它们的主要功能（例如否定）。其他主要用于图像分析，虽然它们可能在图像上指示某些内容，但它们真正做的只是生成有用的信息。出于这个原因，我们还有一种非常灵活的元数据形式，可以通过后处理阶段填充，这将一直传递到应用程序本身。
 
-Image analysis stages often prefer to work on reduced resolution images. `libcamera-apps` are able to supply applications with a ready-made low resolution image provided directly by the ISP hardware, and this can be helpful in improving performance.
+图像分析阶段通常更喜欢处理分辨率较低的图像。 libcamera-apps能够为应用程序提供由 ISP 硬件直接提供的现成低分辨率图像，这有助于提高性能。
 
-Furthermore, with the post-processing framework being completely open, Raspberry Pi welcomes the contribution of new and interesting stages from the community and would be happy to host them in our `libcamera-apps` repository. The stages that are currently available are documented below.
+此外，随着后处理框架的完全开放，Raspberry Pi 欢迎社区中新的和有趣的阶段的贡献，并很乐意将它们托管在我们的libcamera-apps存储库中。下面记录了当前可用的阶段。
 
-NOTE: The `libcamera-apps` supplied with the operating system will be built without any optional 3rd party libraries (such as OpenCV or TensorFlow Lite), meaning that certain post-processing stages that rely on them will not be enabled. To use these stages, please follow the instructions for xref:camera_software.adoc#building-libcamera-and-libcamera-apps[building `libcamera-apps` for yourself].
+NOTE:操作系统提供的libcamera-apps将在没有任何可选第三方库(如OpenCV或TensorFlow Lite)的情况下构建，这意味着依赖它们的某些后处理阶段将不会启用。要使用这些阶段，请按照说明xref:camera_software.adoc#building-libcamera-and-libcamera-apps[为自己构建libcamera-apps]。
 
-==== `negate` stage
+[[negate-stage]]
+==== `negate` 阶段
 
-The `negate` stage requires no 3rd party libraries.
+该negate阶段不需要第三方库。
 
-On a Raspberry Pi 3 device or a Raspberry Pi 4 running a 32-bit OS, it may execute more quickly if recompiled using `-DENABLE_COMPILE_FLAGS_FOR_TARGET=armv8-neon`. (Please see the xref:camera_software.adoc#building-libcamera-and-libcamera-apps[build instructions].)
+在Raspberry Pi 3 设备或运行 4 位操作系统的Raspberry Pi 32 上，如果使用-DENABLE_COMPILE_FLAGS_FOR_TARGET=armv8-neon .（请参阅xref:camera_software.adoc#building-libcamera-and-libcamera-apps[构建说明])。
 
-The `negate` stage has no user-configurable parameters.
+negate阶段没有用户可配置的参数。
 
-Default `negate.json` file:
+默认negate.json文件：
 
 ----
 {
@@ -66,36 +67,37 @@ Example:
 
 image::images/negate.jpg[Image with negate]
 
-==== `hdr` stage
+[[hdr-stage]]
+==== `hdr` 阶段
 
-The `hdr` stage implements both HDR (high dynamic range) imaging and DRC (dynamic range compression). The terminology that we use here regards DRC as operating on single images, and HDR works by accumulating multiple under-exposed images and then performing the same algorithm as DRC.
+hdr阶段同时实现HDR（高动态范围）成像和DRC（动态范围压缩）。我们在这里使用的术语将 DRC 视为对单个图像进行操作，而 HDR 的工作原理是累积多个曝光不足的图像，然后执行与 DRC 相同的算法。
 
-The `hdr` stage has no dependencies on 3rd party libraries, but (like some other stages) may execute more quickly on Raspberry Pi 3 or Raspberry Pi 4 devices running a 32-bit OS if recompiled using `-DENABLE_COMPILE_FLAGS_FOR_TARGET=armv8-neon` (please see the xref:camera_software.adoc#building-libcamera-and-libcamera-apps[build instructions]). Specifically, the image accumulation stage will run quicker and result in fewer frame drops, though the tonemapping part of the process is unchanged.
+hdr阶段不依赖于第三方库，但是(像其他一些阶段一样)如果使用-den able _ COMPILE _ FLAGS _ FOR _ TARGET = arm V8-neon重新编译，可能会在运行32位操作系统的Raspberry Pi 3或Raspberry Pi 4设备上执行得更快(请参见xref:camera_software.adoc#building-libcamera-and-libcamera-apps[构建说明])。具体来说，图像累积阶段将运行得更快，并导致更少的丢帧，尽管该过程的色调映射部分没有改变。
 
-The basic procedure is that we take the image (which in the case of HDR may be multiple images accumulated together) and apply an edge-preserving smoothing filter to generate a low pass (LP) image. We define the high pass (HP) image to be the difference between the LP image and the original. Next we apply a global tonemap to the LP image and add back the HP image. This procedure, in contrast to applying the tonemap directly to the original image, prevents us from squashing and losing all the local contrast in the resulting image.
+基本步骤是我们获取图像（在HDR的情况下可能是多个图像累积在一起）并应用边缘保留平滑过滤器来生成低通（LP）图像。我们将高通（HP）图像定义为LP图像与原始图像之间的差异。接下来，我们将全局色调图应用于 LP 图像并添加回 HP 图像。与将色调图直接应用于原始图像相比，此过程可防止我们挤压和丢失结果图像中的所有局部对比度。
 
-It is worth noting that this all happens using fully-processed images, once the ISP has finished with them. HDR normally works better when carried out in the raw (Bayer) domain, as signals are still linear and have greater bit-depth. We expect to implement such functionality once `libcamera` exports an API for "re-processing" Bayer images that do not come from the sensor, but which application code can pass in.
+值得注意的是，一旦ISP完成处理完图像，这一切都是使用完全处理的图像进行的。HDR通常在原始（Byer）域中进行时效果更好，因为信号仍然是线性的并且具有更大的位深度。我们希望在libcamera导出用于“重新处理”拜耳图像的API后实现此类功能，这些图像不是来自传感器，而是应用程序代码可以传入。
 
-In summary, the user-configurable parameters fall broadly into three groups: those that define the LP filter, those responsible for the global tonemapping, and those responsible for re-applying the local contrast.
+总之，用户可配置的参数大致分为三组：定义LP滤波器的参数，负责全局色调映射的参数，以及负责重新应用局部对比度的参数。
 
 [cols=",^"]
 |===
-| num_frames | The number of frames to accumulate. For DRC (in our terminology) this would take the value 1, but for multi-frame HDR we would suggest a value such as 8.
-| lp_filter_strength | The coefficient of the low pass IIR filter.
-| lp_fiter_threshold | A piecewise linear function that relates the pixel level to the threshold that is regarded as being "meaningful detail".
-| global_tonemap_points | A list of points in the input image histogram and targets in the output range where we wish to move them. We define an inter-quantile mean (`q` and `width`), a target as a proportion of the full output range (`target`) and maximum and minimum gains by which we are prepared to move the measured inter-quantile mean (as this prevents us from changing an image too drastically).
-| global_tonemap_strength | Strength of application of the global tonemap.
-| local_pos_strength | A piecewise linear function that defines the gain applied to local contrast when added back to the tonemapped LP image, for positive (bright) detail.
-| local_neg_strength | A piecewise linear function that defines the gain applied to local contrast when added back to the tonemapped LP image, for negative (dark) detail.
-| local_tonemap_strength | An overall gain applied to all local contrast that is added back.
-| local_colour_scale | A factor that allows the output colours to be affected more or less strongly.
+| num_frames | 要累积的帧数。对于 DRC（在我们的术语中），这将取值 1，但对于多帧 HDR，我们建议使用诸如 8 的值。
+| lp_filter_strength | 低通IIR滤波器的系数。
+| lp_fiter_threshold | 一种分段线性函数，它将像素级别与被视为“有意义的细节”的阈值相关联。
+| global_tonemap_points | 输入图像直方图中的点和输出范围中我们希望将它们移动到的目标的列表。我们定义了分位数间平均值(q和宽度)、作为全输出范围(目标)的一部分的目标以及最大和最小增益，我们准备通过该最大和最小增益来移动测量的分位数间平均值(因为这防止我们过于剧烈地改变图像)。
+| global_tonemap_strength | 全局色调图的应用强度。
+| local_pos_strength | 分段线性函数，用于定义在添加回色调映射 LP 图像时应用于局部对比度的增益，以获得正（亮）细节。
+| local_neg_strength | 分段线性函数，用于定义在添加回色调映射 LP 图像时应用于局部对比度的增益，以获得负（暗）细节。
+| local_tonemap_strength | 应用于所有加回来的局部对比度的总增益。
+| local_colour_scale | 允许输出颜色或多或少受到强烈影响的因素。
 |===
 
-We note that the overall strength of the processing is best controlled by changing the `global_tonemap_strength` and `local_tonemap_strength` parameters.
+我们注意到，通过更改global_tonemap_strength 和 local_tonemap_strength参数来最好地控制加工的整体强度。
 
-The full processing takes between 2 and 3 seconds for a 12MP image on a Raspberry Pi 4. The stage runs only on the still image capture, it ignores preview and video images. In particular, when accumulating multiple frames, the stage "swallows" the output images so that the application does not receive them, and finally sends through only the combined and processed image.
+Raspberry Pi 2 上的 3MP 图像需要 12 到 4 秒的完整处理时间。舞台仅在静止图像捕获上运行，它忽略预览和视频图像。特别是，当累积多个帧时，舞台“吞噬”输出图像，以便应用程序不会接收它们，最后仅通过组合和处理的图像发送。
 
-Default `drc.json` file for DRC:
+DRC 的drc.json默认文件：
 
 ----
 {
@@ -121,15 +123,15 @@ Default `drc.json` file for DRC:
 
 Example:
 
-Without DRC:
+如果没有 DRC：
 
 image::images/nodrc.jpg[Image without DRC processing]
 
-With full-strength DRC: (use `libcamera-still -o test.jpg --post-process-file drc.json`)
+使用全强度 DRC：（使用libcamera-still -o test.jpg --post-process-file drc.json)
 
 image::images/drc.jpg[Image with DRC processing]
 
-Default `hdr.json` file for HDR:
+HDR 的默认hdr.json文件：
 
 ----
 {
@@ -155,38 +157,38 @@ Default `hdr.json` file for HDR:
 
 Example:
 
-Without HDR:
+没有 HDR：
 
 image::images/nohdr.jpg[Image without HDR processing]
 
-With HDR: (use `libcamera-still -o test.jpg --ev -2 --denoise cdn_off --post-process-file hdr.json`)
+使用 HDR：（使用libcamera-still -o test.jpg --ev -2 --denoise cdn_off --post-process-file hdr.json)
 
 image::images/hdr.jpg[Image with DRC processing]
 
-==== `motion_detect` stage
+[[motion_detect-stage]]
+==== `motion_detect` 阶段
+motion_detect阶段通过分析低分辨率图像流中的帧来工作，必须对其进行配置才能使其工作。它将帧中的感兴趣区域（“roi”）与前一个帧的相应部分进行比较，如果有足够的像素足够不同，则将采取这些像素来指示运动。结果将添加到“motion_detect.result”下的元数据中。
 
-The `motion_detect` stage works by analysing frames from the low resolution image stream, which must be configured for it to work. It compares a region of interest ("roi") in the frame to the corresponding part of a previous one and if enough pixels are sufficiently different, that will be taken to indicate motion. The result is added to the metadata under "motion_detect.result".
+此阶段不依赖于任何第三方库。
 
-This stage has no dependencies on any 3rd party libraries.
-
-It has the following tunable parameters. The dimensions are always given as a proportion of the low resolution image size.
+它具有以下可调参数。尺寸始终作为低分辨率图像大小的比例给出。
 
 [cols=",^"]
 |===
-| roi_x | x-offset of the region of interest for the comparison
-| roi_y | y-offset of the region of interest for the comparison
-| roi_width | width of the region of interest for the comparison
-| roi_height | height of the region of interest for the comparison
-| difference_m | Linear coefficient used to construct the threshold for pixels being different
-| difference_c | Constant coefficient used to construct the threshold for pixels being different according to threshold = difference_m * pixel_value + difference_c
-| frame_period | The motion detector will run only this many frames
-| hskip | The pixel tests are subsampled by this amount horizontally
-| vksip | The pixel tests are subsampled by this amount vertically
-| region_threshold | The proportion of pixels (or "regions") which must be categorised as different for them to count as motion
-| verbose | Print messages to the console, including when the "motion"/"no motion" status changes
+| roi_x | 用于比较的感兴趣区域的 x 偏移量
+| roi_y | 用于比较的感兴趣区域的 y 偏移
+| roi_width | 用于比较的感兴趣区域的宽度
+| roi_height |用于比较的感兴趣区域的高度
+| difference_m | 用于构造像素不同阈值的线性系数
+| difference_c |用于根据阈值构造像素不同的阈值的常数系数 = difference_m * pixel_value + difference_c
+| frame_period | 运动检测器将仅运行这么多帧
+| hskip | 像素测试按此量水平进行子采样
+| vksip | 像素测试按此量垂直子采样
+| region_threshold | 必须分类为不同的像素（或“区域”）的比例才能算作运动
+| verbose | 将消息打印到控制台，包括“运动”/“无运动”状态更改时
 |===
 
-Default `motion_detect.json` configuration file:
+默认motion_detect.json配置文件：
 
 ----
 {
@@ -207,10 +209,10 @@ Default `motion_detect.json` configuration file:
 }
 ----
 
-Note that the field `difference_m` and `difference_c`, and the value of `region_threshold`, can be adjusted to make the algorithm more or less sensitive to motion.
+注意，可以调整场difference_m和difference_c以及region_threshold的值，以使算法对运动或多或少地敏感。
+如果需要减少计算量（也许您还有其他阶段需要更大的低分辨率图像），则可以使用 hskip和vskip
+ 参数减少计算量。
 
-If the amount of computation needs to be reduced (perhaps you have other stages that need a larger low resolution image), the amount of computation can be reduced using the `hskip` and `vskip` parameters.
-
-To use the `motion_detect` stage you might enter the following example command:
+若要使用该motion_detect阶段，可以输入以下示例命令：
 
 `libcamera-hello --lores-width 128 --lores-height 96 --post-process-file motion_detect.json`

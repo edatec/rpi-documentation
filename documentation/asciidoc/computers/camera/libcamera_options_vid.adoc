@@ -1,57 +1,58 @@
-=== Video Command Line Options
+[[video-command-line-options]]
+=== 视频命令行选项
 
 ----
 	--quality,	-q		JPEG quality <number>
 ----
 
-Set the JPEG quality. 100 is maximum quality and 50 is the default. Only applies when saving in MJPEG format.
+设置 JPEG 质量。100 表示最高质量，50 表示默认值。仅在以 MJPEG 格式保存时适用。
 
-Example: `libcamera-vid --codec mjpeg -o test.mjpeg -q 80`
+例：libcamera-vid --codec mjpeg -o test.mjpeg -q 80
 
 ----
 	--bitrate,	-b		H.264 bitrate <number>
 ----
 
-Set the target bitrate for the H.264 encoder, in _bits per second_. Only applies when encoding in H.264 format.
+设置 H.264 编码器的目标比特率（以位/秒为单位）。仅在以 H.264 格式编码时适用。
 
-Example: `libcamera-vid -b 10000000 --width 1920 --height 1080 -o test.h264`
+例：libcamera-vid -b 10000000 --width 1920 --height 1080 -o test.h264
 
 ----
 	--intra,	-g		Intra-frame period (H.264 only) <number>
 ----
 
-Sets the frequency of I (Intra) frames in the H.264 bitstream, as a number of frames. The default value is 60.
+将 H.264 比特流中 I（内部）帧的频率设置为帧数。默认值为 60。
 
-Example: `libcamera-vid --intra 30 --width 1920 --height 1080 -o test.h264`
+例：libcamera-vid --intra 30 --width 1920 --height 1080 -o test.h264
 
 ----
 	--profile			H.264 profile <string>
 ----
 
-Set the H.264 profile. The value may be `baseline`, `main` or `high`.
+设置 H.264 配置文件。值可以是baseline main或high 。
 
-Example: `libcamera-vid --width 1920 --height 1080 --profile main -o test.h264`
+例：libcamera-vid --width 1920 --height 1080 --profile main -o test.h264
 
 ----
 	--level				H.264 level <string>
 ----
 
-Set the H.264 level. The value may be `4`, `4.1` or `4.2`.
+设置H.264级别。该值可以是4、4.1或4.2。
 
-Example: `libcamera-vid --width 1920 --height 1080 --level 4.1 -o test.h264`
+例：libcamera-vid --width 1920 --height 1080 --level 4.1 -o test.h264
 
 ----
 	--codec				Encoder to be used <string>
 ----
 
-This can select how the video frames are encoded. Valid options are:
+这可以选择视频帧的编码方式。有效选项包括：
 
-* h264 - use H.264 encoder (the default)
-* mjpeg - use MJPEG encoder
-* yuv420 - output uncompressed YUV420 frames.
-* libav - use the libav backend to encode audio and video (see the xref:camera_software.adoc#libav-integration-with-libcamera-vid[libav section] for further details).
+* h264 - 使用 H.264 编码器（默认）
+* mjpeg - 使用 MJPEG 编码器
+* yuv420 - 输出未压缩的 YUV420 帧。
+* libav - 使用 libav 后端对音频和视频进行编码（有关更多详细信息，请参阅 xref:camera_software.adoc#libav-integration-with-libcamera-vid[libav 部分]）。
 
-Examples:
+例子：
 
 `libcamera-vid -t 10000 --codec mjpeg -o test.mjpeg`
 
@@ -61,21 +62,21 @@ Examples:
 	--keypress,	-k		Toggle between recording and pausing
 ----
 
-Pressing Enter will toggle `libcamera-vid` between recording the video stream and not recording it (i.e. discarding it). The application starts off in the recording state, unless the `--initial` option specifies otherwise. Typing `x` and Enter causes `libcamera-vid` to quit.
+按Enter键将在录制视频流和不录制视频流(即丢弃视频流)之间切换libcamera-vid。应用程序在记录状态下启动，除非- initial选项另有指定。键入x和Enter会导致libcamera-vid退出。
 
-Example: `libcamera-vid -t 0 -o test.h264 -k`
+例：libcamera-vid -t 0 -o test.h264 -k
 
 ----
 	--signal,	-s		Toggle between recording and pausing when SIGUSR1 received
 ----
 
-The SIGUSR1 signal will toggle `libcamera-vid` between recording the video stream and not recording it (i.e. discarding it). The application starts off in the recording state, unless the `--initial` option specifies otherwise. SIGUSR2 causes `libcamera-vid` to quit.
+SIGUSR1信号将在记录视频流和不记录视频流(即丢弃视频流)之间切换libcamera-vid。应用程序在记录状态下启动，除非- initial选项另有指定。SIGUSR2导致libcamera-vid退出。
 
-Example:
+例：
 
 `libcamera-vid -t 0 -o test.h264 -s`
 
-then 
+然后
 
 `kill -SIGUSR1 $!`
 
@@ -83,56 +84,56 @@ then
 	--initial			Start the application in the recording or paused state <string>
 ----
 
-The value passed may be `record` or `pause` to start the application in, respectively, the recording or the paused state. This option should be used in conjunction with either `--keypress` or `--signal` to toggle between the two states.
+传递的值可以是record或pause，以分别在记录或暂停状态下启动应用程序。此选项应与- keypress或- signal一起使用，以便在两种状态之间切换。
 
-Example: `libcamera-vid -t 0 -o test.h264 -k --initial pause`
+例：libcamera-vid -t 0 -o test.h264 -k --initial pause
 
 ----
 	--split				Split multiple recordings into separate files
 ----
 
-This option should be used in conjunction with `--keypress` or `--signal` and causes each recording session (in between the pauses) to be written to a separate file.
+此选项应与--keypress 或--signal 结合使用，并导致将每个录制会话（在暂停之间）写入单独的文件。
 
-Example: `libcamera-vid -t 0 --keypress --split --initial pause -o test%04d.h264`
+例：libcamera-vid -t 0 --keypress --split --initial pause -o test%04d.h264
 
 ----
 	--segment			Write the video recording into multiple segments <number>
 ----
 
-This option causes the video recording to be split across multiple files where the parameter gives the approximate duration of each file in milliseconds.
+此选项会导致视频录制拆分到多个文件中，其中参数以毫秒为单位提供每个文件的大致持续时间。
 
-One convenient little trick is to pass a very small duration parameter (namely, `--segment 1`) which will result in each frame being written to a separate output file. This makes it easy to do "burst" JPEG capture (using the MJPEG codec), or "burst" raw frame capture (using `libcamera-raw`).
+一个方便的小技巧是传递一个非常小的持续时间参数(即- segment 1)，这将导致每一帧被写入一个单独的输出文件。这使得“突发”JPEG采集(使用MJPEG编解码器)或“突发”raw帧采集(使用libcamera-raw)变得很容易。
 
-Example: `libcamera-vid -t 100000 --segment 10000 -o test%04d.h264`
+例：libcamera-vid -t 100000 --segment 10000 -o test%04d.h264
 
 ----
 	--circular			Write the video recording into a circular buffer of the given <size>
 ----
 
-The video recording is written to a circular buffer which is written to disk when the application quits. The size of the circular buffer may be given in units of megabytes, defaulting to 4MB.
+视频录制将写入循环缓冲区，当应用程序退出时，该缓冲区将写入磁盘。循环缓冲区的大小可以以兆字节为单位，默认为 4MB。
 
-Example: `libcamera-vid -t 0 --keypress --inline --circular -o test.h264`
+例：libcamera-vid -t 0 --keypress --inline --circular -o test.h264
 
 ----
 	--inline			Write sequence header in every I frame (H.264 only)
 ----
 
-This option causes the H.264 sequence headers to be written into every I (Intra) frame. This is helpful because it means a client can understand and decode the video sequence from any I frame, not just from the very beginning of the stream. It is recommended to use this option with any output type that breaks the output into pieces (`--segment`, `--split`, `--circular`), or transmits the output over a network.
+此选项会导致将 H.264 序列标头写入每个 I（内部）帧。这很有帮助，因为这意味着客户端可以从任何 I 帧理解和解码视频序列，而不仅仅是从流的开头。建议将此选项用于将输出分解为多个部分 （--segment、--split、--circular） 或通过网络传输输出的任何输出类型。
 
-Example: `libcamera-vid -t 0 --keypress --inline --split -o test%04d.h264`
+例：libcamera-vid -t 0 --keypress --inline --split -o test%04d.h264
 
 ----
 	--listen			Wait for an incoming TCP connection
 ----
 
-This option is provided for streaming over a network using TCP/IP. Using `--listen` will cause `libcamera-vid` to wait for an incoming client connection before starting the video encode process, which will then be forwarded to that client.
+此选项用于通过使用TCP/IP的网络进行流式传输。使用- listen将导致libcamera-vid在启动视频编码过程之前等待传入的客户端连接，然后视频编码过程将被转发到该客户端。
 
-Example: `libcamera-vid -t 0 --inline --listen -o tcp://0.0.0.0:8123`
+例：libcamera-vid -t 0 --inline --listen -o tcp://0.0.0.0:8123
 
 ----
 	--frames			Record exactly this many frames <number>
 ----
 
-Exactly `<number>` frames are recorded. Specifying a non-zero value will override any timeout.
+精确记录<number>帧。指定非零值将覆盖任何超时。
 
-Example: `libcamera-vid -o test.h264 --frames 1000`
+例：libcamera-vid -o test.h264 --frames 1000

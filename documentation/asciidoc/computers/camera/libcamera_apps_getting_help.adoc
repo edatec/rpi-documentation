@@ -1,19 +1,20 @@
-=== Getting Help
+[[getting-help]]
+=== 获取帮助
 
-For further help with `libcamera` and the `libcamera-apps`, the first port of call will usually be the https://forums.raspberrypi.com/viewforum.php?f=43[Raspberry Pi Camera Forum]. Before posting, it's helpful to:
+如需进一步获取 `libcamera` and the `libcamera-apps`帮助, 第一个地方通常是 https://forums.raspberrypi.com/viewforum.php?f=43[Raspberry Pi 相机论坛]. 在发布之前，最好：
 
-* Ensure your xref:../computers/os.adoc#using-apt[software is up to date].
+* 确保您的xref:../computers/os.adoc#using-apt[软件]是最新的。
 
-* If you are using _Buster_ please upgrade to the latest OS, as `libcamera-apps` is no longer supported there.
+* 如果您使用的是Buster，请升级到最新的操作系统，因为那里不再支持libcamera-apps。
 
-* Make a note of your operating system version (`uname -a`).
+* 记下您的操作系统版本 （uname -a）。
 
-* Make a note of your `libcamera` and `libcamera-apps` versions (`libcamera-hello --version`).
+* 记下您的libcamera 和libcamera-apps 版本 （libcamera-hello --version）。
 
-* Please report the make and model of the camera module you are using. Note that when third party camera module vendors supply their own software then we are normally unable to offer any support and all queries should be directed back to the vendor.
+* 请报告您正在使用的相机模块的品牌和型号。请注意，当第三方摄像头模块供应商提供自己的软件时，我们通常无法提供任何支持，所有查询都应转回供应商。
 
-* Please also provide information on what kind of a Raspberry Pi you have, including memory size.
+* 还请提供有关您拥有哪种Raspberry Pi的信息，包括内存大小。
 
-* If it seems like it might be relevant, please include any excerpts from the application's console output.
+* 如果看起来可能相关，请包含应用程序控制台输出中的任何摘录。
 
-When it seems likely that there are specific problems in the camera software (such as crashes) then it may be more appropriate to https://github.com/raspberrypi/libcamera-apps[create an issue in the `libcamera-apps` Github repository]. Again, please include all the helpful details that you can.
+当相机软件中可能存在特定问题（例如崩溃）时，在https://github.com/raspberrypi/libcamera-apps[libcamera-apps Github存储库]中创建问题可能更合适。同样，请尽可能包括所有有用的详细信息。

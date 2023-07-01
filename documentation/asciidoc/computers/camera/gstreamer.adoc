@@ -1,58 +1,59 @@
-=== Using Gstreamer
+[[using-gstreamer]]
+=== 使用Gstreamer
 
-_Gstreamer_ is a Linux framework for reading, processing and playing multimedia files. There is a lot of information and many tutorials at the https://gstreamer.freedesktop.org/[_gstreamer_ website]. Here we show how `libcamera-vid` (and similarly `raspivid`) can be used to stream video over a network.
+_Gstreamer_是一个用于读取、处理和播放多媒体文件的Linux框架。https://gstreamer.freedesktop.org/[gstreamer网站]上有很多信息和教程。这里我们展示了如何使用libcamera-vid(和类似的raspivid)通过网络传输视频。
 
-On the server we need `libcamera-vid` to output an encoded h.264 bitstream to _stdout_ and can use the _gstreamer_ `fdsrc` element to receive it. Then extra _gstreamer_ elements can send this over the network. As an example we can simply send and receive the stream on the same device over a UDP link. On the server:
+在服务器上，我们需要libcamera-vid将编码的h.264比特流输出到stdout，并可以使用gstreamer fdsrc元素接收它。那么额外的gstreamer元素可以通过网络发送这个消息。例如，我们可以通过UDP链路在同一设备上简单地发送和接收流。在服务器上:
 
 [,bash]
 ----
 libcamera-vid -t 0 -n --inline -o - | gst-launch-1.0 fdsrc fd=0 ! udpsink host=localhost port=5000
 ----
 
-For the client (type this into another console window) we can use:
+对于客户端（在另一个控制台窗口中键入此内容），我们可以使用：
 
 [,bash]
 ----
 gst-launch-1.0 udpsrc address=localhost port=5000 ! h264parse ! v4l2h264dec ! autovideosink
 ----
+[[using-rtp]]
+==== 使用 RTP
 
-==== Using RTP
-
-To stream using the RTP protocol, on the server you could use:
+要使用 RTP 协议进行流式传输，您可以在服务器上使用：
 
 [,bash]
 ----
 libcamera-vid -t 0 -n --inline -o - | gst-launch-1.0 fdsrc fd=0 ! h264parse ! rtph264pay ! udpsink host=localhost port=5000
 ----
 
-And in the client window:
+在客户端窗口中
 
 [,bash]
 ----
 gst-launch-1.0 udpsrc address=localhost port=5000 caps=application/x-rtp ! rtph264depay ! h264parse ! v4l2h264dec ! autovideosink
 ----
 
-We conclude with an example that streams from one machine to another. Let us assume that the client machine has the IP address `192.168.0.3`. On the server (a Raspberry Pi) the pipeline is identical, but for the destination address:
+最后，我们举一个从一台机器流到另一台机器的例子。让我们假设客户端计算机具有 IP地址192.168.0.3 。在服务器（Raspberry Pi）上，管道是相同的，但对于目标地址：
 
 [,bash]
 ----
 libcamera-vid -t 0 -n --inline -o - | gst-launch-1.0 fdsrc fd=0 ! h264parse ! rtph264pay ! udpsink host=192.168.0.3 port=5000
 ----
 
-If the client is not a Raspberry Pi it may have different _gstreamer_ elements available. For a Linux PC we might use:
+如果客户端不是Raspberry Pi，它可能有不同的 gstreamer 元素可用。对于 Linux PC，我们可能会使用：
 
 [,bash]
 ----
 gst-launch-1.0 udpsrc address=192.168.0.3 port=5000 caps=application/x-rtp ! rtph264depay ! h264parse ! avdec_h264 ! autovideosink
 ----
+[[the-libcamerasrc-element]]
+==== `libcamerasrc`元素
 
-==== The `libcamerasrc` element
-
-`libcamera` provides a `libcamerasrc` _gstreamer_ element which can be used directly instead of `libcamera-vid`. On the server you could use:
+libcamera提供了一个libcamerasrc gstreamer元素，可以直接用来代替libcamera-vid。在服务器上，您可以使用:
 
 [,bash]
 ----
 gst-launch-1.0 libcamerasrc ! capsfilter caps=video/x-raw,width=1280,height=720,format=NV12 ! v4l2convert ! v4l2h264enc extra-controls="controls,repeat_sequence_header=1" ! h264parse ! rtph264pay ! udpsink host=localhost port=5000
 ----
 
-and on the client we use the same playback pipeline as previously.
+在客户端上，我们使用与以前相同的播放管道。

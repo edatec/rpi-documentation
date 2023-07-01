@@ -1,26 +1,28 @@
-=== Post-Processing with TensorFlow Lite
+[[post-processing-with-tensorflow-lite]]
+=== 使用 TensorFlow Lite 进行后处理
 
-NOTE: These stages require TensorFlow Lite (TFLite) libraries to be installed that export the {cpp} API. Unfortunately the TFLite libraries are not normally distributed conveniently in this form, however, one place where they can be downloaded is https://lindevs.com/install-precompiled-tensorflow-lite-on-raspberry-pi/[lindevs.com]. Please follow the installation instructions given on that page. Subsequently you may need to recompile `libcamera-apps` with TensorFlow Lite support - please follow the instructions for xref:camera_software.adoc#building-libcamera-and-libcamera-apps[building `libcamera-apps` for yourself].
+NOTE: 这些阶段需要安装导出C++ API的TensorFlow Lite（TFLite）库。不幸的是，TFLite 库通常不能方便地以这种形式分发，但是，可以下载它们的一个地方是  https://lindevs.com/install-precompiled-tensorflow-lite-on-raspberry-pi/[lindevs.com]lindevs.com。请按照该页面上给出的安装说明进行操作。随后，您可能需要使用 TensorFlow Lite 支持重新编译libcamera-apps - xref:camera_software.adoc#building-libcamera-and-libcamera-apps[请按照说明为自己构建 libcamera-apps]。
 
-==== `object_classify_tf` stage
+[[object_classify_tf-stage]]
+==== `object_classify_tf` 阶段
 
-`object_classify_tf` uses a Google MobileNet v1 model to classify objects in the camera image. It can be obtained from https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_2018_08_02/mobilenet_v1_1.0_224_quant.tgz[], which will need to be uncompressed. You will also need the `labels.txt` file which can be found in https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_1.0_224_frozen.tgz[].
+object_classify_tf使用 Google MobileNet v1 模型对相机图像中的对象进行分类。 它可以从需要解压缩的 https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_2018_08_02/mobilenet_v1_1.0_224_quant.tgz 中获得。您还需要可以在 https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_1.0_224_frozen.tgz 中找到labels.txt文件。
 
-This stage has the following configuratble parameters.
+此阶段具有以下可配置参数。
 
 [cols=",^"]
 |===
-| top_n_results | How many results to show
-| refresh_rate | The number of frames that must elapse before the model is re-run
-| threshold_high | Confidence threshold (between 0 and 1) where objects are considered as being present
-| threshold_low | Confidence threshold which objects must drop below before being discarded as matches
-| model_file | Pathname to the tflite model file
-| labels_file | Pathname to the file containing the object labels
-| display_labels | Whether to display the object labels on the image. Note that this causes `annotate.text` metadata to be inserted so that the text can be rendered subsequently by the `annotate_cv` stage
-| verbose | Output more information to the console
+| top_n_results | 要显示多少个结果
+| refresh_rate | 重新运行模型之前必须经过的帧数
+| threshold_high | 置信度阈值（介于 0 和 1 之间），其中对象被视为存在
+| threshold_low | 置信度阈值，对象在作为匹配项丢弃之前必须低于该阈值
+| model_file | tflite 模型文件的路径名
+| labels_file | 包含对象标签的文件的路径名
+| display_labels | 是否在图像上显示对象标签。请注意，这将导致插入annotate.text元数据，以便随后可以通过annotate_cv阶段呈现该文本
+| verbose | 将更多信息输出到控制台
 |===
 
-Example `object_classify_tf.json` file:
+示例文件object_classify_tf.json：
 
 ----
 {
@@ -46,33 +48,33 @@ Example `object_classify_tf.json` file:
 }
 ----
 
-The stage operates on a low resolution stream image of size 224x224, so it could be used as follows:
-
-`libcamera-hello --post-process-file object_classify_tf.json --lores-width 224 --lores-height 224`
+此阶段在大小为 224x224 的低分辨率流图像上运行，因此可以按如下方式使用：
+libcamera-hello --post-process-file object_classify_tf.json --lores-width 224 --lores-height 224
 
 image::images/classify.jpg[Image showing object classifier results]
 
-==== `pose_estimation_tf` stage
+[[pose_estimation_tf-stage]]
+==== `pose_estimation_tf` 阶段
 
-`pose_estimation_tf` uses a Google MobileNet v1 model `posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite` that can be found at https://github.com/Qengineering/TensorFlow_Lite_Pose_RPi_32-bits[].
+pose_estimation_tf使用一个Google MobileNet v1模型posenet _ MobileNet _ v1 _ 100 _ 257 x257 _ multi _ kpt _ stripped . tflite，可以在https://github . com/QE engineering/tensor flow _ Lite _ Pose _ RPi _ 32-bits找到。
 
-This stage has the following configurable parameters.
-
-[cols=",^"]
-|===
-| refresh_rate | The number of frames that must elapse before the model is re-run
-| model_file | Pathname to the tflite model file
-| verbose | Output more information to the console
-|===
-
-Also provided is a separate `plot_pose_cv` stage which can be included in the JSON configuration file and which will draw the detected pose onto the main image. This stage has the following configuration parameters.
+此阶段具有以下可配置参数。
 
 [cols=",^"]
 |===
-| confidence_threshold | A confidence level determining how much is drawn. This number can be less than zero; please refer to the GitHub repository for more information.
+| refresh_rate | 重新运行模型之前必须经过的帧数
+| model_file |tflite 模型文件的路径名
+| verbose |将更多信息输出到控制台
 |===
 
-Example `pose_estimation_tf.json` file:
+还提供了单独的plot_pose_cv阶段，可以包含在 JSON 配置文件中，并将检测到的姿势绘制到主图像上。此阶段具有以下配置参数。
+
+[cols=",^"]
+|===
+| confidence_threshold | 确定抽取多少的置信水平。此数字可以小于零;有关更多信息，请参阅 GitHub 存储库。
+|===
+
+示例文件pose_estimation_tf.json：
 
 ----
 {
@@ -88,37 +90,38 @@ Example `pose_estimation_tf.json` file:
 }
 ----
 
-The stage operates on a low resolution stream image of size 257x257 (but which must be rounded up to 258x258 for YUV420 images), so it could be used as follows:
+此阶段在大小为 257x257 的低分辨率流图像上运行（但对于 YUV258 图像，必须向上舍入为 258x420），因此可以按如下方式使用：
 
 `libcamera-hello --post-process-file pose_estimation_tf.json --lores-width 258 --lores-height 258`
 
 image::images/pose.jpg[Image showing pose estimation results]
 
-==== `object_detect_tf` stage
+[[object_detect_tf-stage]]
+==== `object_detect_tf` 阶段
 
-`object_detect_tf` uses a Google MobileNet v1 SSD (Single Shot Detector) model. The model and labels files can be downloaded from https://storage.googleapis.com/download.tensorflow.org/models/tflite/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29.zip[].
+object_detect_tf使用Google MobileNet v1 SSD（单发检测器）模型。可以从 https://storage.googleapis.com/download.tensorflow.org/models/tflite/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29.zip 下载模型和标签文件。
 
-This stage has the following configurable parameters.
-
-[cols=",^"]
-|===
-| refresh_rate | The number of frames that must elapse before the model is re-run
-| model_file | Pathname to the tflite model file
-| labels_file | Pathname to the file containing the list of labels
-| confidence_threshold | Minimum confidence threshold because a match is accepted.
-| overlap_threshold | Determines the amount of overlap between matches for them to be merged as a single match.
-| verbose | Output more information to the console
-|===
-
-Also provided is a separate `object_detect_draw_cv` stage which can be included in the JSON configuration file and which will draw the detected objects onto the main image. This stage has the following configuration parameters.
+此阶段具有以下可配置参数。
 
 [cols=",^"]
 |===
-| line_thickness | Thickness of the bounding box lines
-| font_size | Size of the font used for the label
+| refresh_rate | 重新运行模型之前必须经过的帧数
+| model_file | tflite 模型文件的路径名
+| labels_file | 包含标签列表的文件的路径名
+| confidence_threshold |最低置信度阈值，因为接受匹配项。
+| overlap_threshold | 确定要合并为单个匹配项的匹配项之间的重叠量。
+| verbose | 将更多信息输出到控制台
 |===
 
-Example `object_detect_tf.json` file:
+还提供了单独的object_detect_draw_cv阶段，可以包含在 JSON 配置文件中，并将检测到的对象绘制到主映像上。此阶段具有以下配置参数。
+
+[cols=",^"]
+|===
+| line_thickness | 边界框线的粗细
+| font_size | 用于标签的字体大小
+|===
+
+示例文件object_detect_tf.json：
 
 ----
 {
@@ -139,31 +142,32 @@ Example `object_detect_tf.json` file:
 }
 ----
 
-The stage operates on a low resolution stream image of size 300x300. The following example would pass a 300x300 crop to the detector from the centre of the 400x300 low resolution image.
+此阶段在大小为 300x300 的低分辨率流图像上运行。以下示例将从 300x300 低分辨率图像的中心将 400x300 裁剪传递到检测器。
 
 `libcamera-hello --post-process-file object_detect_tf.json --lores-width 400 --lores-height 300`
 
 image::images/detection.jpg[Image showing detected objects]
 
-==== `segmentation_tf` stage
+[[segmentation_tf-stage]]
+==== `segmentation_tf` 阶段
 
-`segmentation_tf` uses a Google MobileNet v1 model. The model file can be downloaded from https://tfhub.dev/tensorflow/lite-model/deeplabv3/1/metadata/2?lite-format=tflite[], whilst the labels file can be found in the `assets` folder, named `segmentation_labels.txt`.
+segmentation_tf使用Google MobileNet v1模型。模型文件可以从https://tfhub . dev/tensor flow/lite-model/deeplabv3/1/metadata/2下载？lite-format=tflite，而标签文件可以在assets文件夹中找到，名为segmentation_labels.txt。
 
-This stage runs on an image of size 257x257. Because YUV420 images must have even dimensions, the low resolution image should be at least 258 pixels in both width and height. The stage adds a vector of 257x257 values to the image metadata where each value indicates which of the categories (listed in the labels file) that the pixel belongs to. Optionally, a representation of the segmentation can be drawn into the bottom right corner of the image.
+此舞台在大小为 257x257 的图像上运行。由于 YUV420 图像必须具有均匀的尺寸，因此低分辨率图像的宽度和高度都应至少为 258 像素。舞台将 257x257 值的矢量添加到图像元数据中，其中每个值指示像素属于哪个类别（在标签文件中列出）。或者，可以将分割的表示绘制到图像的右下角。
 
-This stage has the following configurable parameters.
+此阶段具有以下可配置参数。
 
 [cols=",^"]
 |===
-| refresh_rate | The number of frames that must elapse before the model is re-run
-| model_file | Pathname to the tflite model file
-| labels_file | Pathname to the file containing the list of labels
-| threshold | When verbose is set, the stage prints to the console any labels where the number of pixels with that label (in the 257x257 image) exceeds this threshold.
-| draw | Set this value to draw the segmentation map into the bottom right hand corner of the image.
-| verbose | Output more information to the console
+| refresh_rate | 重新运行模型之前必须经过的帧数
+| model_file | tflite 模型文件的路径名
+| labels_file | 包含标签列表的文件的路径名
+| threshold | 设置详细时，舞台会将具有该标签的像素数（在 257x257 图像中）超过此阈值的任何标签打印到控制台。
+| draw | 设置此值以将分割图绘制到图像的右下角。
+| verbose | 将更多信息输出到控制台
 |===
 
-Example `segmentation_tf.json` file:
+示例文件segmentation_tf.json：
 
 ----
 {
@@ -179,7 +183,7 @@ Example `segmentation_tf.json` file:
 }
 ----
 
-This example takes a square camera image and reduces it to 258x258 pixels in size. In fact the stage also works well when non-square images are squashed unequally down to 258x258 pixels without cropping. The image below shows the segmentation map in the bottom right hand corner.
+本示例拍摄一个方形相机图像，并将其缩小到 258x258 像素的大小。事实上，当非方形图像被不均匀地挤压到 258x258 像素而不裁剪时，舞台也运行良好。下图显示了右下角的分割图。
 
 `libcamera-hello --post-process-file segmentation_tf.json --lores-width 258 --lores-height 258 --viewfinder-width 1024 --viewfinder-height 1024`
 

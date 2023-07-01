@@ -1,48 +1,51 @@
-=== Writing your own Post-Processing Stages
+[[writing-your-own-post-processing-stages]]
+=== 编写自己的后处理阶段
 
-The `libcamera-apps` _post-processing framework_ is not only very flexible but is meant to make it easy for users to create their own custom post-processing stages. It is easy to include algorithms and routines that are already available both in OpenCV and TensorFlow Lite.
+libcamera-apps后处理框架不仅非常灵活，而且旨在使用户能够轻松创建自己的自定义后处理阶段。很容易包含OpenCV和TensorFlow Lite中已经可用的算法和例程。
 
-We are keen to accept and distribute interesting post-processing stages contributed by our users.
+我们热衷于接受和分发用户贡献的有趣的后处理阶段。
 
-==== Basic Post-Processing Stages
+[[basic-post-processing-stages]]
+==== 基本后处理阶段
 
-Post-processing stages have a simple API, and users can create their own by deriving from the `PostProcessingStage` class. The member functions that must be implemented are listed below, though note that some may be unnecessary for simple stages.
+后处理阶段有一个简单的API，用户可以通过从PostProcessingStage类派生来创建自己的API。下面列出了必须实现的成员函数，但请注意，对于简单阶段，某些函数可能是不必要的。
 
 [cols=",^"]
 |===
-| `char const *Name() const` | Return the name of the stage. This is used to match against stages listed in the JSON post-processing configuration file.
-| `void Read(boost::property_tree::ptree const &params)` | This method will read any of the stage's configuration parameters from the JSON file.
-| `void AdjustConfig(std::string const &use_case, StreamConfiguration *config)` | This method gives stages a chance to influence the configuration of the camera, though it is not often necessary to implement it.
-| `void Configure()` | This is called just after the camera has been configured. It is a good moment to check that the stage has access to the streams it needs, and it can also allocate any resources that it may require.
-| `void Start()` | Called when the camera starts. This method is often not required.
-| `bool Process(CompletedRequest &completed_request)` | This method presents completed camera requests for post-processing and is where the necessary pixel manipulations or image analysis will happen. The function returns `true` if the post-processing framework is _not_ to deliver this request on to the application.
-| `void Stop()` | Called when the camera is stopped. Normally a stage would need to shut down any processing that might be running (for example, if it started any asynchronous threads).
-| `void Teardown()` | Called when the camera configuration is torn down. This would typically be used to de-allocate any resources that were set up in the `Configure` method.
+| `char const *Name() const` | 返回阶段的名称。这用于与 JSON 后处理配置文件中列出的阶段进行匹配。
+| `void Read(boost::property_tree::ptree const &params)` | 此方法将从 JSON 文件中读取阶段的任何配置参数。
+| `void AdjustConfig(std::string const &use_case, StreamConfiguration *config)` |此方法使阶段有机会影响摄像机的配置，尽管通常不需要实现它。
+| `void Configure()` | 这在配置摄像机后立即调用。这是检查阶段是否有权访问所需的流的好时机，并且还可以分配可能需要的任何资源。
+| `void Start()` | 相机启动时调用。此方法通常不是必需的。
+| `bool Process(CompletedRequest &completed_request)` | 此方法呈现已完成的相机请求以进行后期处理，并且需要进行必要的像素处理或图像分析。如果后处理框架不将此请求传递到应用程序，则该函数返回true。
+| `void Stop()` | 在相机停止时调用。通常，阶段需要关闭可能正在运行的任何处理（例如，如果它启动了任何异步线程）。.
+| `void Teardown()` | 拆除摄像机配置时调用。这通常用于取消分配在Configure方法中设置的任何资源。
 |===
 
-Some helpful hints on writing your own stages:
+编写自己的阶段的一些有用提示：
 
-* Generally, the `Process` method should not take too long as it will block the imaging pipeline and may cause stuttering. When time-consuming algorithms need to be run, it may be helpful to delegate them to another asynchronous thread.
+* 通常，该Process方法不应花费太长时间，因为它会阻塞成像管道并可能导致卡顿。当需要运行耗时的算法时，将它们委托给另一个异步线程可能会有所帮助。
 
-* When delegating work to another thread, the way image buffers are handled currently means that they will need to be copied. For some applications, such as image analysis, it may be viable to use the "low resolution" image stream rather than full resolution images.
+* 将工作委派给另一个线程时，当前处理图像缓冲区的方式意味着需要复制它们。对于某些应用（如图像分析），使用“低分辨率”图像流而不是全分辨率图像可能是可行的。
 
-* The post-processing framework adds multi-threading parallelism on a per-frame basis. This is helpful in improving throughput if you want to run on every single frame. Some functions may supply parallelism within each frame (such as OpenCV and TFLite). In these cases it would probably be better to serialise the calls so as to suppress the per-frame parallelism.
+* 后处理框架基于每帧添加多线程并行性。如果要在每一帧上运行，这有助于提高吞吐量。某些函数可能会在每个帧内提供并行性（例如 OpenCV 和 TFLite）。在这些情况下，最好序列化调用以抑制每帧并行性。
 
-* Most streams, and in particular the low resolution stream, have YUV420 format. These formats are sometimes not ideal for OpenCV or TFLite so there may sometimes need to be a conversion step.
+* 大多数流，尤其是低分辨率流，都具有 YUV420 格式。这些格式有时不适合OpenCV或TFLite，因此有时可能需要一个转换步骤。
 
-* When images need to be altered, doing so in place is much the easiest strategy.
+* 当需要更改图像时，就地更改是最简单的策略。
 
-* Implementations of any stage should always include a `RegisterStage` call. This registers your new stage with the system so that it will be correctly identified when listed in a JSON file. You will need to add it to the post-processing folder's `CMakeLists.txt` too, of course.
+* 任何阶段的实现都应始终包含RegisterStage调用。这将向系统注册您的新stage，以便在JSON文件中列出时可以正确地识别它。当然，您还需要将它添加到后处理文件夹的CMakeLists.txt中。
 
-The easiest example to start with is `negate_stage.cpp`, which "negates" an image (turning black white, and vice versa). Aside from a small amount of derived class boiler-plate, it contains barely half a dozen lines of code.
+最简单的示例是 negate_stage.cpp，它“否定”图像（将黑白，反之亦然）。除了少量派生类样板文件外，它只包含六行代码。
 
-Next up in complexity is `sobel_cv_stage.cpp`. This implements a Sobel filter using just a few lines of OpenCV functions.
+接下来的复杂性是sobel_cv_stage.cpp 。这只使用几行OpenCV函数实现了Sobel过滤器。
 
-==== TFLite Stages
+[[tflite-stages]]
+==== TFLite 阶段
 
-For stages wanting to analyse images using TensorFlowLite we provide the `TfStage` base class. This provides a certain amount of boilerplate code and makes it much easier to implement new TFLite-based stages by deriving from this class. In particular, it delegates the execution of the model to another thread, so that the full camera framerate is still maintained - it is just the model that will run at a lower framerate.
+对于想要使用TensorFlowLite分析图像的阶段，我们提供TfStage基类。这提供了一定数量的样板代码，并且通过从此类派生来实现基于 TFLite 的新阶段变得更加容易。特别是，它将模型的执行委托给另一个线程，以便仍然保持完整的相机帧速率 - 它只是模型将以较低的帧速率运行。
 
-The `TfStage` class implements all the public `PostProcessingStage` methods that normally have to be redefined, with the exception of the `Name` method which must still be supplied. It then presents the following virtual methods which derived classes should implement instead.
+TfStage类实现所有通常必须重新定义的公共PostProcessingStage方法，但Name方法除外，它仍然必须提供。然后它给出了下面的虚方法，派生类应该实现这些虚方法。
 
 [cols=",^"]
 |===

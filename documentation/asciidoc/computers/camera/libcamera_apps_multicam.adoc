@@ -1,12 +1,13 @@
-=== Multiple Cameras Usage
+[[multiple-cameras-usage]]
+=== 多个相机使用
 
-Basic support for multiple cameras is available within `libcamera-apps`. Multiple cameras may be attached to a Raspberry Pi in the following ways:
+libcamera-apps中提供了对多个摄像机的基本支持。可以通过以下方式将多个相机连接到Raspberry Pi：
 
-* Two cameras connected directly to a Raspberry Pi Compute Module board, see the xref:../computers/compute-module.adoc#attaching-a-raspberry-pi-camera-module[Compute Module documentation] for further details.
-* Two or more cameras attached to a non-compute Raspberry Pi board using a Video Mux board, like https://www.arducam.com/product/multi-camera-v2-1-adapter-raspberry-pi/[this 3rd party product].
+* 两个摄像头直接连接到Raspberry Pi计算模块板，有关更多详细信息，请参阅xref:../computers/compute-module.adoc#attaching-a-raspberry-pi-camera-module[计算模块] 文档。
+* 使用视频多路复用板将两个或多个摄像机连接到非计算 Raspberry Pi 板，就像这个https://www.arducam.com/product/multi-camera-v2-1-adapter-raspberry-pi/[第三方产品]一样。
 
-In the latter case, only one camera may be used at a time since both cameras are attached to a single Unicam port. For the former, both cameras can run simultaneously.
+在后一种情况下，一次只能使用一个摄像头，因为两个摄像头都连接到一个Unicam端口。对于前者，两个相机可以同时运行。
 
-To list all the cameras available on your platform, use the `--list-cameras` command line option. To choose which camera to use, use the `--camera <index>` option, and provide the index value of the requested camera.
+要列出您的平台上所有可用的摄像机，请使用-list-camera命令行选项。要选择要使用的摄像机，请使用- camera <index >选项，并提供所请求摄像机的索引值。
 
-NOTE: `libcamera` does not yet provide stereoscopic camera support. When running two cameras simultaneously, they must be run in separate processes. This means there is no way to synchronise sensor framing or 3A operation between them.  As a workaround, you could synchronise the cameras through an external sync signal for the HQ (IMX477) camera, and switch the 3A to manual mode if necessary.
+NOTE: libcamera尚不提供立体相机支持。同时运行两台摄像机时，必须在单独的进程中运行它们。这意味着无法在它们之间同步传感器成帧或 3A 操作。作为一种解决方法，您可以通过 HQ （IMX477） 摄像机的外部同步信号同步摄像机，并在必要时将 3A 切换到手动模式。

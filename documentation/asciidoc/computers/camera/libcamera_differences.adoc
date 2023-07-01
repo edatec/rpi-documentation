@@ -1,41 +1,42 @@
-=== Differences compared to _Raspicam_ Apps
+[[differences-compared-to-raspicam-apps]]
+=== 与Raspicam应用程序相比的差异
 
-Whilst the `libcamera-apps` attempt to emulate most features of the legacy _Raspicam_ applications, there are some differences. Here we list the principal ones that users are likely to notice.
+libcamera-apps虽然尝试模拟旧版Raspicam应用程序的大多数功能，但也存在一些差异。在这里，我们列出了用户可能会注意到的主要内容。
 
-* The use of Boost `program_options` doesn't allow multi-character short versions of options, so where these were present they have had to be dropped. The long form options are named the same, and any single character short forms are preserved.
+* Boost program_options的使用不允许使用多字符短版本的选项，因此在存在这些选项的地方必须删除它们。长格式选项的名称相同，并保留任何单个字符的短格式。
 
-* `libcamera-still` and `libcamera-jpeg` do not show the capture image in the preview window.
+* libcamera-stil和libcamera-jpeg不在预览窗口中显示捕获图像。
 
-* `libcamera` performs its own camera mode selection, so the `--mode` option is not supported. It deduces camera modes from the resolutions requested. There is still work ongoing in this area.
+* libcamera执行自己的相机模式选择，因此不支持该--mode选项。它从请求的分辨率推断出相机模式。这方面的工作仍在进行中。
 
-* The following features of the legacy apps are not supported as the code has to run on the ARM now. But note that a number of these effects are now provided by the xref:camera_software.adoc#post-processing[post-processing] mechanism.
-  - opacity (`--opacity`)
-  - image effects (`--imxfx`)
-  - colour effects (`--colfx`)
-  - annotation (`--annotate`, `--annotateex`)
-  - dynamic range compression, or DRC (`--drc`)
+* 不支持旧版应用的以下功能，因为代码现在必须在 ARM 上运行。但请注意，其中许多效果现在由xref:camera_software.adoc#post-processing[后处理]后处理机制提供。
+  - 不透明度 (`--opacity`)
+  - 图像效果  (`--imxfx`)
+  - 色彩效果 (`--colfx`)
+  - 注释 (`--annotate`, `--annotateex`)
+  - 动态范围压缩, 或者 DRC (`--drc`)
 
-* stereo (`--stereo`, `--decimate` and `--3dswap`). There is no support in `libcamera` for stereo currently.
+* 立体声（--stereo，--decimate和--3dswap）。目前在libcamera中不支持立体声。
 
-* There is no image stabilisation (`--vstab`) (though the legacy implementation does not appear to do very much).
+* 没有图像稳定（--vstab）（尽管遗留实现似乎没有太大作用）。
 
-* There are no demo modes (`--demo`).
+* 没有演示模式 （--demo）。
 
-* The transformations supported are those that do not involve a transposition. 180 degree rotations, therefore, are among those permitted but 90 and 270 degree rotations are not.
+* 支持的转换是不涉及换位的转换。因此，允许 180 度旋转，但不允许 90 度和 270 度旋转。
 
-* There are some differences in the metering, exposure and AWB options. In particular the legacy apps conflate metering (by which we mean the "metering mode") and the exposure (by which we now mean the "exposure profile"). With regards to AWB, to turn it off you have to set a pair of colour gains (e.g. `--awbgains 1.0,1.0`).
+* 测光、曝光和AWB选项存在一些差异。特别是，传统应用程序将测光（我们的意思是“测光模式”）和曝光（我们现在指的是“曝光配置文件”）混为一谈。关于AWB，要将其关闭，您必须设置一对颜色增益（例如--awbgains 1.0,1.0）。
 
-* `libcamera` has no mechanism to set the AWB into "grey world" mode, which is useful for "NOIR" camera modules. However, tuning files are supplied which switch the AWB into the correct mode, so for example, you could use `libcamera-hello --tuning-file /usr/share/libcamera/ipa/raspberrypi/imx219_noir.json`.
+* libcamera没有将AWB设置为“灰色世界”模式的机制，这对于“黑色”相机模块很有用。但是，提供了将AWB切换到正确模式的调优文件，因此，例如，您可以使用lib camera-hello-tuning-file/usr/share/lib camera/IPA/raspberrypi/imx 219 _ noir . JSON。
 
-* There is support for setting the exposure time (`--shutter`) and analogue gain (`--analoggain` or just `--gain`). There is no explicit control of the digital gain; you get this if the gain requested is larger than the analogue gain can deliver by itself.
+* 支持设置曝光时间(-快门)和模拟增益(-模拟增益或增益)。没有对数字增益的明确控制；如果要求的增益大于模拟增益本身可以提供的增益，就会出现这种情况。
 
-* libcamera has no understanding of ISO, so there is no `--ISO` option. Users should calculate the gain corresponding to the ISO value required (usually a manufacturer will tell you that, for example, a gain of 1 corresponds to an ISO of 40), and use the `--gain` parameter instead.
+* libcamera对ISO没有了解，所以没有- ISO选项。用户应该计算对应于所需ISO值的增益(通常制造商会告诉您，例如，增益1对应于ISO 40)，并使用- gain参数来代替。
 
-* There is no support for setting the flicker period yet.
+* 尚不支持设置闪烁周期。
 
-* `libcamera-still` does not support burst capture. In fact, because the JPEG encoding is not multi-threaded and pipelined it would produce quite poor framerates. Instead, users are advised to consider using `libcamera-vid` in MJPEG mode instead (and `--segment 1` can be used to force each frame into a separate JPEG file).
+* libcamera-仍然不支持连拍捕捉。事实上，因为JPEG编码不是多线程和流水线的，所以它会产生非常差的帧速率。相反，建议用户考虑在MJPEG模式下使用libcamera-vid(可以使用- segment 1将每一帧强制转换为单独的JPEG文件)。
 
-* `libcamera` uses open source drivers for all the image sensors, so the mechanism for enabling or disabling on-sensor DPC (Defective Pixel Correction) is different. The imx477 (HQ cam) driver enables on-sensor DPC by default; to disable it the user should, as root, enter
+* libcamera对所有图像传感器使用开源驱动程序，因此启用或禁用传感器上 DPC（缺陷像素校正）的机制是不同的。默认情况下，imx477（总部凸轮）驱动程序启用传感器上的 DPC;要禁用它，用户应该以 root 身份输入
 
 ----
 echo 0 > /sys/module/imx477/parameters/dpc_enable

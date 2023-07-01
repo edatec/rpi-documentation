@@ -1,3 +1,4 @@
+[[libcamera-raw]]
 === `libcamera-raw`
 
 `libcamera-raw` is like a video recording application except that it records raw Bayer frames directly from the sensor. It does not show a preview window. For a 2 second raw clip use

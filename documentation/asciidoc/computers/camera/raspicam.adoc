@@ -1,86 +1,95 @@
-== Raspicam applications
+[[raspicam-applications]]
+== 6Raspicam应用
 
 [WARNING]
 ====
-Raspberry Pi has transitioned from a legacy camera software stack based on proprietary Broadcom GPU code to an open-source stack based on `libcamera`. As such, the _Raspicam_ stack is now deprecated.  Raspberry Pi OS images from _Bullseye_ onwards contain *only* the `libcamera`-based stack. Raspberry Pi OS images up to and including _Buster_ still use the legacy _Raspicam_ stack.
+Raspberry Pi已经从基于专有Broadcom GPU代码的传统相机软件堆栈过渡到基于libcamera的开源堆栈。因此，Raspicam堆栈现在已被弃用。从牛眼开始的Raspberry Pi操作系统映像只包含基于libcamera的堆栈。Buster之前(包括Buster)的Raspberry Pi操作系统映像仍然使用传统的Raspicam堆栈。
 ====
 
-IMPORTANT: The Raspberry Pi https://www.raspberrypi.com/products/camera-module-3/[Camera Module 3] is *not supported* by the legacy camera stack.
+IMPORTANT: 
+不受传统相机堆栈不支持Raspberry Pi https://www.raspberrypi.com/products/camera-module-3/[相机模块 3] 。
 
-Users are encouraged to use the newest OS images and the `libcamera`-based stack because:
+我们鼓励用户使用最新的操作系统映像和基于libcamera的堆栈，因为:
 
-* It will continue to be developed moving forward.
-* Raspberry Pi and 3rd parties can fix bugs and problems in the camera stack.
-* Raspberry Pi and 3rd parties can add new features to the camera stack.
-* It is much easier to add support for new cameras.
-* 3rd parties can add support directly for their own cameras.
-* Nearly all aspects of the camera tuning can be changed by users.
-* It integrates much more conveniently with other standard Linux APIs.
-* Raspberry Pi supply a set of `libcamera-apps` which emulate most of the features of the legacy applications.
-* It provdes a feature-rich post-processing framework integrating OpenCV and TensorFlow Lite.
-* Libcamera makes it easier to control the parameters of the image sensor and the camera system.
-* It is fully supported on 64-bit operating systems.
+* 它将继续向前发展。
+* Raspberry Pi和第三方可以修复相机堆栈中的错误和问题。
+* Raspberry Pi和第三方可以向相机堆栈添加新功能。
+* 添加对新相机的支持要容易得多。
+* 第三方可以直接为自己的相机添加支持。
+* 用户几乎可以更改相机调整的所有方面。
+* 它与其他标准 Linux API 集成得更方便。
+* Raspberry Pi提供了一组libcamera-apps模拟传统应用程序的大部分功能。
+* 它证明了一个功能丰富的后处理框架，集成了OpenCV和TensorFlow Lite。
+* Libcamera可以更轻松地控制图像传感器和相机系统的参数。
+* 它在 64 位操作系统上完全受支持
 
-Reasons to consider staying with an older OS and using the legacy _Raspicam_ stack might include:
+考虑继续使用较旧的操作系统并使用旧版 Raspicam 堆栈的原因可能包括：
 
-* It may perform better on Raspberry Pi 2 and Raspberry Pi Zero devices, as it offloads more to the GPU and is less dependent on the ARM cores.
+* 它可能在Raspberry Pi 2和Raspberry Pi Zero设备上表现更好，因为它将更多卸载到GPU并且对ARM内核的依赖性较小。
 
-== Re-enabling the legacy stack
+[[re-enabling-the-legacy-stack]]
+== 重新启用旧堆栈
 
-IMPORTANT: The legacy camera stack is **not available** in the 64-bit version of Raspberry Pi OS, it cannot be re-enabled on the 64-bit OS.
+IMPORTANT: 旧版相机堆栈在 64 位版本的 Raspberry Pi OS 中不可用，无法在 64 位操作系统上重新启用。
 
-The legacy camera stack can be re-enabled in Bullseye using the following steps.
+可以使用以下步骤在 Bullseye 中重新启用旧相机堆栈。
 
-1. Ensure your system is up-to-date and reboot it.
-2. Run `sudo raspi-config`.
-3. Navigate to `Interface Options` and select `Legacy camera` to enable it.
-4. Reboot your Raspberry Pi again.
+1. 确保您的系统是最新的，然后重新启动它。
+2. 运行sudo raspi-config
+3. 导航到Interface Options并选择Legacy camera以启用它。
+4. 再次重新启动Raspberry Pi。
 
-These steps are shown in the following video.
+以下视频显示了这些步骤。
 
 video::E7KPSc_Xr24[youtube]
 
-NOTE: More information can be found in the https://www.raspberrypi.com/news/bullseye-camera-system/[blog post] discussing the transition.
+NOTE: 更多信息可以在讨论过渡的 https://www.raspberrypi.com/news/bullseye-camera-system/[博客]文章中找到。
 
-== Raspicam commands
+[[raspicam-commands]]
+== Raspicam命令
 
-`raspistill`, `raspivid` and `raspiyuv` are command line tools for using the camera module.
+raspistill、raspivid和raspiyuv是使用相机模块的命令行工具。
 
-=== Enabling the Camera
+[[enabling-the-camera]]
+=== 启用相机
 
-Before using any of the _Raspicam_ applications, the camera must be enabled.
+在使用任何Raspicam应用程序之前，必须启用相机。
 
-==== On the desktop
+[[on-the-desktop]]
+==== 在桌面上
+从桌面菜单中选择首选项和Raspberry Pi配置:将出现一个窗口。选择接口选项卡，然后单击启用摄像机选项。单击确定。您需要重新启动以使更改生效。
 
-Select `Preferences` and `Raspberry Pi Configuration` from the desktop menu: a window will appear. Select the `Interfaces` tab, then click on the `enable camera` option. Click `OK`. You will need to reboot for the changes to take effect.
+[[with-the-command-line]]
+==== 使用命令行
 
-==== With the command line
-
-Open the `raspi-config` tool from the terminal:
+从终端打开raspi-config工具：
 
 [,bash]
 ----
 sudo raspi-config
 ----
 
-Select `Interfacing Options` then `Camera` and press `Enter`. Choose `Yes` then `Ok`. Go to `Finish` and you'll be prompted to reboot.
+选择接口选项，然后选择相机，并按回车键。选择是，然后选择确定。转到“完成”,系统会提示您重新启动。
 
-To test that the system is installed and working, try the following command:
+要测试系统是否已安装并正常工作，请尝试以下命令：
 
 [,bash]
 ----
 raspistill -v -o test.jpg
 ----
 
-The display should show a five-second preview from the camera and then take a picture, saved to the file `test.jpg`, whilst displaying various informational messages.
+显示屏应显示相机的五秒钟预览，然后拍摄照片，保存到文件test.jpg中，同时显示各种信息性消息。
 
+[[raspistill]]
 === `raspistill`
 
-`raspistill` is the command line tool for capturing still photographs with a Raspberry Pi camera module.
+raspistill是用于使用 Raspberry Pi 相机模块捕获静态照片的命令行工具。
 
-==== Basic usage of raspistill
+[[basic-usage-of-raspistill]]
+==== raspistill的基本用法
 
-With a camera module xref:../accessories/camera.adoc#about-the-camera-modules[connected and enabled], enter the following command in the terminal to take a picture:
+
+xref:../accessories/camera.adoc#about-the-camera-modules[连接并启用]相机模块后，在终端中输入以下命令以拍照：
 
 [,bash]
 ----
@@ -89,11 +98,13 @@ raspistill -o cam.jpg
 
 image::images/cam.jpg[Upside-down photo]
 
-In this example the camera has been positioned upside-down. If the camera is placed in this position, the image must be flipped to appear the right way up.
+在此示例中，相机已倒置放置。如果将相机放置在此位置，则必须翻转图像才能正确向上显示。
 
-==== Vertical flip and horizontal flip
+[[vertical-flip-and-horizontal-flip]]
+==== 垂直翻转和水平翻转
 
-With the camera placed upside-down, the image must be rotated 180° to be displayed correctly. The way to correct for this is to apply both a vertical and a horizontal flip by passing in the `-vf` and `-hf` flags:
+将相机倒置放置时，图像必须旋转 180° 才能正确显示。纠正此问题的方法是通过传入-vf 和-hf
+ 标志来应用垂直和水平翻转：
 
 [,bash]
 ----
@@ -102,21 +113,24 @@ raspistill -vf -hf -o cam2.jpg
 
 image::images/cam2.jpg[Vertical and horizontal flipped photo]
 
-Now the photo has been captured correctly.
+现在照片已正确捕获。
 
-==== Resolution
+[[resolution]]
+==== 分辨率
 
-The camera module takes pictures at a resolution of `2592 x 1944` which is 5,038,848 pixels or 5 megapixels.
+相机模块以2592 x 1944的分辨率拍摄照片，分辨率为5，038，848像素或500万像素
 
-==== File size
+[[file-size]]
+==== 文件大小
 
-A photo taken with the camera module will be around 2.4MB. This is about 425 photos per GB.
+使用相机模块拍摄的照片约为2.4MB。这大约是每 GB 425 张照片。
 
-Taking 1 photo per minute would take up 1GB in about 7 hours. This is a rate of about 144MB per hour or 3.3GB per day.
+每分钟拍摄 1 张照片将在大约 1 小时内占用 7GB。这是每小时约144MB或每天3.3GB的速率。
 
-==== Bash script
+[[bash-script]]
+==== Bash脚本
 
-You can create a Bash script which takes a picture with the camera. To create a script, open up your editor of choice and write the following example code:
+您可以创建一个 Bash 脚本，该脚本使用相机拍照。若要创建脚本，请打开所选编辑器并编写以下示例代码：
 
 [,bash]
 ----
@@ -127,91 +141,97 @@ DATE=$(date +"%Y-%m-%d_%H%M")
 raspistill -vf -hf -o /home/pi/camera/$DATE.jpg
 ----
 
-This script will take a picture and name the file with a timestamp.
+此脚本将拍摄照片并使用时间戳命名文件。
 
-You'll also need to make sure the path exists by creating the `camera` folder:
+您还需要通过创建camera文件夹来确保路径存在：
 
 [,bash]
 ----
 mkdir camera
 ----
 
-Say we saved it as `camera.sh`, we would first make the file executable:
+假设我们将其保存为 camera.sh，我们将首先使文件可执行：
 
 [,bash]
 ----
 chmod +x camera.sh
 ----
 
-Then run with:
+然后运行：
 
 [,bash]
 ----
 ./camera.sh
 ----
 
-==== More options
+[[more-options]]
+==== 更多选项
 
-For a full list of possible options, run `raspistill` with no arguments. To scroll, redirect stderr to stdout and pipe the output to `less`:
+有关可能选项的完整列表，请不带任何参数运行raspistill。若要滚动，请将stderr重定向到stdout，并将输出管道化为less:
 
 [,bash]
 ----
 raspistill 2>&1 | less
 ----
 
-Use the arrow keys to scroll and type `q` to exit.
+使用箭头键滚动并键入q退出。
 
+[[raspivid]]
 === `raspivid`
 
-`raspivid` is the command line tool for capturing video with a Raspberry Pi camera module.
+raspivid是用于使用 Raspberry Pi 相机模块捕获视频的命令行工具。
 
-==== Basic usage of raspivid
+[[basic-usage-of-raspivid]]
+==== raspivid的基本用法
 
-With a camera module xref:../accessories/camera.adoc#about-the-camera-modules[connected and enabled], record a video using the following command:
+xref:../accessories/camera.adoc#about-the-camera-modules[连接并启用]摄像头模块后，使用以下命令录制视频：
 
 [,bash]
 ----
 raspivid -o vid.h264
 ----
 
-Remember to use `-hf` and `-vf` to flip the image if required, like with xref:camera_software.adoc#raspistill[raspistill]
+如果需要，记得使用-hf和-vf来翻转图像，就像使用xref:camera_software.adoc#raspistill[raspistill]一样
 
-This will save a 5 second video file to the path given here as `vid.h264` (default length of time).
+这将把一个5秒钟的视频文件保存到此处给定的路径vid.h264(默认时间长度)。
 
-==== Specify length of video
+[[specify-length-of-video]]
+==== 指定视频长度
 
-To specify the length of the video taken, pass in the `-t` flag with a number of milliseconds. For example:
+要指定所拍摄视频的长度，请传入带有毫秒数的-t标志。例如：
 
 [,bash]
 ----
 raspivid -o video.h264 -t 10000
 ----
 
-This will record 10 seconds of video.
+这将录制 10 秒的视频。
 
-==== More options
+[[more-options-2]]
+==== 更多选项
 
-For a full list of possible options, run `raspivid` with no arguments, or pipe this command through `less` and scroll through:
+有关可能选项的完整列表，请不带任何参数运行raspivid，或者通过管道将此命令传递给less并滚动浏览:
 
 [,bash]
 ----
 raspivid 2>&1 | less
 ----
 
-Use the arrow keys to scroll and type `q` to exit.
+使用箭头键滚动并键入q退出。
 
-==== MP4 Video Format
+[[mp4-video-format]]
+==== MP4 视频格式
 
-The Raspberry Pi captures video as a raw H264 video stream. Many media players will refuse to play it, or play it at an incorrect speed, unless it is "wrapped" in a suitable container format like MP4. The easiest way to obtain an MP4 file from the raspivid command is using MP4Box.
+Raspberry Pi将视频捕获为原始 H264 视频流。许多媒体播放器会拒绝播放它，或者以不正确的速度播放它，除非它被“包装”在合适的容器格式中，如 MP4。从 raspivid 命令获取 MP4 文件的最简单方法是使用 MP4Box。
 
-Install MP4Box with this command:
+使用以下命令安装 MP4Box：
 
 [,bash]
 ----
 sudo apt install -y gpac
 ----
 
-Capture your raw video with raspivid and wrap it in an MP4 container like this:
+使用raspivid捕获原始视频并将其包装在MP4容器中，如下所示：
 
 [,bash]
 ----
@@ -223,236 +243,240 @@ MP4Box -add pivideo.h264 pivideo.mp4
 rm pivideo.h264
 ----
 
-Alternatively, wrap MP4 around your existing raspivid output, like this:
+或者，将 MP4 包裹在现有的 raspivid 输出周围，如下所示：
 
 [,bash]
 ----
 MP4Box -add video.h264 video.mp4
 ----
 
+[[raspiyuv]]
 === `raspiyuv`
 
-`raspiyuv` has the same set of features as `raspistill` but instead of outputting standard image files such as ``.jpg``s, it generates YUV420 or RGB888 image files from the output of the camera ISP.
+raspiyuv具有与raspistill相同的功能集，但不是输出标准图像文件，如。jpgs，它从相机ISP的输出生成YUV420或RGB888图像文件。
 
-In most cases using `raspistill` is the best option for standard image capture, but using YUV can be of benefit in certain circumstances. For example if you just need a uncompressed black and white image for computer vision applications, you can simply use the Y channel of a YUV capture.
+在大多数情况下，使用raspistill是标准图像捕捉的最佳选择，但在某些情况下使用YUV可能会有好处。例如，如果您只需要计算机视觉应用程序的未压缩黑白图像，您可以简单地使用YUV捕捉的Y通道。
 
-There are some specific points about the YUV420 files that are required in order to use them correctly. Line stride (or pitch) is a multiple of 32, and each plane of YUV is a multiple of 16 in height. This can mean there may be extra pixels at the end of lines, or gaps between planes, depending on the resolution of the captured image. These gaps are unused.
+关于YUV420文件，需要一些特定点才能正确使用它们。直线步幅（或俯仰）是 32 的倍数，YUV 的每个平面的高度是 16 的倍数。这可能意味着行尾可能有额外的像素，或者平面之间有间隙，具体取决于捕获图像的分辨率。这些间隙未被利用。
 
-=== Troubleshooting
 
-If the Camera Module isn't working correctly, there are number of things to try:
+[[troubleshooting]]
+=== 故障排除
+如果相机模块无法正常工作，可以尝试以下几种方法：
 
-* Is the ribbon cable attached to the Camera Serial Interface (CSI), not the Display Serial Interface (DSI)? The ribbon connector will fit into either port. The Camera port is located near the HDMI connector.
-* Are the ribbon connectors all firmly seated, and are they the right way round? They must be straight in their sockets.
-* Is the Camera Module connector, between the smaller black Camera Module itself and the PCB, firmly attached? Sometimes this connection can come loose during transit or when putting the Camera Module in a case. Using a fingernail, flip up the connector on the PCB, then reconnect it with gentle pressure. It engages with a very slight click. Don't force it; if it doesn't engage, it's probably slightly misaligned.
-* Have `sudo apt update` and `sudo apt full-upgrade` been run?
-* Has `raspi-config` been run and the Camera Module enabled?
-* Is your power supply sufficient? The Camera Module adds about 200-250mA to the power requirements of your Raspberry Pi.
+* 带状电缆是否连接到相机串行接口 （CSI），而不是显示器串行接口 （DSI）？带状连接器将适合任一端口。相机端口位于HDMI接口附近。
+* 带状连接器是否都牢固就位，它们是否正确？它们必须直插在插座中。
+* 较小的黑色相机模块本身和PCB之间的相机模块连接器是否牢固连接？有时，这种连接在运输过程中或将相机模块放入机箱中时会松动。用指甲翻转PCB上的连接器，然后轻轻按压重新连接。它以非常轻微的咔哒声参与。不要强迫它;如果它不参与，它可能略有错位。
+*sudo apt update和sudo apt full-upgrade运行过吗？
+* 是否已运行raspi-config并启用相机模块？
+* 您的电源是否充足？相机模块为Raspberry Pi的功率要求增加了大约 200-250mA。
 
-If things are still not working, try the following:
+如果仍然无法正常工作，请尝试以下操作：
 
-* `Error : raspistill/raspivid command not found`. This probably means your update/upgrade failed in some way. Try it again.
-* `Error : ENOMEM`. The Camera Module is not starting up. Check all connections again.
-* `Error : ENOSPC`. The Camera Module is probably running out of GPU memory. Check `config.txt` in the /boot/ folder. The `gpu_mem` option should be at least 128. Alternatively, use the Memory Split option in the Advanced section of `raspi-config` to set this.
-* If you've checked all the above issues and the Camera Module is still not working, try posting on our forums for more help.
+* `Error : raspistill/raspivid command not found`. 这可能意味着您的更新/升级以某种方式失败。再试一次。
+* `Error : ENOMEM`.摄像头模块未启动。再次检查所有连接。
+* `Error : ENOSPC`. 摄像头模块可能耗尽了GPU内存。检查/boot/文件夹中的config.txt。gpu_mem选项至少应为128。或者，使用raspi-config的高级部分中的内存分割选项来进行设置。
+* 如果您已检查上述所有问题，但相机模块仍然无法正常工作，请尝试在我们的论坛上发帖以获取更多帮助。
 
-=== Command Line Options
+[[command-line-options]]
+=== 命令行选项
 
-==== Preview window
+[[preview-window-3]]
+==== 预览窗口
 
 ----
 	--preview,	-p		Preview window settings <'x,y,w,h'>
 ----
 
-Allows the user to define the size of the preview window and its location on the screen. Note this will be superimposed over the top of any other windows/graphics.
-
+允许用户定义预览窗口的大小及其在屏幕上的位置。请注意，这将叠加在任何其他窗口/图形的顶部。
 ----
 	--fullscreen,	-f		Fullscreen preview mode
 ----
 
-Forces the preview window to use the whole screen. Note that the aspect ratio of the incoming image will be retained, so there may be bars on some edges.
+强制预览窗口使用整个屏幕。请注意，将保留传入图像的纵横比，因此某些边缘上可能会有条形图。
 
 ----
 	--nopreview,	-n		Do not display a preview window
 ----
 
-Disables the preview window completely. Note that even though the preview is disabled, the camera will still be producing frames, so will be using power.
+完全禁用预览窗口。请注意，即使禁用预览，相机仍将生成帧，因此会使用电源。
 
 ----
 	--opacity,	-op		Set preview window opacity
 ----
 
-Sets the opacity of the preview windows. 0 = invisible, 255 = fully opaque.
+设置预览窗口的不透明度。0 = 不可见，255 = 完全不透明。
 
-==== Camera control options
+[[camera-control-options]]
+==== 相机控制选项
 
 ----
 	--sharpness,	-sh		Set image sharpness (-100 - 100)
 ----
 
-Sets the sharpness of the image. 0 is the default.
+设置图像的锐度。0 是默认值。
 
 ----
 	--contrast,	-co		Set image contrast (-100 - 100)
 ----
 
-Sets the contrast of the image. 0 is the default.
+设置图像的对比度。0 是默认值。
 
 ----
 	--brightness,	-br		Set image brightness (0 - 100)
 ----
 
-Sets the brightness of the image. 50 is the default. 0 is black, 100 is white.
+设置图像的亮度。默认值为 50。0 表示黑色，100 表示白色。
 
 ----
 	--saturation,	-sa		Set image saturation (-100 - 100)
 ----
 
-Sets the colour saturation of the image. 0 is the default.
+设置图像的颜色饱和度。0 是默认值。
 
 ----
 	--ISO,	-ISO		Set capture ISO (100 - 800)
 ----
 
-Sets the ISO to be used for captures.
+设置用于捕获的 ISO。
 
 ----
 	--vstab,	-vs		Turn on video stabilisation
 ----
 
-In video mode only, turns on video stabilisation.
+仅在视频模式下，打开视频防抖动。
 
 ----
 	--ev,	-ev		Set EV compensation (-10 - 10)
 ----
 
-Sets the EV compensation of the image. Default is 0.
+设置图像的 EV 补偿。默认值为 0。
 
 ----
 	--exposure,	-ex		Set exposure mode
 ----
 
-Possible options are:
+可能的选项包括：
 
-* auto: use automatic exposure mode
-* night: select setting for night shooting
-* nightpreview:
-* backlight: select setting for backlit subject
-* spotlight:
-* sports: select setting for sports (fast shutter etc.)
-* snow: select setting optimised for snowy scenery
-* beach: select setting optimised for beach
-* verylong: select setting for long exposures
-* fixedfps: constrain fps to a fixed value
-* antishake: antishake mode
-* fireworks: select setting optimised for fireworks
+* 自动：使用自动曝光模式
+* 夜间：选择夜间拍摄设置
+* 夜间预览：
+* 背光：选择背光拍摄对象的设置
+* 聚光灯：
+* 运动：选择运动设置（快速快门等）
+* 雪景：选择针对雪景优化的设置
+* 海滩：选择针对海滩优化的设置
+* 超长：选择长时间曝光的设置
+* 固定帧数：将帧率限制为固定值
+* 防抖：防抖模式
+* 烟花：选择针对烟花优化的设置
 
-Note that not all of these settings may be implemented, depending on camera tuning.
+请注意，并非所有这些设置都可以实现，具体取决于相机调整。
 
 ----
 	--flicker, -fli		Set flicker avoidance mode
 ----
 
-Set a mode to compensate for lights flickering at the mains frequency, which can be seen as a dark horizontal band across an image. Flicker avoidance locks the exposure time to a multiple of the mains flicker frequency (8.33ms for 60Hz, or 10ms for 50Hz). This means that images can be noisier as the control algorithm has to increase the gain instead of exposure time should it wish for an intermediate exposure value. `auto` can be confused by external factors, therefore it is preferable to leave this setting off unless actually required.
+设置一种模式以补偿在电源频率闪烁的灯光，这可以看作是图像上的暗水平带。避免闪烁将曝光时间锁定在电源闪烁频率的倍数（8Hz为33.60ms，10Hz为50ms）。这意味着图像可能会更加嘈杂，因为如果控制算法希望获得中间曝光值，则必须增加增益而不是曝光时间。 auto可能会被外部因素混淆，因此除非实际需要，否则最好关闭此设置。
 
-Possible options are:
+可能的选项包括：
 
-* off: turn off flicker avoidance
-* auto: automatically detect mains frequency
-* 50hz: set avoidance at 50Hz
-* 60hz: set avoidance at 60Hz
+* 熄灭：关闭闪烁避免
+* 自动：自动检测电源频率
+* 50Hz：将避让设置为50Hz
+* 60Hz：将避让设置为60Hz
 
 ----
 	--awb,	-awb		Set Automatic White Balance (AWB) mode
 ----
 
-Modes for which colour temperature ranges (K) are available have these settings in brackets.
+色温范围 （K） 可用的模式在括号中具有这些设置。
 
-* off: turn off white balance calculation
-* auto: automatic mode (default)
-* sun: sunny mode (between 5000K and 6500K)
-* cloud: cloudy mode (between 6500K and 12000K)
-* shade: shade mode
-* tungsten: tungsten lighting mode (between 2500K and 3500K)
-* fluorescent: fluorescent lighting mode (between 2500K and 4500K)
-* incandescent: incandescent lighting mode
-* flash: flash mode
-* horizon: horizon mode
-* greyworld: Use this on the NoIR camera to fix incorrect AWB results due to the lack of the IR filter.
+* off: 关闭白平衡计算
+* auto: 自动模式（默认）
+* sun: 晴天模式（5000K 和 6500K 之间）
+* cloud: 多云模式（6500K 和 12000K 之间）
+* shade: 阴影模式
+* tungsten: 钨丝灯照明模式（2500K至3500K之间）
+* fluorescent: 荧光灯照明模式（2500K至4500K之间）
+* incandescent: 白炽灯照明模式
+* flash: 闪光模式
+* horizon: 地平线模式
+* greyworld: 在 NoIR 相机上使用它来修复由于缺少红外滤光片而导致的错误 AWB 结果。
 
-Note that not all of these settings may be implemented, depending on camera type.
+请注意，并非所有这些设置都可以实现，具体取决于相机类型。
 
 ----
 	--imxfx,	-ifx		Set image effect
 ----
 
-Set an effect to be applied to the image:
+设置要应用于图像的效果：
 
-* none: no effect (default)
-* negative: invert the image colours
-* solarise: solarise the image
-* posterise: posterise the image
-* whiteboard: whiteboard effect
-* blackboard: blackboard effect
-* sketch: sketch effect
-* denoise: denoise the image
-* emboss: emboss the image
-* oilpaint: oil paint effect
-* hatch: hatch sketch effect
-* gpen: graphite sketch effect
-* pastel: pastel effect
-* watercolour: watercolour effect
-* film: film grain effect
-* blur: blur the image
-* saturation: colour saturate the image
-* colourswap: not fully implemented
-* washedout: not fully implemented
-* colourpoint: not fully implemented
-* colourbalance: not fully implemented
-* cartoon: not fully implemented
+* none: 无效果（默认）
+* negative: 反转图像颜色
+* solarise: 日晒图像
+* posterise: 后置图像
+* whiteboard: 白板效果
+* blackboard: 黑板效果
+* sketch: 素描效果
+* denoise: 对图像进行降噪
+* emboss: 浮雕图像
+* oilpaint: 油画效果
+* hatch:剖面线草图效果
+* gpen: 石墨素描效果
+* pastel: 柔和效果
+* watercolour: 水彩效果
+* film: 胶片颗粒效果
+* blur:模糊图像
+* saturation:色彩使图像饱和
+* colourswap: 未完全实现
+* washedout: 未完全实施
+* colourpoint: 未完全实现
+* colourbalance: 未完全实现
+* cartoon: 未完全实现
 
-Note that not all of these settings may be available in all circumstances.
+请注意，并非所有这些设置在所有情况下都可用。
 
 ----
 	--colfx,	-cfx		Set colour effect <U:V>
 ----
 
-The supplied U and V parameters (range 0 - 255) are applied to the U and Y channels of the image. For example, --colfx 128:128 should result in a monochrome image.
+提供的 U 和 V 参数（范围 0 - 255）应用于图像的 U 和 Y 通道。例如，--colfx 128：128 应生成单色图像。
 
 ----
 	--metering,	-mm		Set metering mode
 ----
 
-Specify the metering mode used for the preview and capture:
+指定用于预览和捕获的测光模式：
 
-* average: average the whole frame for metering
-* spot: spot metering
-* backlit: assume a backlit image
-* matrix: matrix metering
+* 平均：平均整个帧以进行测光
+* 点测光：点测光
+* 背光：假设是背光图像
+* 矩阵：矩阵计量
 
 ----
 	--rotation,	-rot		Set image rotation (0 - 359)
 ----
 
-Sets the rotation of the image in the viewfinder and resulting image. This can take any value from 0 upwards, but due to hardware constraints only 0, 90, 180, and 270 degree rotations are supported.
+设定取景器中图像的旋转和生成的图像。这可以取 0 以上的任何值，但由于硬件限制，仅支持 0、90、180 和 270 度旋转。
 
 ----
 	--hflip,	-hf		Set horizontal flip
 ----
 
-Flips the preview and saved image horizontally.
+水平翻转预览和保存的图像。
 
 ----
 	--vflip,	-vf		Set vertical flip
 ----
 
-Flips the preview and saved image vertically.
+垂直翻转预览和保存的图像。
 
 ----
 	--roi,	-roi		Set sensor region of interest
 ----
 
-Allows the specification of the area of the sensor to be used as the source for the preview and capture. This is defined as x,y for the top-left corner, and a width and height, with all values in normalised coordinates (0.0 - 1.0). So, to set a ROI at halfway across and down the sensor, and a width and height of a quarter of the sensor, use:
+允许将传感器区域的规范用作预览和捕获的源。这定义为左上角的 x，y 以及宽度和高度，所有值均采用规范化坐标 （0.0 - 1.0）。因此，若要在传感器的中间和下方设置 ROI，以及传感器四分之一的宽度和高度，请使用：
 
 ----
 -roi 0.5,0.5,0.25,0.25
@@ -462,7 +486,7 @@ Allows the specification of the area of the sensor to be used as the source for 
 	--shutter,	-ss		Set shutter speed/time
 ----
 
-Sets the shutter open time to the specified value (in microseconds). Shutter speed limits are as follows:
+将快门打开时间设置为指定值（以微秒为单位）。快门速度限制如下：
 
 [cols=",^"]
 |===
@@ -478,50 +502,50 @@ Sets the shutter open time to the specified value (in microseconds). Shutter spe
 | 200000000 (i.e. 200s)
 |===
 
-Using values above these maximums will result in undefined behaviour.
+使用高于这些最大值的值将导致未定义的行为。
 
 ----
 	--drc,	-drc		Enable/disable dynamic range compression
 ----
 
-DRC changes the images by increasing the range of dark areas, and decreasing the brighter areas. This can improve the image in low light areas.
+DRC 通过增加暗区范围和减少较亮区域来更改图像。这可以改善低光照区域的图像。
 
 * off
 * low
 * med
 * high
 
-By default, DRC is off.
+默认情况下，DRC 处于关闭状态。
 
 ----
 	--stats,	-st		Use stills capture frame for image statistics
 ----
 
-Force recomputation of statistics on stills capture pass. Digital gain and AWB are recomputed based on the actual capture frame statistics, rather than the preceding preview frame.
+强制重新计算静止图像捕获传递的统计信息。数字增益和AWB是根据实际捕获帧统计信息重新计算的，而不是前面的预览帧。
 
 ----
 	--awbgains,	-awbg
 ----
 
-Sets blue and red gains (as floating point numbers) to be applied when `-awb off` is set e.g. -awbg 1.5,1.2
+设置蓝色和红色增益（作为浮点数）以在设置时应用，例如 -awbg 1.5，1.2-awb off
 
 ----
 	--analoggain,	-ag
 ----
 
-Sets the analog gain value directly on the sensor (floating point value from 1.0 to 8.0 for the OV5647 sensor on Camera Module V1, and 1.0 to 12.0 for the IMX219 sensor on Camera Module V2 and the IMX447 on the HQ Camera).
+直接在传感器上设置模拟增益值（相机模块 V1 上的 OV0 传感器的浮点值为 8.0 到 5647.1，相机模块 V1 上的 IMX0 传感器和 HQ 相机上的 IMX12 的浮点值为 0.219 到 2.447）。
 
 ----
 	--digitalgain,	-dg
 ----
 
-Sets the digital gain value applied by the ISP (floating point value from 1.0 to 64.0, but values over about 4.0 will produce overexposed images)
+设置 ISP 应用的数字增益值（浮点值从 1.0 到 64.0，但大于 4.0 的值将产生曝光过度的图像）
 
 ----
 	--mode,	-md
 ----
 
-Sets a specified sensor mode, disabling the automatic selection. Possible values depend on the version of the Camera Module being used:
+设置指定的传感器模式，禁用自动选择。可能的值取决于所使用的相机模块的版本：
 
 Version 1.x (OV5647)
 
@@ -647,9 +671,9 @@ Version 2.x (IMX219)
 | 2x2
 |===
 
-^1^For frame rates over 120fps, it is necessary to turn off automatic exposure and gain control using `-ex off`. Doing so should achieve the higher frame rates, but exposure time and gains will need to be set to fixed values supplied by the user.
+^1^对于超过 120fps 的帧速率，需要使用-ex off 关闭自动曝光和增益控制。这样做应该可以实现更高的帧速率，但曝光时间和增益需要设置为用户提供的固定值。
 
-HQ Camera
+HQ摄像机
 
 |===
 | Mode | Size | Aspect Ratio | Frame rates | FOV | Binning/Scaling
@@ -694,17 +718,18 @@ HQ Camera
 	--camselect,	-cs
 ----
 
-Selects which camera to use on a multi-camera system. Use 0 or 1.
+选择要在多相机系统上使用的摄像机。使用 0 或 1。
 
 ----
 	--annotate,	-a		Enable/set annotate flags or text
 ----
 
-Adds some text and/or metadata to the picture.
+向图片添加一些文本和/或元数据。
 
-Metadata is indicated using a bitmask notation, so add them together to show multiple parameters. For example, 12 will show time(4) and date(8), since 4+8=12.
+元数据使用位掩码表示法表示，因此将它们相加以显示多个参数。例如，12 将显示 time（4） 和日期 （8），因为 4+8=12。
 
-Text may include date/time placeholders by using the '%' character, as used by http://man7.org/linux/man-pages/man3/strftime.3.html[strftime].
+
+文本可以使用  http://man7.org/linux/man-pages/man3/strftime.3.html[strftime] 使用的“%”字符包含日期/时间占位符。
 
 |===
 | Value | Meaning | Example Output
@@ -766,9 +791,9 @@ Text may include date/time placeholders by using the '%' character, as used by h
 	--annotateex,	-ae		Set extra annotation parameters
 ----
 
-Specifies annotation size, text colour, and background colour. Colours are in hex YUV format.
+指定批注大小、文本颜色和背景颜色。颜色采用十六进制 YUV 格式。
 
-Size ranges from 6 - 160; default is 32. Asking for an invalid size should give you the default.
+尺寸范围从 6 - 160;默认值为 32。请求无效大小应提供默认值。
 
 |===
 | Example | Explanation
@@ -784,28 +809,30 @@ Size ranges from 6 - 160; default is 32. Asking for an invalid size should give 
 	--stereo,	-3d
 ----
 
-Select the specified stereo imaging mode; `sbs` selects side-by-side mode, `tb` selects top/bottom mode; `off` turns off stereo mode (the default).
+选择指定的立体成像模式；sbs选择并排模式，tb选择顶/底模式；关闭关闭立体声模式(默认)。
 
 ----
 	--decimate,	-dec
 ----
 
-Halves the width and height of the stereo image.
+将立体图像的宽度和高度减半。
 
 ----
 	--3dswap,	-3dswap
 ----
 
-Swaps the camera order used in stereoscopic imaging; NOTE: currently not working.
+交换立体成像中使用的相机顺序;注：当前不工作。
 
 ----
 	--settings,	-set
 ----
 
-Retrieves the current camera settings and writes them to stdout.
+检索当前相机设置并将其写入标准输出。
 
-=== Application-specific Settings
+[[application-specific-settings]]
+=== 特定于应用程序的设置
 
+[[raspistill-2]]
 ==== `raspistill`
 
 ----
@@ -816,109 +843,108 @@ Retrieves the current camera settings and writes them to stdout.
 	--quality,	-q		Set JPEG quality <0 to 100>
 ----
 
-Quality 100 is almost completely uncompressed. 75 is a good all-round value.
+Quality 100 几乎完全未压缩。75是一个很好的全方位值。
 
 ----
 	--raw,	-r		Add raw Bayer data to JPEG metadata
 ----
 
-This option inserts the raw Bayer data from the camera into the JPEG metadata.
+此选项将来自相机的原始拜耳数据插入到 JPEG 元数据中。
 
 ----
 	--output,	-o		Output filename <filename>
 ----
 
-Specifies the output filename. If not specified, no file is saved. If the filename is '-', then all output is sent to stdout.
+指定输出文件名。如果未指定，则不保存任何文件。如果文件名为“-”，则所有输出都将发送到标准输出。
 
 ----
 	--latest,	-l		Link latest frame to filename <filename>
 ----
 
-Makes a file system link under this name to the latest frame.
+在此名称下建立指向最新帧的文件系统链接。
 
 ----
 	--verbose,	-v		Output verbose information during run
 ----
 
-Outputs debugging/information messages during the program run.
+在程序运行期间输出调试/信息消息。
 
 ----
 	--timeout,	-t		Time before the camera takes picture and shuts down
 ----
 
-The program will run for the specified length of time, entered in milliseconds. It then takes the capture and saves it if an output is specified. If a timeout value is not specified, then it is set to 5 seconds (-t 5000). Note that low values (less than 500ms, although it can depend on other settings) may not give enough time for the camera to start up and provide enough frames for the automatic algorithms like AWB and AGC to provide accurate results.
+程序将运行指定的时间长度，以毫秒为单位输入。然后，它会捕获并在指定输出时保存它。如果未指定超时值，则将其设置为 5 秒 （-t 5000）。请注意，低值（小于 500 毫秒，尽管它可能取决于其他设置）可能无法为相机提供足够的启动时间，也无法为 AWB 和 AGC 等自动算法提供足够的帧来提供准确的结果。
 
-If set to 0, the preview will run indefinitely, until stopped with CTRL-C. In this case no capture is made.
+如果设置为 0，预览将无限期运行，直到使用 CTRL-C 停止。在这种情况下，不会进行捕获。
 
 ----
 	--timelapse,	-tl		time-lapse mode
 ----
 
-The specific value is the time between shots in milliseconds. Note that you should specify `%04d` at the point in the filename where you want a frame count number to appear. So, for example, the code below will produce a capture every 2 seconds, over a total period of 30s, named `image0001.jpg`, `image0002.jpg` and so on, through to `image0015.jpg`.
+具体值是以毫秒为单位的拍摄间隔时间。请注意，您应该在文件名中希望显示帧数的位置指定%04d。例如，下面的代码将每2秒产生一个捕获，总时间为30秒，命名为image0001.jpg、image0002.jpg等等，一直到image0015.jpg。
 
 ----
 -t 30000 -tl 2000 -o image%04d.jpg
 ----
 
-Note that the `%04d` indicates a 4-digit number, with leading zeroes added to make the required number of digits. So, for example, `%08d` would result in an 8-digit number.
+请注意,%04d表示一个4位数字，并添加了前导零以构成所需的位数。例如，%08d会产生一个8位数。
 
-If a time-lapse value of 0 is entered, the application will take pictures as fast as possible. Note that there's an minimum enforced pause of 30ms between captures to ensure that exposure calculations can be made.
+如果输入延时值0，应用程序将尽快拍照。请注意，两次拍摄之间至少有 30 毫秒的强制暂停，以确保可以进行曝光计算。
 
 ----
 	--framestart,	-fs
 ----
 
-Specifies the first frame number in the timelapse. Useful if you have already saved a number of frames, and want to start again at the next frame.
+指定延时摄影中的第一个帧号。如果您已经保存了许多帧，并希望从下一帧重新开始，则很有用。
 
 ----
 	--datetime,	-dt
 ----
 
-Instead of a simple frame number, the timelapse file names will use a date/time value of the format `aabbccddee`, where `aa` is the month, `bb` is the day of the month, `cc` is the hour, `dd` is the minute, and `ee` is the second.
+延时文件名称将使用aabbccddee格式的日期/时间值，而不是简单的帧编号，其中aa是月，bb是月中的日，cc是小时，dd是分钟，ee是秒。
 
 ----
 	--timestamp,	-ts
 ----
 
-Instead of a simple frame number, the timelapse file names will use a single number which is the Unix timestamp, i.e. the seconds since 1970.
+延时摄影文件名将使用一个数字，即Unix时间戳，即自1970年以来的秒数，而不是简单的帧号。
 
 ----
 	--thumb,	-th		Set thumbnail parameters (x:y:quality)
 ----
 
-Allows specification of the thumbnail image inserted into the JPEG file. If not specified, defaults are a size of 64x48 at quality 35.
-
-if `--thumb none` is specified, no thumbnail information will be placed in the file. This reduces the file size slightly.
+允许指定插入到 JPEG 文件中的缩略图。如果未指定，则默认值为 64x48，质量为 35。
+如果指定--thumb none，则不会在文件中放置缩略图信息。这会略微减小文件大小。
 
 ----
 	--demo,	-d		Run a demo mode <milliseconds>
 ----
 
-This options cycles through the range of camera options. No capture is taken, and the demo will end at the end of the timeout period, irrespective of whether all the options have been cycled. The time between cycles should be specified as a millisecond value.
+此选项在相机选项范围内循环。不会进行任何捕获，并且演示将在超时期限结束时结束，无论是否已循环所有选项。周期之间的时间应指定为毫秒值。
 
 ----
 	--encoding,	-e		Encoding to use for output file
 ----
 
-Valid options are `jpg`, `bmp`, `gif`, and `png`. Note that unaccelerated image types (GIF, PNG, BMP) will take much longer to save than jpg, which is hardware accelerated. Also note that the filename suffix is completely ignored when deciding the encoding of a file.
+有效选项为jpg 、bmp、gif 和 png。请注意，未加速的图像类型（GIF、PNG、BMP）的保存时间比硬件加速的 jpg 要长得多。另请注意，在决定文件的编码时，将完全忽略文件名后缀。
 
 ----
 	--restart,	-rs
 ----
 
-Sets the JPEG restart marker interval to a specific value. Can be useful for lossy transport streams because it allows a broken JPEG file to still be partially displayed.
+将 JPEG 重新启动标记间隔设置为特定值。对于有损传输流很有用，因为它允许损坏的 JPEG 文件仍部分显示。
 
 ----
 	--exif,	-x		EXIF tag to apply to captures (format as 'key=value')
 ----
 
-Allows the insertion of specific EXIF tags into the JPEG image. You can have up to 32 EXIF tag entries. This is useful for tasks like adding GPS metadata. For example, to set the longitude:
+允许将特定的EXIF标签插入JPEG图像。您最多可以有 32 个 EXIF 标记条目。这对于添加 GPS 元数据等任务非常有用。例如，要设置经度：
 
 ----
 --exif GPS.GPSLongitude=5/1,10/1,15/1
 ----
 
-would set the longitude to 5 degs, 10 minutes, 15 seconds. See EXIF documentation for more details on the range of tags available; the supported tags are as follows:
+将经度设置为 5 度 10 分 15 秒。有关可用标签范围的更多详细信息，请参阅 EXIF 文档;支持的标签如下：
 
 ----
 IFD0.<   or
@@ -935,33 +961,33 @@ EINT.<
 InteroperabilityIndex, InteroperabilityVersion, RelatedImageFileFormat, RelatedImageWidth, RelatedImageLength>
 ----
 
-Note that a small subset of these tags will be set automatically by the camera system, but will be overridden by any EXIF options on the command line.
+请注意，这些标签的一小部分将由相机系统自动设置--exif none，但将被命令行上的任何EXIF选项覆盖。
 
-Setting `--exif none` will prevent any EXIF information being stored in the file. This reduces the file size slightly.
+设置将防止任何 EXIF 信息存储在文件中。这会略微减小文件大小。
 
 ----
 	--gpsdexif,	-gps
 ----
 
-Applies real-time EXIF information from any attached GPS dongle (using GSPD) to the image; requires `libgps.so` to be installed.
+将来自任何连接的GPS加密狗（使用GSPD）的实时EXIF信息应用于图像;需要安装libgps.so。
 
 ----
 	--fullpreview,	-fp		Full preview mode
 ----
 
-This runs the preview window using the full resolution capture mode. Maximum frames per second in this mode is 15fps, and the preview will have the same field of view as the capture. Captures should happen more quickly, as no mode change should be required. This feature is currently under development.
+这将使用全分辨率捕获模式运行预览窗口。在此模式下，每秒最大帧数为 15fps，预览将具有与捕获相同的视野。捕获应该更快地发生，因为不需要更改模式。此功能目前正在开发中。
 
 ----
 	--keypress,	-k		Keypress mode
 ----
 
-The camera is run for the requested time (`-t`), and a capture can be initiated throughout that time by pressing the Enter key. Pressing X then Enter will exit the application before the timeout is reached. If the timeout is set to 0, the camera will run indefinitely until the user presses X then Enter. Using the verbose option (`-v`) will display a prompt asking for user input, otherwise no prompt is displayed.
+照相机在请求的时间 （-t） 内运行，并且可以通过按 Enter 键在整个时间内启动捕获。按 X 然后按 Enter 将在达到超时之前退出应用程序。如果超时设置为 0，摄像机将无限期运行，直到用户按 X 然后按 Enter 键。 使用详细选项 （-v） 将显示要求用户输入的提示，否则不显示提示。
 
 ----
 	--signal,	-s		Signal mode
 ----
 
-The camera is run for the requested time (`-t`), and a capture can be initiated throughout that time by sending a `USR1` signal to the camera process. This can be done using the `kill` command. You can find the camera process ID using the `pgrep raspistill` command.
+摄像机在请求的时间(-t)内运行，通过向摄像机进程发送USR1信号，可以在这段时间内启动捕获。这可以使用kill命令来完成。您可以使用pgrep raspistill命令找到相机进程ID。
 
 `kill -USR1 <process id of raspistill>`
 
@@ -969,91 +995,91 @@ The camera is run for the requested time (`-t`), and a capture can be initiated 
 	--burst,	-bm
 ----
 
-Sets burst capture mode. This prevents the camera from returning to preview mode in between captures, meaning that captures can be taken closer together.
+设置突发捕获模式。这可以防止相机在两次拍摄之间返回预览模式，这意味着拍摄可以更紧密地拍摄。
 
+[[raspivid-2]]
 ==== `raspivid`
 
 ----
 	--width,	-w		Set image width <size>
 ----
 
-Width of resulting video. This should be between 64 and 1920.
+生成的视频的宽度。这应该在 64 到 1920 之间。
 
 ----
 	--height,	-h		Set image height <size>
 ----
 
-Height of resulting video. This should be between 64 and 1080.
+生成的视频的高度。这应该在 64 到 1080 之间。
 
 ----
 	--bitrate,	-b		Set bitrate
 ----
 
-Use bits per second, so 10Mbps would be `-b 10000000`. For H264, 1080p30 a high quality bitrate would be 15Mbps or more. Maximum bitrate is 25Mbps (`-b 25000000`), but much over 17Mbps won't show noticeable improvement at 1080p30.
+使用比特每秒，所以10Mbps就是-b 10000000。对于H264、1080p30，高质量的比特率将是15Mbps或更高。最大比特率是25Mbps (-b 25000000)，但远超过17Mbps在1080p30时不会有明显的改善。
 
 ----
 	--output,	-o		Output filename <filename>
 ----
 
-Specify the output filename. If not specified, no file is saved. If the filename is '-', then all output is sent to stdout.
+指定输出文件名。如果未指定，则不保存任何文件。如果文件名为“-”，则所有输出都将发送到标准输出。
 
-To connect to a remote IPv4 host, use `tcp` or `udp` followed by the required IP Address. e.g. `tcp://192.168.1.2:1234` or `udp://192.168.1.2:1234`.
+要连接到远程IPv4主机，请使用tcp或udp，后跟所需的IP地址。例如tcp://192.168.1.2:1234或udp://192.168.1.2:1234。
 
-To listen on a TCP port (IPv4) and wait for an incoming connection use `--listen (-l)` option, e.g. `raspivid -l -o tcp://0.0.0.0:3333` will bind to all network interfaces, `raspivid -l -o tcp://192.168.1.1:3333` will bind to a local IPv4.
+要侦听TCP端口(IPv4)并等待传入连接，请使用- listen (-l)选项，例如，raspivid -l -o tcp://0.0.0.0:3333将绑定到所有网络接口，raspivid-l-o TCP://192 . 168 . 1 . 1:3333将绑定到本地IPv4。
 
 ----
 	--listen,	-l
 ----
 
-When using a network connection as the data sink, this option will make the system wait for a connection from the remote system before sending data.
-
+使用网络连接作为数据接收器时，此选项将使系统在发送数据之前等待来自远程系统的连接。
 ----
 	--verbose,	-v		Output verbose information during run
 ----
 
-Outputs debugging/information messages during the program run.
+在程序运行期间输出调试/信息消息。
 
 ----
 	--timeout,	-t		Time before the camera takes picture and shuts down
 ----
 
-The total length of time that the program will run for. If not specified, the default is 5000ms (5 seconds). If set to 0, the application will run indefinitely until stopped with Ctrl-C.
+程序将运行的总时间长度。如果未指定，则默认值为 5000 毫秒（5 秒）。如果设置为 0，应用程序将无限期运行，直到使用 Ctrl-C 停止。
 
 ----
 	--demo,	-d		Run a demo mode <milliseconds>
 ----
 
-This options cycles through the range of camera options. No recording is done, and the demo will end at the end of the timeout period, irrespective of whether all the options have been cycled. The time between cycles should be specified as a millisecond value.
+此选项在相机选项范围内循环。不进行录制，演示将在超时期限结束时结束，无论是否已循环所有选项。周期之间的时间应指定为毫秒值。
 
 ----
 	--framerate,	-fps		Specify the frames per second to record
 ----
 
-At present, the minimum frame rate allowed is 2fps, and the maximum is 30fps. This is likely to change in the future.
+目前允许的最小帧速率为 2fps，最大为 30fps。这种情况将来可能会改变。
 
 ----
 	--penc,	-e		Display preview image after encoding
 ----
 
-Switch on an option to display the preview after compression. This will show any compression artefacts in the preview window. In normal operation, the preview will show the camera output prior to being compressed. This option is not guaranteed to work in future releases.
+打开一个选项以在压缩后显示预览。这将在预览窗口中显示任何压缩伪影。在正常操作中，预览将显示压缩前的相机输出。此选项不保证在将来的版本中有效。
 
 ----
 	--intra,	-g		Specify the intra refresh period (key frame rate/GoP)
 ----
 
-Sets the intra refresh period (GoP) rate for the recorded video. H264 video uses a complete frame (I-frame) every intra refresh period, from which subsequent frames are based. This option specifies the number of frames between each I-frame. Larger numbers here will reduce the size of the resulting video, and smaller numbers make the stream less error-prone.
+设置录制视频的刷新周期内 （GoP） 速率。H264 视频在每个刷新期间使用完整帧（I 帧），后续帧基于该帧。此选项指定每个 I 帧之间的帧数。此处的数字越大，生成的视频越小，数字越小，流越不容易出错。
 
 ----
 	--qp,	-qp		Set quantisation parameter
 ----
 
-Sets the initial quantisation parameter for the stream. Varies from approximately 10 to 40, and will greatly affect the quality of the recording. Higher values reduce quality and decrease file size. Combine this setting with a bitrate of 0 to set a completely variable bitrate.
+设置流的初始量化参数。从大约 10 到 40 不等，将极大地影响录音质量。值越高，质量越好，文件大小越大。将此设置与比特率 0 结合使用，以设置完全可变的比特率。
 
 ----
 	--profile,	-pf		Specify H264 profile to use for encoding
 ----
 
-Sets the H264 profile to be used for the encoding. Options are:
+设置要用于编码的 H264 配置文件。选项包括：
 
 * baseline
 * main
@@ -1063,326 +1089,330 @@ Sets the H264 profile to be used for the encoding. Options are:
 	--level,	-lev
 ----
 
-Specifies the H264 encoder level to use for encoding. Options are `4`, `4.1`, and `4.2`.
+指定用于编码的H264编码器级别。选项有4、4.1和4.2。
 
 ----
 	--irefresh,	-if
 ----
 
-Sets the H264 intra-refresh type. Possible options are `cyclic`, `adaptive`, `both`, and `cyclicrows`.
+设置H264内部刷新类型。可能的选项有循环、自适应、两者和循环。
 
 ----
 	--inline,	-ih		Insert PPS, SPS headers
 ----
 
-Forces the stream to include PPS and SPS headers on every I-frame. Needed for certain streaming cases e.g. Apple HLS. These headers are small, so don't greatly increase the file size.
+强制流在每个 I 帧上包含 PPS 和 SPS 标头。某些流媒体案例需要，例如 Apple HLS。这些标头很小，因此不要大大增加文件大小。
 
 ----
 	--spstimings,	-stm
 ----
 
-Insert timing information into the SPS block.
+将计时信息插入 SPS 块。
 
 ----
 	--timed,	-td		Do timed switches between capture and pause
 ----
 
-This options allows the video capture to be paused and restarted at particular time intervals. Two values are required: the on time and the off time. On time is the amount of time the video is captured, and off time is the amount it is paused. The total time of the recording is defined by the `timeout` option. Note that the recording may take slightly over the timeout setting depending on the on and off times.
+此选项允许在特定时间间隔暂停和重新启动视频捕获。需要两个值：导通时间和关断时间。“开”时间是捕获视频的时间量，“关机”是视频暂停的时间量。录制的总时间由该timeout选项定义。请注意，录制可能会稍微超过超时设置，具体取决于开和关时间。
 
-For example:
+例如：
 
 ----
 raspivid -o test.h264 -t 25000 -timed 2500,5000
 ----
 
-will record for a period of 25 seconds. The recording will be over a timeframe consisting of 2500ms (2.5s) segments with 5000ms (5s) gaps, repeating over the 20s. So the entire recording will actually be only 10s long, since 4 segments of 2.5s = 10s separated by 5s gaps. So:
+将录制 25 秒。录制将在由 2500 毫秒（2.5 秒）段和 5000 毫秒（5 秒）间隙组成的时间范围内进行，在 20 秒内重复。因此，整个录音实际上只有 10 秒长，因为 4 段 2.5 秒 = 10 秒，间隔 5 秒。所以：
 
-2.5 record -- 5 pause - 2.5 record -- 5 pause - 2.5 record -- 5 pause -- 2.5 record
+2.5 记录 — 5 暂停 - 2.5 记录 — 5 暂停 - 2.5 记录 — 5 暂停 — 2.5 记录
 
-gives a total recording period of 25s, but only 10s of actual recorded footage.
+总录制周期为 25 秒，但实际录制的素材只有 10 秒。
 
 ----
 	--keypress,	-k		Toggle between record and pause on Enter keypress
 ----
 
-On each press of the Enter key, the recording will be paused or restarted. Pressing X then Enter will stop recording and close the application. Note that the timeout value will be used to signal the end of recording, but is only checked after each Enter keypress; so if the system is waiting for a keypress, even if the timeout has expired, it will still wait for the keypress before exiting.
+每次按 Enter 键时，录制将暂停或重新启动。按X然后回车将停止录制并关闭应用程序。请注意，超时值将用于表示录制结束，但仅在每次按 Enter 键后检查;因此，如果系统正在等待按键，即使超时已过期，它仍然会等待按键后再退出。
 
 ----
 	--signal,	-s		Toggle between record and pause according to SIGUSR1
 ----
 
-Sending a `USR1` signal to the `raspivid` process will toggle between recording and paused. This can be done using the `kill` command, as below. You can find the `raspivid` process ID using `pgrep raspivid`.
+向raspivid进程发送USR1信号将在记录和暂停之间切换。这可以使用kill命令来完成，如下所示。您可以使用pgrep raspivid找到raspivid进程id。
 
 `kill -USR1 <process id of raspivid>`
 
-Note that the timeout value will be used to indicate the end of recording, but is only checked after each receipt of the `SIGUSR1` signal; so if the system is waiting for a signal, even if the timeout has expired, it will still wait for the signal before exiting.
+请注意，超时值将用于指示录制结束，但仅在每次收到SIGUSR1信号后进行检查;因此，如果系统正在等待信号，即使超时已过期，它仍然会等待信号后再退出。
 
 ----
 	--split,	-sp
 ----
 
-When in a signal or keypress mode, each time recording is restarted, a new file is created.
+在信号或按键模式下，每次重新启动录制时，都会创建一个新文件。
 
 ----
 	--circular,	-c
 ----
 
-Select circular buffer mode. All encoded data is stored in a circular buffer until a trigger is activated, then the buffer is saved.
+选择循环缓冲区模式。所有编码数据都存储在循环缓冲区中，直到激活触发器，然后保存缓冲区。
 
 ----
 	--vectors,	-x
 ----
 
-Turns on output of motion vectors from the H264 encoder to the specified file name.
+打开从 H264 编码器到指定文件名的运动矢量输出。
 
 ----
 	--flush,	-fl
 ----
 
-Forces a flush of output data buffers as soon as video data is written. This bypasses any OS caching of written data, and can decrease latency.
+写入视频数据后立即强制刷新输出数据缓冲区。这会绕过写入数据的任何操作系统缓存，并且可以减少延迟。
 
 ----
 	--save-pts,	-pts
 ----
 
-Saves timestamp information to the specified file. Useful as an input file to `mkvmerge`.
+将时间戳信息保存到指定的文件。可用作mkvmerge 的输入文件。
 
 ----
 	--codec,	-cd
 ----
 
-Specifies the encoder codec to use. Options are `H264` and `MJPEG`. H264 can encode up to 1080p, whereas MJPEG can encode up to the sensor size, but at decreased framerates due to the higher processing and storage requirements.
+指定要使用的编码器编解码器。选项是H264 和MJPEG 。H264 可以编码高达 1080p，而 MJPEG 可以编码到传感器尺寸，但由于更高的处理和存储要求，帧速率会降低。
 
 ----
 	--initial,	-i		Define initial state on startup
 ----
 
-Define whether the camera will start paused or will immediately start recording. Options are `record` or `pause`. Note that if you are using a simple timeout, and `initial` is set to `pause`, no output will be recorded.
+定义摄像机是暂停还是立即开始录制。选项包括录制或暂停。请注意，如果您使用简单的超时，并且initial设置为pause，则不会记录任何输出。
 
 ----
 	--segment,	-sg		Segment the stream into multiple files
 ----
 
-Rather than creating a single file, the file is split into segments of approximately the number of milliseconds specified. In order to provide different filenames, you should add `%04d` or similar at the point in the filename where you want a segment count number to appear e.g:
+文件不是创建单个文件，而是拆分为大约指定毫秒数的段。为了提供不同的文件名，您应该在文件名中希望出现段计数编号的位置添加%04d或类似名称，例如：
 
 ----
 --segment 3000 -o video%04d.h264
 ----
 
-will produce video clips of approximately 3000ms (3s) long, named `video0001.h264`, `video0002.h264` etc. The clips should be seamless (no frame drops between clips), but the accuracy of each clip length will depend on the intraframe period, as the segments will always start on an I-frame. They will therefore always be equal or longer to the specified period.
+将制作大约3000毫秒(3s)长的视频剪辑，命名为video0001.h264、video0002.h264等。剪辑应该是无缝的(剪辑之间没有丢帧)，但是每个剪辑长度的精度将取决于帧内周期，因为片段将总是从I帧开始。因此，它们将始终等于或长于指定的周期。
 
-The most recent version of Raspivid will also allow the file name to be time-based, rather than using a segment number. For example:
-
+最新版本的 Raspivid 还将允许文件名基于时间，而不是使用段号。例如：
 ----
 --segment 3000 -o video_%c.h264
 ----
 
-will produce file names formatted like so: `video_Fri Jul 20 16:23:48 2018.h264`
+将生成格式如下的文件名：video_Fri Jul 20 16:23:48 2018.h264
 
-There are http://man7.org/linux/man-pages/man3/strftime.3.html[many different formatting options] available. Note than the `%d` and `%u` options are not available, as they are used for the segment number formatting, and that some combinations may produce invalid file names.
+有http://man7.org/linux/man-pages/man3/strftime.3.html[许多不同的格式]选项可用。请注意，%d和%u 选项不可用，因为它们用于段号格式，并且某些组合可能会产生无效的文件名。
 
 ----
 	--wrap,	-wr		Set the maximum value for segment number
 ----
 
-When outputting segments, this is the maximum the segment number can reach before it's reset to 1, giving the ability to keep recording segments, but overwriting the oldest one. So if set to 4, in the segment example above, the files produced will be `video0001.h264`, `video0002.h264`, `video0003.h264`, and `video0004.h264`. Once `video0004.h264` is recorded, the count will reset to 1, and `video0001.h264` will be overwritten.
+输出段时，这是段号在被重置为1之前可以达到的最大值，可以保留录制的段，但会覆盖最早的段。因此，如果设置为4，在上面的片段示例中，产生的文件将是video0001.h264、video0002.h264、video0003.h264和video0004.h264。一旦记录了video0004.h264，计数将重置为1，video0001.h264将被覆盖。
 
 ----
 	--start,	-sn		Set the initial segment number
 ----
 
-When outputting segments, this is the initial segment number, giving the ability to resume a previous recording from a given segment. The default value is 1.
+输出片段时，这是初始片段编号，能够从给定片段恢复先前的记录。默认值为 1。
 
 ----
 	--raw,	-r
 ----
 
-Specify the output file name for any raw data files requested.
+为请求的任何原始数据文件指定输出文件名。
 
 ----
 	--raw-format,	-rf
 ----
 
-Specify the raw format to be used if raw output requested. Options as `yuv`, `rgb`, and `grey`. `grey` simply saves the Y channel of the YUV image.
+指定请求原始输出时要使用的原始格式。yuv、rgb和灰色选项。灰色只是保存YUV图像的Y通道。
 
+[[raspiyuv-2]]
 ==== `raspiyuv`
 
-Many of the options for `raspiyuv` are the same as those for `raspistill`. This section shows the differences.
+raspiyuv的许多选项与raspistill的选项相同。本节显示了不同之处。
 
-Unsupported options:
+不支持的选项：
 
 ----
 --exif, --encoding, --thumb, --raw, --quality
 ----
 
-Extra options :
+额外选项 ：
 
 ----
 	--rgb,	-rgb		Save uncompressed data as RGB888
 ----
 
-This option forces the image to be saved as RGB data with 8 bits per channel, rather than YUV420.
+此选项强制将图像另存为每通道 8 位的 RGB 数据，而不是 YUV420。
 
-Note that the image buffers saved in `raspiyuv` are padded to a horizontal size divisible by 32, so there may be unused bytes at the end of each line. Buffers are also padded vertically to be divisible by 16, and in the YUV mode, each plane of Y,U,V is padded in this way.
+请注意，保存的raspiyuv图像缓冲区填充为可被 32 整除的水平大小，因此每行末尾可能有未使用的字节。缓冲区也垂直填充以可被 16 整除，在 YUV 模式下，Y、U、V 的每个平面都以这种方式填充。
 
 ----
 	--luma,	-y
 ----
 
-Only outputs the luma (Y) channel of the YUV image. This is effectively the black and white, or intensity, part of the image.
+仅输出 YUV 图像的亮度 （Y） 通道。这实际上是图像的黑白或强度部分。
 
 ----
 	--bgr,	-bgr
 ----
 
-Saves the image data as BGR data rather than YUV.
+将图像数据另存为 BGR 数据而不是 YUV。
 
-=== Command Line Examples
+[[command-line-examples]]
+=== 命令行示例
 
-==== Still Captures
+[[still-captures]]
+==== 静止捕获
 
-By default, captures are done at the highest resolution supported by the sensor. This can be changed using the `-w` and `-h` command line options.
+默认情况下，捕获以传感器支持的最高分辨率完成。这可以使用 -w和 -h
 
-Take a default capture after 2s (times are specified in milliseconds) on the viewfinder, saving in `image.jpg`:
+命令行选项进行更改。
+在取景器上拍摄2秒后的默认拍摄（时间以毫秒为单位），保存image.jpg：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg
 ----
 
-Take a capture at a different resolution:
+以不同的分辨率拍摄：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg -w 640 -h 480
 ----
 
-Reduce the quality considerably to reduce file size:
+大幅降低质量以减小文件大小：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg -q 5
 ----
 
-Force the preview to appear at coordinate 100,100, with width 300 pixels and height 200 pixels:
+强制预览显示在坐标 100，100、宽度为 300 像素、高度为 200 像素处：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg -p 100,100,300,200
 ----
 
-Disable preview entirely:
+完全禁用预览：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg -n
 ----
 
-Save the image as a PNG file (lossless compression, but slower than JPEG). Note that the filename suffix is ignored when choosing the image encoding:
+将图像另存为 PNG 文件（无损压缩，但比 JPEG 慢）。请注意，选择图像编码时会忽略文件名后缀：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.png –e png
 ----
 
-Add some EXIF information to the JPEG. This sets the Artist tag name to Boris, and the GPS altitude to 123.5m. Note that if setting GPS tags you should set as a minimum GPSLatitude, GPSLatitudeRef, GPSLongitude, GPSLongitudeRef, GPSAltitude, and GPSAltitudeRef:
+将一些 EXIF 信息添加到 JPEG 中。这会将艺术家标签名称设置为 Boris，并将 GPS 高度设置为 123.5m。请注意，如果设置GPS标签，则应设置为最低GPSLatitude，GPSLatitudeRef，GPSLongitudeRef，GPSLongitudeRef，GPSAltitude和GPSAltitudeRef：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg -x IFD0.Artist=Boris -x GPS.GPSAltitude=1235/10
 ----
 
-Set an emboss image effect:
+设置浮雕图像效果：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg -ifx emboss
 ----
 
-Set the U and V channels of the YUV image to specific values (128:128 produces a greyscale image):
+将 YUV 图像的 U 和 V 通道设置为特定值（128：128 生成灰度图像）：
 
 [,bash]
 ----
 raspistill -t 2000 -o image.jpg -cfx 128:128
 ----
 
-Run preview for 2s, with no saved image:
+运行预览 2 秒，没有保存图像：
 
 [,bash]
 ----
 raspistill -t 2000
 ----
 
-Take a time-lapse picture, every 10 seconds for 10 minutes (10 minutes = 600000ms), naming the files `image_num_001_today.jpg`, `image_num_002_today.jpg` and so on, with the latest picture also available under the name `latest.jpg`:
+每隔10秒拍摄一张延时照片，持续10分钟(10分钟= 600000毫秒)，将文件命名为image_num_001_today.jpg、image_num_002_today.jpg等，最新的照片也可以用latest.jpg命名:
 
 [,bash]
 ----
 raspistill -t 600000 -tl 10000 -o image_num_%03d_today.jpg -l latest.jpg
 ----
 
-Take a picture and send the image data to stdout:
+拍照并将图像数据发送到标准输出：
 
 [,bash]
 ----
 raspistill -t 2000 -o -
 ----
 
-Take a picture and send the image data to a file:
+拍摄照片并将图像数据发送到文件：
 
 [,bash]
 ----
 raspistill -t 2000 -o - > my_file.jpg
 ----
 
-Run the camera forever, taking a picture when Enter is pressed:
+永久运行相机，在按 Enter 时拍照：
 
 [,bash]
 ----
 raspistill -t 0 -k -o my_pics%02d.jpg
 ----
 
-==== Video captures
+[[video-captures]]
+==== 视频捕获
 
-Image size and preview settings are the same as for stills capture. Default size for video recording is 1080p (1920x1080).
+图像大小和预览设置与静止图像拍摄相同。视频录制的默认大小为 1080p （1920x1080）。
 
-Record a 5s clip with default settings (1080p30):
+使用默认设置 （5p1080） 录制 30s 剪辑：
 
 [,bash]
 ----
 raspivid -t 5000 -o video.h264
 ----
 
-Record a 5s clip at a specified bitrate (3.5Mbps):
+以指定的比特率 （5.3Mbps） 录制 5 秒剪辑：
 
 [,bash]
 ----
 raspivid -t 5000 -o video.h264 -b 3500000
 ----
 
-Record a 5s clip at a specified framerate (5fps):
+以指定的帧速率 （5fps） 录制 5 秒剪辑：
 
 [,bash]
 ----
 raspivid -t 5000 -o video.h264 -f 5
 ----
 
-Encode a 5s camera stream and send the image data to stdout:
+对 5s 相机流进行编码，并将图像数据发送到标准输出：
 
 [,bash]
 ----
 raspivid -t 5000 -o -
 ----
-
-Encode a 5s camera stream and send the image data to a file:
+对 5s 相机流进行编码并将图像数据发送到文件：
 
 [,bash]
 ----
 raspivid -t 5000 -o - > my_file.h264
 ----
 
-=== Shell Error Codes
+[[shell-error-codes]]
+===  Shell错误代码
 
-The applications described here will return a standard error code to the shell on completion. Possible error codes are:
+此处描述的应用程序将在完成后向 shell 返回标准错误代码。可能的错误代码包括：
 
 |===
 | C Define | Code | Description
@@ -1404,44 +1434,49 @@ The applications described here will return a standard error code to the shell o
 | Application terminated by Ctrl-C
 |===
 
-=== Long Exposures
+[[long-exposures]]
+=== 长时间曝光
 
-The maximum exposure times of the three official Raspberry Pi cameras can be found in xref:../accessories/camera.adoc#hardware-specification[this table].
+三款官方Raspberry Pi相机的最大曝光时间可以在xref:../accessories/camera.adoc#hardware-specification[此表]中找到。
 
-Due to the way the ISP works, by default asking for a long exposure can result in the capture process taking up to 7 times the exposure time, so a 200 second exposure on the HQ camera could take 1400 seconds to actually return an image. This is due to the way the camera system works out the correct exposures and gains to use in the image, using it's AGC (automatic gain control) and AWB (automatic white balance) algorithms. The system needs a few frames to calculate these numbers in order to produce a decent image. When combined with frame discards at the start of processing (in case they are corrupt), and the switching between preview and captures modes, this can result in up to 7 frames needed to produce a final image. With long exposures, that can take a long time.
+由于ISP的工作方式，默认情况下要求长时间曝光可能会导致捕获过程占用多达7倍的曝光时间，因此在HQ相机上进行200秒曝光可能需要1400秒才能实际返回图像。这是由于相机系统使用AGC（自动增益控制）和AWB（自动白平衡）算法计算出要在图像中使用的正确曝光和增益的方式。系统需要几帧来计算这些数字，以产生像样的图像。当与处理开始时的帧丢弃（以防它们损坏）以及在预览和捕获模式之间切换结合使用时，这可能导致生成最终图像最多需要 7 帧。长时间曝光可能需要很长时间。
 
-Fortunately, the camera parameters can be altered to reduce frame time dramatically; however this means turning off the automatic algorithms and manually providing values for the AGC.
+幸运的是，可以更改相机参数以显着减少帧时间;但是，这意味着关闭自动算法并手动为 AGC 提供值。
 
-The AWB gains can usually be omitted as the legacy stack is able to reprocess the camera data to work them out (the `-st` option), though it is fine to specify them as well. Additionally, burst mode (`-bm`) with a short timeout should be requested to suppress the initial preview phase, and the exposure mode also needs disabling (`-ex off`).
+AWB增益通常可以省略，因为遗留堆栈能够重新处理相机数据以计算它们（该选项），尽管也可以指定它们。此外，应请求具有短超时的突发模式 （） 以禁止初始预览阶段，并且曝光模式也需要禁用 （-st-bm-ex off）。
 
-The following example will perform a 100 second exposure capture
+以下示例将执行 100 秒曝光捕获
 
 `raspistill -t 10 -bm -ex off -ag 1 -ss 100000000 -st -o long_exposure.jpg`
 
-=== Shooting RAW using the Camera Modules
+[[shooting-raw-using-the-camera-modules]]
+=== 使用相机模块拍摄 RAW
 
-The definition of raw images can vary. The usual meaning is raw Bayer data directly from the sensor, although some may regard an uncompressed image that has passed through the ISP (and has therefore been processed) as raw. For the latter, we recommend using the term _unencoded_ so as to be clear about the difference.
+原始图像的定义可能会有所不同。通常的含义是直接来自传感器的原始拜耳数据，尽管有些人可能将已通过ISP（因此已被处理）的未压缩图像视为原始图像。对于后者，我们建议使用术语“未编码”，以便明确差异。
 
-Both options are available from the Raspberry Pi cameras.
+这两个选项都可以从Raspberry Pi相机获得。
 
-==== Processed, Non-Lossy Images
+[[processed-non-lossy-images]]
+==== 经过处理的无损耗图像
 
-The usual output from `raspistill` is a compressed JPEG file that has passed through all the stages of image processing to produce a high-quality image. However, JPEG, being a lossy format does throw away some information that the user may want.
+raspistill的通常输出是一个压缩的JPEG文件，它经过了图像处理的所有阶段，以产生高质量的图像。然而，作为一种有损格式，JPEG确实丢弃了一些用户可能想要的信息。
 
-`raspistill` has an `encoding` option that allows you to specify the output format: either `jpg`, `bmp`, `png` or `gif`. All but `jpg` are lossless, so no data is thrown away in an effort to improve compression, but do require conversion from the original YUV, and because these formats do not have hardware support they produce images slightly more slowly than JPEG.
+raspistill有一个编码选项，允许您指定输出格式:jpg、bmp、png或gif。除了jpg之外，其他格式都是无损的，因此不会为了提高压缩率而丢弃任何数据，但是需要从原始YUV进行转换，并且因为这些格式没有硬件支持，所以它们生成图像的速度比JPEG稍慢。
 
-e.g.
+例如
 
 `raspistill --encoding png -o fred.png`
 
-Another option is to output completely formatted YUV420 or RGB data using the xref:camera_software.adoc#raspiyuv[`raspiyuv`] application.
+另一种选择是使用 xref:camera_software.adoc#raspiyuv[`raspiyuv`]  应用程序输出完全格式化的 YUV420 或 RGB 数据。
 
-==== Unprocessed Images
+[[unprocessed-images]]
+==== 未处理的图像
 
-For some applications, such as astrophotography, having the raw Bayer data direct from the sensor can be useful. This data will need to be post-processed to produce a useful image.
+对于某些应用，例如天文摄影，直接从传感器获取原始拜耳数据可能很有用。这些数据需要进行后处理以生成有用的图像。
 
-`raspistill` has a raw option that will cause the Bayer data to be output.
+raspistill有一个原始选项，将导致输出拜耳数据。
 
 `raspistill --raw -o fred.jpg`
 
-The raw data is appended to the end of the JPEG file and will https://www.raspberrypi.com/news/processing-raw-image-files-from-a-raspberry-pi-high-quality-camera/[need to be extracted].
+
+原始数据被附加到JPEG文件的末尾， https://www.raspberrypi.com/news/processing-raw-image-files-from-a-raspberry-pi-high-quality-camera/[需要被提取出来]。

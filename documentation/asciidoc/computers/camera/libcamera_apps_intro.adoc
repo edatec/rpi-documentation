@@ -1,35 +1,37 @@
-== `libcamera` and `libcamera-apps`
+== libcamera和libcamera-apps
 
-=== Introduction
+=== 简介
 
-`libcamera` is a new software library aimed at supporting complex camera systems directly from the Linux operating system. In the case of the Raspberry Pi it enables us to drive the camera system directly from open source code running on ARM processors. The proprietary code running on the Broadcom GPU, and to which users have no access at all, is almost completely by-passed.
+libcamera是一个新的软件库，旨在直接从Linux操作系统支持复杂的相机系统。就Raspberry Pi而言，它使我们能够直接从ARM处理器上运行的开源代码驱动相机系统。在Broadcom GPU上运行的专有代码，几乎完全被绕过，用户根本无法访问。
 
-`libcamera` presents a {cpp} API to applications and works at the level of configuring the camera and then allowing an application to request image frames. These image buffers reside in system memory and can be passed directly to still image encoders (such as JPEG) or to video encoders (such as h.264), though such ancillary functions as encoding images or displaying them are strictly beyond the purview of `libcamera` itself.
+libcamera向应用程序提供C++ API，并在配置相机的级别工作，然后允许应用程序请求图像帧。这些图像缓冲区驻留在系统内存中，可以直接传递到静止图像编码器（如 JPEG）或视频编码器（如 h.264），尽管编码或显示图像等辅助功能严格超出了其libcamera本身的范围。
 
-For this reason Raspberry Pi supplies a small set of example `libcamera-apps`. These are simple applications, built on top of `libcamera`, and are designed largely to emulate the function of the legacy stack built on Broadcom's proprietary GPU code (some users will recognise these legacy applications as `raspstill` and `raspivid`). The applications we provide are:
+出于这个原因，Raspberry Pi提供了一小组示例libcamera-apps。这些是简单的应用程序，构建在libcamera之上，主要用于模拟构建在Broadcom专有GPU代码上的传统堆栈的功能(一些用户会将这些传统应用程序识别为raspstill和raspivid)。我们提供的应用有:
 
-* _libcamera-hello_ A simple "hello world" application which starts a camera preview stream and displays it on the screen.
-* _libcamera-jpeg_ A simple application to run a preview window and then capture high resolution still images.
-* _libcamera-still_ A more complex still image capture application which emulates more of the features of `raspistill`.
-* _libcamera-vid_ A video capture application.
-* _libcamera-raw_ A basic application for capturing raw (unprocessed Bayer) frames directly from the sensor.
-* _libcamera-detect_ This application is not built by default, but users can build it if they have TensorFlow Lite installed on their Raspberry Pi. It captures JPEG images when certain objects are detected.
+* _libcamera-hello_ 一个简单的“hello world”应用程序，可启动相机预览流并将其显示在屏幕上。
+* _libcamera-jpeg_ 一个简单的应用程序，用于运行预览窗口，然后捕获高分辨率静止图像。
+* _libcamera-still_ 一个更复杂的静止图像捕获应用程序，它模拟了raspistill 的更多功能。
+* _libcamera-vid_ 视频捕获应用程序。
+* _libcamera-raw_ 直接从传感器捕获原始（未处理的Bayer）帧的基本应用程序。
+* _libcamera-detect_ 这个应用程序不是默认构建的，但是如果用户在他们的Raspberry Pi上安装了TensorFlow Lite，就可以构建它。当检测到特定对象时，它会捕获JPEG图像。
 
-Raspberry Pi's `libcamera-apps` are not only command line applications that make it easy to capture images and video from the camera, they are also examples of how users can create their own libcamera-based applications with custom functionality to suit their own requirements. The source code for the `libcamera-apps` is freely available under a BSD 2-Clause licence at https://github.com/raspberrypi/libcamera-apps[].
+Raspberry Pi的libcamera-apps不仅是命令行应用程序，可以轻松地从相机中捕捉图像和视频，它们还是用户如何创建自己的基于libcamera的应用程序的示例，这些应用程序具有自定义功能，以满足自己的需求。libcamera-apps的源代码可以在https://github.com/raspberrypi/libcamera-apps.的BSD 2条款许可下免费获得
 
-==== More about `libcamera`
+==== 更多关于libcamera
 
 `libcamera` is an open source Linux community project. More information is available at the https://libcamera.org[`libcamera` website].
+libcamera是一个开源的 Linux 社区项目。更多信息可在https://libcamera.org[libcamera网站]上找到。
 
-The `libcamera` source code can be found and checked out from the https://git.linuxtv.org/libcamera.git/[official libcamera repository], although we work from a https://github.com/raspberrypi/libcamera.git[fork] that lets us control when we get _libcamera_ updates.
+libcamera源代码可以在官方的https://git.linuxtv.org/libcamera.git/[libcamera存储库]中找到并签出，尽管我们从一个https://github.com/raspberrypi/libcamera.git[fork]开始工作，这个fork允许我们控制何时获得libcamera更新。
 
-Underneath the `libcamera` core, Raspberry Pi provides a custom _pipeline handler_, which is the layer that `libcamera` uses to drive the sensor and ISP (Image Signal Processor) on the Raspberry Pi itself. Also part of this is a collection of well-known _control algorithms_, or _IPAs_ (Image Processing Algorithms) in `libcamera` parlance, such as AEC/AGC (Auto Exposure/Gain Control), AWB (Auto White Balance), ALSC (Auto Lens Shading Correction) and so on.
+在libcamera内核的下面，Raspberry Pi提供了一个自定义的管道处理程序，libcamera使用这个层来驱动Raspberry Pi本身上的传感器和ISP(图像信号处理器)。其中还有一部分是众所周知的控制算法，或libcamera术语中的IPAs(图像处理算法)，如AEC/AGC(自动曝光/增益控制)，AWB(自动白平衡)，ALSC(自动镜头阴影校正)等。
 
-All this code is open source and now runs on the Raspberry Pi's ARM cores. There is only a very thin layer of code on the GPU which translates Raspberry Pi's own control parameters into register writes for the Broadcom ISP.
+所有这些代码都是开源的，现在运行在Raspberry Pi的ARM内核上。GPU上只有一个非常薄的代码层，它将Raspberry Pi自己的控制参数转换为Broadcom ISP的寄存器写入。
 
-Raspberry Pi's implementation of `libcamera` supports not only the four standard Raspberry Pi cameras (the OV5647 or V1 camera, the IMX219 or V2 camera, the IMX477 or HQ camera and the IMX708 or Camera Module 3) but also third party senors such as the IMX290, IMX327, OV9281, IMX378. Raspberry Pi is keen to work with vendors who would like to see their sensors supported directly by `libcamera`.
+Raspberry Pi的libcamera实现不仅支持四个标准Raspberry Pi摄像机(OV5647或V1摄像机、IMX219或V2摄像机、IMX477或HQ摄像机以及IMX708或摄像机模块3)，还支持第三方传感器，如IMX290、IMX327、OV9281、IMX378。Raspberry Pi渴望与那些希望libcamera直接支持其传感器的供应商合作。
 
-Moreover, Raspberry Pi supplies a _tuning file_ for each of these sensors which can be edited to change the processing performed by the Raspberry Pi hardware on the raw images received from the image sensor, including aspects like the colour processing, the amount of noise suppression or the behaviour of the control algorithms.
+此外，Raspberry Pi 为每个传感器提供了一个调整文件，可以对其进行编辑以更改 Raspberry Pi 硬件对从图像传感器接收的原始图像执行的处理，包括颜色处理、噪声抑制量或控制算法的行为等方面。
 
-For further information on `libcamera` for the Raspberry Pi, please consult the https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf[Tuning Guide for the Raspberry Pi cameras and libcamera].
+raspberry-pi-camera-guide.pdf[Tuning Guide for the Raspberry Pi cameras and libcamera].
+有关Raspberry Pi的libcamera更多信息，请参阅https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf[Raspberry Pi相机和 libcamera 的调优指南]。
 

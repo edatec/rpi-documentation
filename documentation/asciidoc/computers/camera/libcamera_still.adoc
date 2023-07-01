@@ -1,15 +1,17 @@
+[[libcamera-still]]
 === `libcamera-still`
 
-`libcamera-still` is very similar to `libcamera-jpeg` but supports more of the legacy `raspistill` options. As before, a single image can be captured with
+libcamera-still与libcamera-jpeg非常相似，但支持更多的传统raspistill选项。和以前一样，可以用
 
 [,bash]
 ----
 libcamera-still -o test.jpg
 ----
 
-==== Encoders
+[[encoders]]
+==== 编码
 
-`libcamera-still` allows files to be saved in a number of different formats. It supports both `png` and `bmp` encoding. It also allows files to be saved as a binary dump of RGB or YUV pixels with no encoding or file format at all. In these latter cases the application reading the files will have to understand the pixel arrangement for itself.
+libcamera-still允许以多种不同的格式保存文件。它支持png，bmp两者和编码。它还允许将文件另存为 RGB 或 YUV 像素的二进制转储，完全没有编码或文件格式。在后一种情况下，读取文件的应用程序必须自行了解像素排列。
 
 [,bash]
 ----
@@ -18,22 +20,23 @@ libcamera-still -e bmp -o test.bmp
 libcamera-still -e rgb -o test.data
 libcamera-still -e yuv420 -o test.data
 ----
-Note that the format in which the image is saved depends on the `-e` (equivalently `--encoding`) option and is _not_ selected automatically based on the output file name.
+请注意，保存图像的格式取决于-e（等效）--encoding选项，并且不会根据输出文件名自动选择。
 
-==== Raw Image Capture
+[[raw-image-capture]]
+==== 原始图像捕获
 
-_Raw_ images are the images produced directly by the image sensor, before any processing is applied to them either by the ISP (Image Signal Processor) or any of the CPU cores. For colour image sensors these are usually _Bayer_ format images. Note that _raw_ images are quite different from the processed but unencoded RGB or YUV images that we saw earlier.
+原始图像是由图像传感器直接生成的图像，在ISP（图像信号处理器）或任何CPU内核对其应用任何处理之前。对于彩色图像传感器，这些通常是拜耳格式的图像。请注意，原始图像与我们之前看到的已处理但未编码的 RGB 或 YUV 图像有很大不同。
 
-To capture a raw image use
+捕获原始图像使用
 
 [,bash]
 ----
 libcamera-still -r -o test.jpg
 ----
 
-Here, the `-r` option (also `--raw`) indicates to capture the raw image as well as the JPEG. In fact, the raw image is the exact image from which the JPEG was produced. Raw images are saved in DNG (Adobe Digital Negative) format and are compatible with many standard applications, such as _dcraw_ or _RawTherapee_. The raw image is saved to a file with the same name but the extension `.dng`, thus `test.dng` in this case.
+这里，-r选项(也叫- raw)表示捕获raw图像和JPEG图像。事实上，原始图像就是产生JPEG的精确图像。原始图像以DNG (Adobe Digital Negative)格式保存，并与许多标准应用程序兼容，如dcraw或RawTherapee。原始图像被保存到一个具有相同名称但扩展名为的文件中。dng，因此本例中为test.dng。
 
-These DNG files contain metadata pertaining to the image capture, including black levels, white balance information and the colour matrix used by the ISP to produce the JPEG. This makes these DNG files much more convenient for later "by hand" raw conversion with some of the aforementioned tools. Using `exiftool` shows all the metadata encoded into the DNG file:
+这些DNG文件包含有关图像捕获的元数据，包括黑电平，白平衡信息和ISP用于产生JPEG的颜色矩阵。这使得这些DNG文件更方便以后使用上述一些工具进行“手动”原始转换。“使用”exiftool显示编码到 DNG 文件中的所有元数据：
 
 ----
 File Name                       : test.dng
@@ -79,14 +82,15 @@ Image Size                      : 4056x3040
 Megapixels                      : 12.3
 Shutter Speed                   : 1/20
 ----
-We note that there is only a single calibrated illuminant (the one determined by the AWB algorithm even though it gets labelled always as "D65"), and that dividing the ISO number by 100 gives the analogue gain that was being used.
+我们注意到只有一个校准光源（由AWB算法确定的光源，即使它总是被标记为“D65”），并且将ISO值除以100得到正在使用的模拟增益。
 
-==== Very long exposures
+[[very-long-exposures]]
+==== 长时间曝光
 
-To capture very long exposure images, we need to be careful to disable the AEC/AGC and AWB because these algorithms will otherwise force the user to wait for a number of frames while they converge. The way to disable them is to supply explicit values. Additionally, the entire preview phase of the capture can be skipped with the `--immediate` option.
+为了拍摄曝光时间很长的图像，我们需要小心禁用AEC/AGC和AWB，否则这些算法将迫使用户在收敛时等待多个帧。禁用它们的方法是提供显式值。此外，可以使用该--immediate选项跳过捕获的整个预览阶段。
 
-So to perform a 100 second exposure capture, use
+因此，要执行 100 秒曝光捕获，请使用
 
 `libcamera-still -o long_exposure.jpg --shutter 100000000 --gain 1 --awbgains 1,1 --immediate`
 
-For reference, the maximum exposure times of the three official Raspberry Pi cameras can be found in xref:../accessories/camera.adoc#hardware-specification[this table].
+作为参考，三款官方Raspberry Pi相机的最大曝光时间可以在xref:../accessories/camera.adoc#hardware-specification[此表]中找到。

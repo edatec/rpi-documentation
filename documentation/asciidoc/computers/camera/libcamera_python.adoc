@@ -1,48 +1,50 @@
-=== Python Bindings for `libcamera`
+[[python-bindings-for-libcamera]]
+=== Python 绑定libcamera
 
-The https://github.com/raspberrypi/picamera2[Picamera2 library] is a libcamera-based replacement for Picamera which was a Python interface to the Raspberry Pi's legacy camera stack. Picamera2 presents an easy to use Python API.
+https://github.com/raspberrypi/picamera2[Picamera2库] 是基于libcamera的Picamera替代品，Picamera是Raspberry Pi传统相机堆栈的Python接口。Picamera2提供了一个易于使用的Python API。
 
-Documentation about Picamera2 is available https://github.com/raspberrypi/picamera2[on Github] and in the https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf[Picamera2 Manual].
+有关 Picamera2 的文档可在  https://github.com/raspberrypi/picamera2[on Github] 和  https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf[Picamera2 手册]中找到。
 
-==== Installation
+[[installation]]
+==== 安装
 
-Picamera2 is only supported on Raspberry Pi OS Bullseye (or later) images, both 32 and 64-bit.
+Picamera2仅在Raspberry Pi OS Bullseye（或更高版本）图像（32位和64位）上受支持。
 
-NOTE: As of September 2022, Picamera2 is pre-installed on images downloaded from Raspberry Pi. It works on all Raspberry Pi boards right down to the Pi Zero, although performance in some areas may be worse on less powerful devices.
+NOTE: 截至2022年9月，Picamera2预装在从Raspberry Pi下载的图片上。它可以在所有的Raspberry Pi板上运行，甚至可以运行到Pi 0，尽管在一些功能较弱的设备上，某些方面的性能可能会更差。
 
-Picamera2 is not supported on:
+Picamera2 在以下设备上不受支持：
 
-. Images based on Buster or earlier releases.
-. Raspberry Pi OS Legacy images.
-. Bullseye (or later) images where the legacy camera stack has been re-enabled.
+. 基于 Buster 或早期版本的映像。
+. Raspberry Pi操作系统旧版映像。
+. Bullseye（或更高版本）图像，其中旧相机堆栈已重新启用。
 
-On Raspberry Pi OS images, Picamera2 is now installed with all the GUI (Qt and OpenGL) dependencies. On Raspberry Pi OS Lite, it is installed without the GUI dependencies, although preview images can still be displayed using DRM/KMS. If these users wish to use the additional X-Windows GUI features, they will need to run
+在Raspberry Pi OS映像上，Picamera2现在安装了所有GUI（Qt和OpenGL）依赖项。在Raspberry Pi OS Lite上，它是在没有GUI依赖项的情况下安装的，尽管预览图像仍然可以使用DRM / KMS显示。如果这些用户希望使用其他 X-Windows GUI 功能，他们将需要运行
 
 ----
 sudo apt install -y python3-pyqt5 python3-opengl
 ----
 
-NOTE: No changes are required to Picamera2 itself.
+NOTE: 不需要对 Picamera2 本身进行任何更改。
 
-If your image did not come pre-installed with Picamera2 `apt` is the recommended way of installing and updating Picamera2.
+如果您的映像未预装 Picamera2 apt，则推荐安装和更新 Picamera2。
 
 ----
 $ sudo apt update
 sudo apt upgrade
 ----
 
-Thereafter, you can install Picamera2 with all the GUI (Qt and OpenGL) dependencies using
+此后，您可以使用以下方法安装Picamera2以及所有GUI（Qt和OpenGL）依赖项。
 
 ----
 $ sudo apt install -y python3-picamera2
 ----
 
-If you do not want the GUI dependencies, use
+如果您不需要 GUI 依赖项，请使用
 
 ----
 $ sudo apt install -y python3-picamera2 --no-install-recommends
 ----
 
-NOTE: If you have installed Picamera2 previously using `pip`, then you should also uninstall this, using the command `pip3 uninstall picamera2`.
+NOTE: 如果您之前已经使用pip安装了Picamera2，那么您也应该使用命令pip3 uninstall picamera2卸载它。
 
-NOTE: If Picamera2 is already installed, you can update it with `sudo apt install -y python3-picamera2`, or as part of a full system update (for example, `sudo apt upgrade`).
+NOTE: 如果已经安装了Picamera2，可以用sudo apt install-y python 3-picamera 2进行更新，或者作为完整系统更新的一部分(例如sudo apt升级)。

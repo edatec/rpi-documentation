@@ -1,148 +1,147 @@
-=== Still Command Line Options
+[[still-command-line-options]]
+=== 仍然使用命令行选项
 
 ----
 	--quality,	-q		JPEG quality <number>
 ----
 
-Set the JPEG quality. 100 is maximum quality and 93 is the default. Only applies when saving JPEG files.
+设置 JPEG 质量。100 表示最高质量，93 表示默认值。仅在保存 JPEG 文件时适用。
 
-Example: `libcamera-jpeg -o test.jpg -q 80`
+例: `libcamera-jpeg -o test.jpg -q 80`
 
 ----
 	--exif,		-x		Add extra EXIF tags <string>
 ----
 
-The given extra EXIF tags are saved in the JPEG file. Only applies when saving JPEG files.
+给定的额外EXIF标签保存在JPEG文件中。仅在保存 JPEG 文件时适用。
 
-EXIF is supported using the `libexif` library and so there are some associated limitations. In particular, `libexif` seems to recognise a number of tags but without knowing the correct format for them. The software will currently treat these (incorrectly, in many cases) as ASCII, but will print a warning to the terminal. As we come across these they can be added to the table of known exceptions in the software.
+使用libexif库支持EXIF，因此有一些相关的限制。特别是，libexif似乎可以识别许多标签，但不知道它们的正确格式。软件目前会将这些(在许多情况下是不正确的)视为ASCII，但会向终端打印一个警告。当我们遇到这些异常时，可以将它们添加到软件的已知异常表中。
 
-Clearly the application needs to supply EXIF tags that contain specific camera data (like the exposure time). But for other tags that have nothing to do with the camera, a reasonable workaround would simply be to add them _post facto_, using something like `exiftool`.
+显然，应用程序需要提供包含特定相机数据（如曝光时间）的EXIF标签。但是对于与相机无关的其他标签，一个合理的解决方法是使用类似exiftool .
 
-Example: `libcamera-still -o test.jpg --exif IDO0.Artist=Someone`
+例：libcamera-still -o test.jpg --exif IDO0.Artist=Someone
 
 ----
 	--timelapse			Time interval between timelapse captures <milliseconds>
 ----
 
-This puts `libcamera-still` into timelapse mode where it runs according to the timeout (`--timeout` or `-t`) that has been set, and for that period will capture repeated images at the interval specified here. (`libcamera-still` only.)
+这将使libcamera-still进入定时模式，在该模式下，它将根据已设置的超时(- timeout或-t)运行，并在此期间以此处指定的间隔拍摄重复的图像。(lib camera-仅静止。)
 
-Example: `libcamera-still -t 100000 -o test%d.jpg --timelapse 10000` captures an image every 10s for about 100s.
+示例：libcamera-still -t 100000 -o test%d.jpg --timelapse 10000每 10 秒捕获一个图像，持续约 100 秒。	
 
 ----
 	--framestart			The starting value for the frame counter <number>
 ----
 
-When writing counter values into the output file name, this specifies the starting value for the counter.
+将计数器值写入输出文件名时，这将指定计数器的起始值。
 
-Example: `libcamera-still -t 100000 -o test%d.jpg --timelapse 10000 --framestart 1` captures an image every 10s for about 100s, starting at 1 rather than 0. (`libcamera-still` only.)
+示例:lib camera-still-t 100000-o test % d . jpg-time lapse 10000-frame start 1每隔10s捕捉一个图像，持续约100s，从1而不是0开始。(lib camera-仅静止。)
 
 ----
 	--datetime			Use date format for the output file names
 ----
 
-Use the current date and time to construct the output file name, in the form MMDDhhmmss.jpg, where MM = 2-digit month number, DD = 2-digit day number, hh = 2-digit 24-hour hour number, mm = 2-digit minute number, ss = 2-digit second number. (`libcamera-still` only.)
+使用当前日期和时间构造输出文件名，格式为 MMDDhhmmss.jpg，其中 MM = 2 位月份编号，DD = 2 位日期编号，hh = 2 位 24 小时数，mm = 2 位分钟数，ss = 2 位秒数。（仅。libcamera-still）
 
-Example: `libcamera-still --datetime`
+例：libcamera-still --datetime
 
 ----
 	--timestamp			Use system timestamps for the output file names
 ----
 
-Uses the current system timestamp (the number of seconds since the start of 1970) as the output file name. (`libcamera-still` only.)
+使用当前系统时间戳（自 1970 年开始以来的秒数）作为输出文件名。（仅libcamera-still）
 
-Example: `libcamera-still --timestamp`
+例：libcamera-still --timestamp
 
 ----
 	--restart			Set the JPEG restart interval <number>
 ----
 
-Sets the JPEG restart interval to the given value. Default is zero.
+将 JPEG 重新启动间隔设置为给定值。默认值为零。
 
-Example: `libcamera-still -o test.jpg --restart 20`
+例：libcamera-still -o test.jpg --restart 20
 
 ----
 	--keypress,	-k		Capture image when Enter pressed
 ----
 
-This switches `libcamera-still` into keypress mode. It will capture a still image either when the timeout expires or the Enter key is pressed in the terminal window. Typing `x` and Enter causes `libcamera-still` to quit without capturing.
+这会将libcamera-still切换到按键模式。当超时过期或在终端窗口中按下回车键时，它将捕获一个静止图像。键入x和Enter会导致libcamera-still退出而不进行采集。
 
-Example: `libcamera-still -t 0 -o test.jpg -k`
+例：libcamera-still -t 0 -o test.jpg -k
 
 ----
 	--signal,	-s		Capture image when SIGUSR1 received
 ----
 
-This switches `libcamera-still` into signal mode. It will capture a still image either when the timeout expires or a SIGUSR1 is received. SIGUSR2 will cause `libcamera-still` to quit without capturing.
+这会将libcamera-still切换到信号模式。当超时过期或收到SIGUSR1时，它将捕获一幅静止图像。SIGUSR2将导致libcamera-still退出而不捕获。
 
-Example:
+例：
+libcamera-still -t 0 -o test.jpg -s &
 
-`libcamera-still -t 0 -o test.jpg -s &`
-
-then
-
-`kill -SIGUSR1 $!`
+然后
+kill -SIGUSR1 $!
 
 ----
 	--thumb				Set thumbnail parameters <w:h:q> or none
 ----
 
-Sets the dimensions and quality parameter of the associated thumbnail image. The defaults are size 320x240 and quality 70.
+设置关联缩略图的尺寸和质量参数。默认值为 320x240 和质量 70。
 
-Example: `libcamera-still -o test.jpg --thumb 640:480:80`
+例：libcamera-still -o test.jpg --thumb 640:480:80
 
-The value `none` may be given, in which case no thumbnail is saved in the image at all.
+可以给出该none值，在这种情况下，图像中根本不保存缩略图。
 
 ----
 	--encoding,	-e		Set the still image codec <string>
 ----
 
-Select the still image encoding to be used. Valid encoders are:
+选择要使用的静止图像编码。有效的编码器包括：
 
-* `jpg` - JPEG (the default)
-* `png` - PNG format
-* `bmp` - BMP format
-* `rgb` - binary dump of uncompressed RGB pixels
-* `yuv420` - binary dump of uncompressed YUV420 pixels.
+* `jpg` - JPEG (默认)
+* `png` - PNG 格式
+* `bmp` - BMP 格式
+* `rgb` - 未压缩 RGB 像素的二进制转储
+* `yuv420` - 未压缩的 YUV420 像素的二进制转储。
 
-Note that this option determines the encoding and that the extension of the output file name is ignored for this purpose. However, for the `--datetime` and `--timestamp` options, the file extension is taken from the encoder name listed above. (`libcamera-still` only.)
+请注意，此选项决定了编码方式，因此输出文件名的扩展名将被忽略。但是，对于- datetime和- timestamp选项，文件扩展名取自上面列出的编码器名称。(lib camera-仅静止。)
 
-Example: `libcamera-still -e png -o test.png`
+例: `libcamera-still -e png -o test.png`
 
 ----
 	--raw,		-r		Save raw file
 ----
 
-Save a raw Bayer file in DNG format alongside the usual output image. The file name is given by replacing the output file name extension by `.dng`. These are standard DNG files, and can be processed with standard tools like _dcraw_ or _RawTherapee_, among others. (`libcamera-still` only.)
+在通常的输出图像旁边保存一个DNG格式的原始拜耳文件。文件名通过将输出文件扩展名替换为. dng来给出。这些是标准的DNG文件，可以使用dcraw或RawTherapee等标准工具进行处理。(lib camera-仅静止。)
 
-The image data in the raw file is exactly what came out of the sensor, with no processing whatsoever either by the ISP or anything else. The EXIF data saved in the file, among other things, includes:
+原始文件中的图像数据正是来自传感器的图像数据，ISP或其他任何东西都没有处理。保存在文件中的EXIF数据，除其他外，包括：
 
-* exposure time
-* analogue gain (the ISO tag is 100 times the analogue gain used)
-* white balance gains (which are the reciprocals of the "as shot neutral" values)
-* the colour matrix used by the ISP.
+* 曝光时间
+* 模拟增益（ISO 标签是所用模拟增益的 100 倍）
+* 白平衡增益（即“作为镜头中性”值的倒数）
+* ISP 使用的颜色矩阵。
 
 ----
 	--latest			Make symbolic link to latest file saved <string>
 ----
 
-This causes `libcamera-still` to make a symbolic link to the most recently saved file, thereby making it easier to identify. (`libcamera-still` only.)
+这会导致libcamera-still创建一个指向最近保存的文件的符号链接，从而使其更容易识别。(lib camera-仅静止。)
 
-Example: `libcamera-still -t 100000 --timelapse 10000 -o test%d.jpg --latest latest.jpg`
+例：libcamera-still -t 100000 --timelapse 10000 -o test%d.jpg --latest latest.jpg
 
 ----
 	--autofocus-on-capture			Whether to run an autofocus cycle before capture
 ----
 
-If set, this will cause an autofocus cycle to be run just before the image is captured.
+如果设置，这将导致在捕获图像之前运行自动对焦循环。
 
-If `--autofocus-mode` is not specified, or was set to `default` or `manual`, this will be the only autofocus cycle.
+如果没有指定自动对焦模式，或者设置为默认或手动，这将是唯一的自动对焦循环。
 
-If `--autofocus-mode` was set to `auto`, there will be an additional autofocus cycle at the start of the preview window.
+如果--autofocus-mode设置为auto ，则在预览窗口开始时将有一个额外的自动对焦周期。
 
-If `--autofocus-mode` was set to `continuous`, this option will be ignored.
+如果--autofocus-mode设置为continuous ，则忽略此选项。
 
-You can also use `--autofocus-on-capture 1` in place of `--autofocus-on-capture`, and `--autofocus-on-capture 0` as an alternative to omitting the parameter entirely.
+也可以使用。--autofocus-on-capture 1 代替--autofocus-on-capture 和--autofocus-on-capture 0作为完全省略参数的替代方法
 
-Example: `libcamera-still --autofocus-on-capture -o test.jpg`
+例：libcamera-still --autofocus-on-capture -o test.jpg
 
-This option is only supported for certain camera modules (such as the _Raspberry Pi Camera Module 3_).
+此选项仅支持某些相机模块（例如Raspberry Pi相机模块 3）。

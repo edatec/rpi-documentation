@@ -1,57 +1,56 @@
-=== Understanding and Writing your own Apps
+[[understanding-and-writing-your-own-apps]]
+=== 了解和编写您自己的应用程序
 
-`libcamera-apps` are not supposed to be a full set of all the applications with all the features that anyone could ever need. Instead, they are supposed to be easy to understand, such that users who require slightly different behaviour can implement it for themselves.
+libcamera-apps不应该是具有任何人可能需要的所有功能的全套所有应用程序。相反，它们应该易于理解，以便需要稍微不同行为的用户可以自己实现它。
+所有应用程序都通过一个简单的事件循环来工作，该事件循环从相机系统接收带有一组新帧的消息。这组帧称为CompletedRequest .它包含从该单个相机帧派生的所有图像（因此除了全尺寸输出之外，可能是低分辨率图像），以及来自相机系统的元数据和来自后期处理系统的进一步元数据。
 
-All the applications work by having a simple event loop which receives a message with a new set of frames from the camera system. This set of frames is called a `CompletedRequest`. It contains all the images that have been derived from that single camera frame (so perhaps a low resolution image in addition to the full size output), as well as metadata from the camera system and further metadata from the post-processing system.
-
+[[libcamera-hello-2]]
 ==== `libcamera-hello`
 
-`libcamera-hello` is much the easiest application to understand. The only thing it does with the camera images is extract the `CompletedRequestPtr` (a shared pointer to the `CompletedRequest`) from the message:
+libcamera-hello是最容易理解的应用程序。它对相机图像做的唯一事情是从消息中提取CompletedRequestPtr(指向CompletedRequest的共享指针):
 
 ----
 	CompletedRequestPtr &completed_request = std::get<CompletedRequestPtr>(msg.payload);
 ----
 
-and forward it to the preview window:
+并将其转发到预览窗口：
 
 ----
 	app.ShowPreview(completed_request, app.ViewfinderStream());
 ----
 
-One important thing to note is that every `CompletedRequest` must be recycled back to the camera system so that the buffers can be reused, otherwise it will simply run out of buffers in which to receive new camera frames. This recycling process happens automatically when all references to the `CompletedRequest` are dropped, using {cpp}'s _shared pointer_ and _custom deleter_ mechanisms.
+需要注意的一件重要事情是，每个完成的请求都必须被回收到摄像机系统，以便可以重用缓冲区，否则它将耗尽用于接收新摄像机帧的缓冲区。使用C++的共享指针和自定义删除机制，当所有对CompletedRequest的引用都被删除时，这个回收过程会自动发生。
+因此，在libcamera-hello中，要将完整的请求返回到相机，必须发生两件事。
 
-In `libcamera-hello` therefore, two things must happen for the `CompletedRequest` to be returned to the camera.
+1. 事件循环必须再次循环，以便删除包含对共享指针的引用的消息（msg在代码中）。
 
-1. The event loop must go round again so that the message (`msg` in the code), which is holding a reference to the shared pointer, is dropped.
+2. 当调用ShowPreview时，预览线程接受对CompletedRequest的另一个引用，必须用新的CompletedRequest再次调用该线程，从而导致前一个线程被丢弃。
 
-2. The preview thread, which takes another reference to the `CompletedRequest` when `ShowPreview` is called, must be called again with a new `CompletedRequest`, causing the previous one to be dropped.
-
+[[libcamera-vid-2]]
 ==== `libcamera-vid`
 
-`libcamera-vid` is not unlike `libcamera-hello`, but it adds a codec to the event loop and the preview. Before the event loop starts, we must configure that encoder with a callback which says what happens to the buffer containing the encoded image data.
+libcamera-vid与 libcamera-hello不同，但它向事件循环和预览中添加了编解码器。在事件循环开始之前，我们必须为该编码器配置一个回调，该回调说明包含编码图像数据的缓冲区会发生什么。
 
 ----
 	app.SetEncodeOutputReadyCallback(std::bind(&Output::OutputReady, output.get(), _1, _2, _3, _4));
 ----
 
-Here we send the buffer to the `Output` object which may write it to a file, or send it over the network, according to our choice when we started the application.
+在这里，我们将缓冲区发送到Output对象，该对象可以根据我们启动应用程序时的选择将其写入文件或通过网络发送。
+编码器还获取对CompletedRequest的新引用，因此一旦事件循环、预览窗口和编码器都丢弃了它们的引用，CompletedRequest将自动回收到摄像机系统。
 
-The encoder also takes a new reference to the `CompletedRequest`, so once the event loop, the preview window and the encoder all drop their references, the `CompletedRequest` will be recycled automatically back to the camera system.
-
+[[libcamera-raw-2]]
 ==== `libcamera-raw`
 
-`libcamera-raw` is not so very different from `libcamera-vid`. It too uses an encoder, although this time it is a "dummy" encoder called the `NullEncoder`. This just treats the input image directly as the output buffer and is careful not to drop its reference to the input until the output callback has dealt with it first.
+libcamera-raw与libcamera-vid 没有太大区别。它也使用编码器，尽管这次它是一个名为NullEncoder .这仅将输入图像直接视为输出缓冲区，并且注意在输出回调首先处理它之前不要删除其对输入的引用。
+但是，这一次，我们不会将任何内容转发到预览窗口，尽管如果需要，我们可以显示（处理过的）视频流。
+在此应用程序中使用NullEncoder 可能是矫枉过正的，因为我们可能只是将图像直接发送到Output对象。但是，它有助于强调一般原则，即直接在事件循环中执行过多工作通常是一个坏主意，并且耗时的过程通常最好留给其他线程。
 
-This time, however, we do not forward anything to the preview window, though we could have displayed the (processed) video stream if we had wanted.
-
-The use of the `NullEncoder` is possibly overkill in this application, as we could probably just send the image straight to the `Output` object. However, it serves to underline the general principle that it is normally a bad idea to do too much work directly in the event loop, and time-consuming processes are often better left to other threads.
-
+[[libcamera-jpeg-2]]
 ==== `libcamera-jpeg`
 
-We discuss `libcamera-jpeg` rather than `libcamera-still` as the basic idea (that of switching the camera from preview into capture mode) is the same, and `libcamera-jpeg` has far fewer additional options (such as timelapse capture) that serve to distract from the basic function.
+我们讨论libcamera-jpeg，而不是libcamera-still，因为基本思想(将相机从预览模式切换到捕捉模式)是相同的，libcamera-jpeg的附加选项(如延时捕捉)少得多，这些选项会分散对基本功能的注意力。
 
-`libcamera-jpeg` starts the camera in preview mode in the usual way, but at the appropriate moment stops it and switches to still capture:
-
+libcamera-jpeg以通常的方式在预览模式下启动相机，但在适当的时候停止它并切换到静止拍摄：
 ----
 	app.StopCamera();
 	app.Teardown();
@@ -59,4 +58,4 @@ We discuss `libcamera-jpeg` rather than `libcamera-still` as the basic idea (tha
 	app.StartCamera();
 ----
 
-Then the event loop will grab the first frame that emerges once it's no longer in preview mode, and saves this as a JPEG.
+然后，事件循环将获取不再处于预览模式后出现的第一帧，并将其另存为 JPEG。

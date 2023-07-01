@@ -1,59 +1,64 @@
-=== Building `libcamera` and `libcamera-apps`
+[[building-libcamera-and-libcamera-apps]]
+=== 编译`libcamera`和`libcamera-apps`
 
-Building `libcamera` and `libcamera-apps` for yourself can bring the following benefits.
+为自己构建`libcamera`和`libcamera-apps`可以带来以下好处。
 
-* You can pick up the latest enhancements and features.
+* 您可以选择最新的增强功能和功能。
 
-* `libcamera-apps` can be compiled with extra optimisation for Raspberry Pi 3 and Raspberry Pi 4 devices running a 32-bit OS.
+* libcamera-apps可以针对运行32位操作系统的Raspberry Pi 3和Raspberry Pi 4设备进行额外优化。
 
-* You can include the various optional OpenCV and/or TFLite post-processing stages (or add your own).
+* 您可以包括各种可选的 OpenCV 和/或 TFLite 后处理阶段（或添加您自己的）。
 
-* You can customise or add your own applications derived from `libcamera-apps`.
+* 您可以自定义或添加您自己的应用程序从libcamera-apps派生。
 
-NOTE: When building on a Raspberry Pi with 1GB or less of RAM, there is a risk that the device may run out of swap and fail. We recommend either increasing the amount of swap, or building with fewer threads (the `-j` option to `ninja` and to `make`).
+NOTE: 当在内存为1GB或更少的Raspberry Pi上构建时，存在设备可能耗尽交换空间并失败的风险。我们建议要么增加交换空间，要么用更少的线程构建(ninja和make的-j选项)。
 
-==== Building `libcamera-apps` without rebuilding `libcamera`
+[[building-libcamera-apps-without-rebuilding-libcamera]]
+==== 不需要重新编译 `libcamera`即可编译 `libcamera-apps` 
 
 You can rebuild `libcamera-apps` _without_ first rebuilding the whole of `libcamera` and `libepoxy`. If you do not need support for the X11/GLES preview window then `libepoxy` can be omitted entirely. Mostly this will include Raspberry Pi OS Lite users, and they must be sure to use `-DENABLE_X11=0` when running `cmake` later. These users should run:
+您可以重新构建libcamera-apps，而无需首先重新构建整个libcamera和libepoxy。如果你不需要X11/GLES预览窗口的支持，那么libepoxy可以完全省略。这主要包括Raspberry Pi OS Lite用户，并且他们在以后运行cmake时必须确保使用-DENABLE_X11=0。这些用户应该运行:
 
 ----
 sudo apt install -y libcamera-dev libjpeg-dev libtiff5-dev
 ----
 
-All other users should execute:
+所有其他用户应执行：
 
 ----
 sudo apt install -y libcamera-dev libepoxy-dev libjpeg-dev libtiff5-dev
 ----
 
-If you want to use the Qt preview window, please also execute
+如果您想使用Qt预览窗口，请同时执行
 
 ----
 sudo apt install -y qtbase5-dev libqt5core5a libqt5gui5 libqt5widgets5
 ----
 
-If you want xref:camera_software.adoc#libav-integration-with-libcamera-vid[libav] support in `libcamera-vid`, additional libraries must be installed:
+如果要在libcamera-vid 中支持 libav，则必须安装其他库：
 
 ----
 sudo apt install libavcodec-dev libavdevice-dev libavformat-dev libswresample-dev
 ----
 
-Now proceed directly to the instructions for xref:camera_software.adoc#building-libcamera-apps[building `libcamera-apps`]. Raspberry Pi OS Lite users should check that _git_ is installed first (`sudo apt install -y git`).
+现在直接进入构建 libcamera-app 的说明。Raspberry Pi OS Lite 用户应首先检查 git 是否已安装（sudo apt install -y git）。
 
-==== Building `libcamera`
+[[building-libcamera]]
+==== 构建libcamera
 
 Rebuilding `libcamera` from scratch should be necessary only if you need the latest features that may not yet have reached the `apt` repositories, or if you need to customise its behaviour in some way.
+只有当您获取不到“apt”库的最新功能，或者您需要以某种方式定制其行为时，才需要从头开始重建“libcamera”。
 
-First install all the necessary dependencies for `libcamera`.
+首先安装libcamera 的所有必需依赖项。
 
-NOTE: Raspberry Pi OS Lite users will first need to install the following additional packages if they have not done so previously:
+NOTE: Raspberry Pi OS Lite用户首先需要安装以下附加软件包，如果他们以前没有这样做过：
 
 ----
 sudo apt install -y python3-pip git
 sudo pip3 install jinja2
 ----
 
-All users should then install the following:
+然后，所有用户都应安装以下内容：
 
 ----
 sudo apt install -y libboost-dev
@@ -66,12 +71,13 @@ sudo pip3 install --upgrade meson
 ----
 
 In the `meson` commands below we have enabled the _gstreamer_ plugin. If you _do not_ need this you can set `-Dgstreamer=disabled` instead and the next pair of dependencies will not be required. But if you do leave _gstreamer_ enabled, then you will need the following:
+在下面的meson命令中，我们启用了gstreamer插件。如果不需要，可以改为设置-Dgstreamer=disabled，这样就不需要下一对依赖项了。但是如果您让gstreamer保持启用状态，那么您将需要以下内容:
 
 ----
 sudo apt install -y libglib2.0-dev libgstreamer-plugins-base1.0-dev
 ----
 
-Now we can check out and build `libcamera` itself. We check out Raspberry Pi's fork of libcamera which tracks the official repository but lets us control exactly when we pick up new features.
+现在我们可以检查并构建libcamera自己。我们查看了Raspberry Pi的libcamera分支，它跟踪官方存储库，但让我们可以准确控制何时选择新功能。
 
 ----
 cd
@@ -79,42 +85,43 @@ git clone https://github.com/raspberrypi/libcamera.git
 cd libcamera
 ----
 
-Next we recommend that Raspberry Pi OS Lite users run
+接下来，我们建议Raspberry Pi OS Lite用户运行
 
 ----
 meson build --buildtype=release -Dpipelines=raspberrypi -Dipas=raspberrypi -Dv4l2=true -Dgstreamer=enabled -Dtest=false -Dlc-compliance=disabled -Dcam=disabled -Dqcam=disabled -Ddocumentation=disabled -Dpycamera=enabled
 ----
 
-Users of Raspberry Pi OS can instead use
+Raspberry Pi OS的用户可以改用
 
 ----
 meson build --buildtype=release -Dpipelines=raspberrypi -Dipas=raspberrypi -Dv4l2=true -Dgstreamer=enabled -Dtest=false -Dlc-compliance=disabled -Dcam=disabled -Dqcam=enabled -Ddocumentation=disabled -Dpycamera=enabled
 ----
 
-NOTE: As of 6th May 2023, there has been a directory restructuring in the upstream libcamera git tree (https://git.libcamera.org/). If users are building libcamera from this tree, please replace `-Dpipelines=raspberrypi -Dipas=raspberrypi` with `-Dpipelines=rpi/vc4 -Dipas=rpi/vc4` in the above commands. This directory restructuring has not yet made it into the Raspberry Pi libcamera repo (https://github.com/raspberrypi/libcamera.git), so the above commands should be used without modifications if using that repo.
+NOTE: 截至2023年5月6日，上游libcamera git树(https://git.libcamera.org/)中已经进行了目录重组。如果用户正在从这个树构建libcamera，请在上面的命令中将-Dpipelines = raspberrypi-Dipas = raspberrypi替换为-Dpipelines = rpi/vc4-Dipas = rpi/vc4。这个目录重组还没有进入Raspberry Pi lib camera repo(https://github . com/raspberrypi/lib camera . git)，因此如果使用该repo，应该不加修改地使用上面的命令。
 
-The only difference is that the latter also builds the `qcam` test application, which has dependencies on Qt and X Windows (after completing the `libcamera` build users can run `build/src/qcam/qcam` to verify that `libcamera` is functioning correctly).
+唯一的区别是后者还构建了qcam测试应用程序，它依赖于Qt和X Windows(在完成libcamera构建之后，用户可以运行build/src/qcam/qcam来验证libcamera是否正常工作)。
 
-To complete the `libcamera` build, please run
+要完成libcamera构建，请运行
 
 ----
 ninja -C build   # use -j 2 on Raspberry Pi 3 or earlier devices
 sudo ninja -C build install
 ----
 
-NOTE: At the time of writing `libcamera` does not yet have a stable binary interface. Therefore, if you have rebuilt `libcamera` we recommend continuing and rebuilding `libcamera-apps` from scratch too.
+NOTE: 在撰写本文时，libcamera还没有稳定的二进制接口。因此，如果你已经构建了libcamera，我们建议你也从头开始继续构建libcamera-apps。
 
-==== Building `libepoxy`
+[[building-libepoxy]]
+==== 构建libepoxy
 
-Rebuilding `libepoxy` should not normally be necessary as this library changes only very rarely. If you do want to build it from scratch, however, please follow the instructions below.
+libepoxy通常不需要重新构建，因为此库很少更改。但是，如果您确实想从头开始构建它，请按照以下说明进行操作。
 
-Start by installing the necessary dependencies.
+首先安装必要的依赖项。
 
 ----
 sudo apt install -y libegl1-mesa-dev
 ----
 
-Next, check out and build `libepoxy`.
+接下来，签出并构建libepoxy.
 
 ----
 cd
@@ -127,15 +134,16 @@ ninja
 sudo ninja install
 ----
 
-==== Building `libcamera-apps`
+[[building-libcamera-apps]]
+==== 构建libcamera-apps
 
-First fetch the necessary dependencies for `libcamera-apps`.
+首先获取libcamera-apps 的必要依赖项。
 
 ----
 sudo apt install -y cmake libboost-program-options-dev libdrm-dev libexif-dev
 ----
 
-The `libcamera-apps` build process begins with the following:
+libcamera-apps生成过程从以下内容开始：
 
 ----
 cd
@@ -145,35 +153,35 @@ mkdir build
 cd build
 ----
 
-At this point you will need to run `cmake` after deciding what extra flags to pass it. The valid flags are:
+此时，在决定传递什么额外的标志之后，您需要运行cmake。有效标志包括:
 
-* `-DENABLE_COMPILE_FLAGS_FOR_TARGET=armv8-neon` - you may supply this when building for Raspberry Pi 3 or Raspberry Pi 4 devices running a 32-bit OS. Some post-processing features may run more quickly.
+* `-DENABLE_COMPILE_FLAGS_FOR_TARGET=armv8-neon` - 在为运行32位操作系统的Raspberry Pi 3或Raspberry Pi 4设备构建时，您可以提供这个。某些后处理功能可能会运行得更快。
 
-* `-DENABLE_DRM=1` or `-DENABLE_DRM=0` - this enables or disables the DRM/KMS preview rendering. This is what implements the preview window when X Windows is not running.
+* `-DENABLE_DRM=1` or `-DENABLE_DRM=0` - 启用或禁用DRM/KMS预览渲染。这就是当X Windows没有运行时实现预览窗口的原因。
 
-* `-DENABLE_X11=1` or `-DENABLE_X11=0` - this enables or disables the X Windows based preview. You should disable this if your system does not have X Windows installed.
+* `-DENABLE_X11=1` or `-DENABLE_X11=0` - 这将启用或禁用基于 X Windows 的预览。如果您的系统没有安装 X Windows，则应禁用此功能。
 
-* `-DENABLE_QT=1` or `-DENABLE_QT=0` - this enables or disables support for the Qt-based implementation of the preview window. You should disable it if you do not have X Windows installed, or if you have no intention of using the Qt-based preview window. The Qt-based preview is normally not recommended because it is computationally very expensive, however it does work with X display forwarding.
+* `-DENABLE_QT=1` or `-DENABLE_QT=0` - 这将启用或禁用对基于Qt的预览窗口实现的支持。如果您没有安装X Windows，或者您不打算使用基于Qt的预览窗口，那么您应该禁用它。基于Qt的预览通常是不推荐的，因为它在计算上是非常昂贵的，但是它确实与X显示转发一起工作。
 
-* `-DENABLE_OPENCV=1` or `-DENABLE_OPENCV=0` - you may choose one of these to force OpenCV-based post-processing stages to be linked (or not). If you enable them, then OpenCV must be installed on your system. Normally they will be built by default if OpenCV is available.
+* `-DENABLE_OPENCV=1` or `-DENABLE_OPENCV=0` - 您可以选择其中之一来强制链接（或不链接）基于 OpenCV 的后处理阶段。如果启用它们，则必须在您的系统上安装 OpenCV。通常，如果OpenCV可用，它们将默认构建。
 
-* `-DENABLE_TFLITE=1` or `-DENABLE_TFLITE=0` - choose one of these to enable TensorFlow Lite post-processing stages (or not). By default they will not be enabled. If you enable them then TensorFlow Lite must be available on your system. Depending on how you have built and/or installed TFLite, you may need to tweak the `CMakeLists.txt` file in the `post_processing_stages` directory.
+* `-DENABLE_TFLITE=1` or `-DENABLE_TFLITE=0` - 选择其中之一以启用 TensorFlow Lite 后处理阶段（或不启用）。默认情况下，它们不会被启用。如果您启用它们，那么 TensorFlow Lite 必须在您的系统上可用。根据您构建和/或安装 TFLite 的方式，您可能需要调整post_processing_stages目录中的CMakeLists.txt文件。
 
-For Raspberry Pi OS users we recommend the following `cmake` command:
+对于Raspberry Pi操作系统用户，我们建议使用以下cmake命令：
 
 ----
 cmake .. -DENABLE_DRM=1 -DENABLE_X11=1 -DENABLE_QT=1 -DENABLE_OPENCV=0 -DENABLE_TFLITE=0
 ----
 
-and for Raspberry Pi OS Lite users:
+对于Raspberry Pi OS Lite用户：
 
 ----
 cmake .. -DENABLE_DRM=1 -DENABLE_X11=0 -DENABLE_QT=0 -DENABLE_OPENCV=0 -DENABLE_TFLITE=0
 ----
 
-In both cases, consider `-DENABLE_COMPILE_FLAGS_FOR_TARGET=armv8-neon` if you are using a 32-bit OS on a Raspberry Pi 3 or Raspberry Pi 4. Consider `-DENABLE_OPENCV=1` if you have installed _OpenCV_ and wish to use OpenCV-based post-processing stages. Finally also consider `-DENABLE_TFLITE=1` if you have installed _TensorFlow Lite_ and wish to use it in post-processing stages.
+在这两种情况下，如果您在Raspberry Pi 3或Raspberry Pi 4上使用32位操作系统，请考虑-den able _ COMPILE _ FLAGS _ FOR _ TARGET = arm V8-neon。如果您已经安装了OpenCV并希望使用基于OPENCV的后处理阶段，请考虑-DENABLE_OPENCV=1。最后，如果您已经安装了TensorFlow Lite并希望在后处理阶段使用它，请考虑-DENABLE_TFLITE=1。
 
-After executing the `cmake` command of your choice, the whole process concludes with the following:
+执行您选择的cmake命令后，整个过程以以下内容结束：
 
 ----
 make -j4  # use -j1 on Raspberry Pi 3 or earlier devices
@@ -181,6 +189,6 @@ sudo make install
 sudo ldconfig # this is only necessary on the first build
 ----
 
-NOTE: If you are using an image where `libcamera-apps` have been previously installed as an `apt` package, and you want to run the new `libcamera-apps` executables from the same terminal window where you have just built and installed them, you may need to run `hash -r` to be sure to pick up the new ones over the system supplied ones.
+NOTE: 如果您使用的是libcamera-apps已经作为apt包安装的映像，并且您希望从刚刚构建和安装它们的同一个终端窗口运行新的libcamera-apps可执行文件，您可能需要运行hash -r以确保在系统提供的文件上选择新的文件。
 
-Finally, if you have not already done so, please be sure to follow the `dtoverlay` and display driver instructions in the  xref:camera_software.adoc#getting-started[Getting Started section] (and rebooting if you changed anything there).
+最后，如果您尚未这样做，请务必按照dtoverlay“xref:camera_software.adoc#getting-started[入门]”部分中的驱动程序说明进行操作（如果您在那里更改了任何内容，请重新启动）
