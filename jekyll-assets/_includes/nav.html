@@ -13,6 +13,11 @@
         color: #f6f0f0;
         font-size: 16px;
     }
+    .contentshead2{
+        color: #f6f0f0;
+        font-size: 16px;
+        font-weight: bold;
+    }
     
     nav#contents {
         --offset: 0rem;
@@ -54,6 +59,7 @@
         border-bottom: 4px solid #0a7db8;
         margin-bottom: 30px;
     }
+    
 </style>
 <nav id="contents">
     <div id="sidebar_title">Rsapberry Pi 中文手册</div>
@@ -64,6 +70,9 @@
   {% if subdir.toc[0] %}
     <h2><a href="{{ site.baseurl }}{{ subdir.path }}">{{ subdir.title }}</a></h2>
     {% for item in subdir.toc %}
+       {% if item.url %}
+       <a class="contentshead2" href="{{ item.url }}" target="_blank">{{ item.title }}</a>
+       {% else %}
       <h3 class="contentshead" onclick="expandAndCollapse(this)">{{ item.title }}</h3>
       {% if item.sections[0] %}
         {% if page.url == item.path %}
@@ -106,6 +115,7 @@
           </ul>
         </div>
         {% endif %}
+      {% endif %}
       {% endif %}
     {% endfor %}
   {% endif %}

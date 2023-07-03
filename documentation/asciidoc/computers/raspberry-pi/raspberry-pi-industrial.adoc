@@ -125,12 +125,15 @@ rpi-otp-private-key
 ----
 
 输出示例
+
 ----
 f8dbc7b0a4fcfb1d706e298ac9d0485c2226ce8df7f7596ac77337bd09fbe160
 ----
 
 将随机生成的 64 字节数字写入设备私钥。 +
-**Warning: 此操作无法撤销。 **
+**Warning: 此操作无法撤销。**
+
+
 [,bash]
 ----
 # rpi-otp-private-key -w $(openssl rand -hex 32)
@@ -145,6 +148,7 @@ vcmailbox 0x00030081 40 40 0 8 0 0 0 0 0 0 0 0
 ----
 
 输出示例
+
 ----
 0x00000040 0x80000000 0x00030081 0x00000028 0x80000028 0x00000000 0x00000008 0xf8dbc7b0 0xa4fcfb1d 0x706e298a 0xc9d0485c 0x2226ce8d 0xf7f7596a 0xc77337bd 0x09fbe160 0x00000000
 ----
