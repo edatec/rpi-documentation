@@ -6,7 +6,7 @@
         width: 300px;
     }
     ul#tab-container {
-        width: 300px;
+        width: 288px;
         flex-direction: column;
     }
     ul#tab-container li {
@@ -48,7 +48,11 @@
           {% else %}
           <li>
           {% endif %}  
+            {% if item.url %}
+            <a href="{{ item.url }}" target="_blank">{{ item.title }}</a>
+            {% else %}
             <a href="{{ site.baseurl }}{{ item.path }}">{{ item.title }}</a>
+            {% endif %}
           </li>
         {% endfor %}
     </ul>
