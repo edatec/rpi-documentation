@@ -21,7 +21,7 @@ libcamera-hello
 
 NOTE: Raspberry Pi 3和更旧的设备可能默认没有使用正确的显示驱动程序。参考/boot/config.txt文件，确保dtoverlay=vc4-fkms-v3d或dtoverlay=vc4-kms-v3d当前处于活动状态。如果需要更改，请重新启动。
 
-[[getting-help]]
+[[if-you-do-need-to-alter-the-configuration]]
 ==== 如果确实需要更改配置
 
 在以下情况下，您可能需要更改/boot/config.txt文件中的相机配置：
