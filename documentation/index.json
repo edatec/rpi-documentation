@@ -9,7 +9,8 @@
                     "title": "Getting started",
                     "description": "How to get started with your Raspberry Pi",
                     "image": "full-sized/Getting-Started.png",
-                    "subpath": "getting-started.adoc"
+                    "subpath": "getting-started.adoc",
+                    "url": "https://www.raspberrypi.com/documentation/computers/getting-started.html"
                 },
                 {
                     "title": "Raspberry Pi 系统",
@@ -70,6 +71,7 @@
         {
             "title": "Accessories",
             "path": "accessories",
+            "url": "https://www.raspberrypi.com/documentation/accessories/",
             "default_tab": "no",
             "subitems": [
                 {
@@ -125,6 +127,7 @@
         {
             "title": "Microcontrollers",
             "path": "microcontrollers",
+            "url": "https://www.raspberrypi.com/documentation/microcontrollers/",
             "subitems": [
                 {
                     "title": "RP2040",
@@ -161,6 +164,7 @@
         {
             "title": "Services",
             "path": "services",
+            "url": "https://www.raspberrypi.com/documentation/services/",
             "subitems": [
                 {
                     "title": "Raspberry Pi ID",
