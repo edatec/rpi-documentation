@@ -76,11 +76,14 @@ if __name__ == "__main__":
                         if fullpath in available_anchors:
                             raise Exception("{} occurs twice in {}".format(fullpath, index_json))
                         available_anchors[fullpath] = set()
-                        nav.append({
+                        _nav_item = {
                             'path': os.path.join('/', change_file_ext(fullpath, 'html')),
                             'title': subitem['title'],
                             'sections': [],
-                        })
+                        }
+                        if 'url' in subitem:
+                            _nav_item["url"] = subitem["url"]
+                        nav.append(_nav_item)
                         level = min_level
                         adjusted_path = re.sub("^/", "", fullpath)
                         top_level_file = os.path.join(adoc_dir, adjusted_path)
