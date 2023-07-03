@@ -30,10 +30,10 @@
         {% for item in site.data.index.tabs %}
           {% if page.dir == item.path or page.dir == "/" and item.default_tab and item.default_tab == "yes" %}
             {% for entry in item.subitems %}
-            {% if entry.path %}
-            <a class="box" href="{{ site.baseurl }}{{ entry.path }}">
+            {% if entry.url %}
+            <a class="box" href="{{ entry.url }}" target="_blank">
             {% else %}
-            <a class="box" href="{{ entry.url }}">
+            <a class="box" href="{{ site.baseurl }}{{ entry.path }}">
             {% endif %}
               <span><img src="{{ site.baseurl }}{{ entry.imagepath }}" width="121" height="121" alt=""></span>
               <span class="title">{{ entry.title }}</span>
@@ -44,8 +44,6 @@
         {% endfor %}
       </section>
     </div>
-
-    {% include search.html %}
 
   </body>
 </html>
