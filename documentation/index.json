@@ -14,13 +14,13 @@
                 },
                 {
                     "title": "Raspberry Pi 系统",
-                    "description": "The official Raspberry Pi operating system",
+                    "description": "官方Raspberry Pi操作系统",
                     "image": "full-sized/Raspberry-Pi-OS.png",
                     "subpath": "os.adoc"
                 },
                 {
                     "title": "配置",
-                    "description": "Configuring your Raspberry Pi's settings",
+                    "description": "配置Raspberry Pi",
                     "image": "full-sized/Configuration.png",
                     "subpath": "configuration.adoc"
                 },
@@ -28,11 +28,12 @@
                     "title": "The config.txt file",
                     "description": "Low-level settings control",
                     "image": "full-sized/The-config-txt-file.png",
+                    "url": "https://www.raspberrypi.com/documentation/computers/config_txt.html",
                     "subpath": "config_txt.adoc"
                 },
                 {
                     "title": "Linux 内核",
-                    "description": "How to configure and build a custom kernel for your Raspberry Pi",
+                    "description": "如何配置和构建自定义内核",
                     "image": "full-sized/Linux-Kernel.png",
                     "subpath": "linux_kernel.adoc"
                 },
@@ -40,29 +41,31 @@
                     "title": "Remote access",
                     "description": "Accessing your Raspberry Pi remotely",
                     "image": "full-sized/Remote-Access.png",
+                    "url": "https://www.raspberrypi.com/documentation/computers/remote-access.html",
                     "subpath": "remote-access.adoc"
                 },
                 {
                     "title": "Camera software",
                     "description": "Software and libraries for Raspberry Pi camera hardware",
                     "image": "full-sized/Camera.png",
+                    "url": "https://www.raspberrypi.com/documentation/computers/camera_software.html",
                     "subpath": "camera_software.adoc"
                 },
                 {
                     "title": "Raspberry Pi 硬件",
-                    "description": "Technical information about Raspberry Pi hardware",
+                    "description": "Raspberry Pi 硬件技术信息",
                     "image": "full-sized/Raspberry-Pi-Hardware.png",
                     "subpath": "raspberry-pi.adoc"
                 },
                 {
                     "title": "Compute Module 硬件",
-                    "description": "Technical information about Raspberry Pi Compute Module hardware",
+                    "description": "Raspberry Pi Compute Module 硬件技术信息",
                     "image": "full-sized/Compute-Module-Hardware.png",
                     "subpath": "compute-module.adoc"
                 },
                 {
                     "title": "处理器",
-                    "description": "Technical information about the CPUs used by Raspberry Pi",
+                    "description": "Raspberry Pi处理器技术信息",
                     "image": "full-sized/Processors.png",
                     "subpath": "processors.adoc"
                 }
