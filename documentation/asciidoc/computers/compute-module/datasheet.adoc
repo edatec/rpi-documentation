@@ -6,7 +6,7 @@
 
 处理器模块4(CM4)是处理器模块（CM）的最新版本，对于所有当前和未来的开发，均推荐使用CM4。
 
-* https://datasheets.raspberrypi.com/cm4/cm4-datasheet.pdf[CM4 Datasheet]
+* https://www.edatec.cn/cn/cm4-datasheet_CN-2023.05.15.pdf[CM4 Datasheet]
 * https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf[CM4 IO 板 Datasheet]
 
 NOTE: 暂不提供CM4的原理图，但提供CM4 IO 板的原理图(可以在CM4 IO 板 Datasheet中查看) 
